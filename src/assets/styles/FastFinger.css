@@ -146,6 +146,8 @@
   flex-wrap: wrap;
   -moz-column-gap: 0.5rem;
        column-gap: 0.5rem;
+  height: 10rem;
+  overflow-y: hidden;
 }
 .typing-game-container .typing-game-card .playing-screen .text-display .typing-text .word.correct {
   color: #10b981;

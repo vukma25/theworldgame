@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Icon from '@mui/material/Icon'
 import { data, defaultSuggest } from './data'
-import { useLocalStorage } from '../Navbar/UseLocalStorage'
-import './SuggestBox.css'
+import '../../assets/styles/SuggestBox.css'
 
 function SuggestBox({ suggestBox, setSuggestBox, query, setQuery, storage, setStorage }) {
 

@@ -4,7 +4,7 @@ import Icon from '@mui/material/Icon';
 import { Link } from 'react-router';
 import { useLocalStorage } from './UseLocalStorage';
 import SuggestBox from '../SuggestBox/SuggestBox';
-import './Navbar.css';
+import '../../assets/styles/Navbar.css';
 
 function Navbar() {
 

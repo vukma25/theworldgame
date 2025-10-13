@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Icon from '@mui/material/Icon'
-import './GoTopBtn.css'
+import '../../assets/styles/GoTopBtn.css'
 
 function GoTopBtn() {
 

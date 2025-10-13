@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import './Logger.css'
+import '../../assets/styles/Logger.css'
 
 function Logger({ log, setLog }) {
     const [message, setMessage] = useState('');

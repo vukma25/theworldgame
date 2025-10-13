@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import './Card.css'
+import '../../assets/styles/Card.css'
 
 function Card({ title, tags, description, source }) {
 
