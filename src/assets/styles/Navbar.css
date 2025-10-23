@@ -401,23 +401,7 @@ nav .bar {
   flex: 1;
 }
 
-/* Modal (demo) */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
-  -webkit-backdrop-filter: blur(2px);
-          backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  z-index: 60;
-}
-
-.modal {
+.auth-modal {
   background: #fff;
   border-radius: 2rem;
   max-width: 52rem;
@@ -426,48 +410,40 @@ nav .bar {
   box-shadow: var(--shadow-lg);
   overflow: hidden;
 }
-
-.modal-head {
+.auth-modal .auth-modal-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #f3f4f6;
 }
-
-.modal-title {
+.auth-modal .auth-modal-head .auth-modal-title {
   font-weight: 600;
 }
-
-.xbtn {
+.auth-modal .auth-modal-head .xbtn {
   border: none;
   background: transparent;
   padding: 0.5rem;
   border-radius: 50%;
   cursor: pointer;
 }
-
-.xbtn:hover {
+.auth-modal .auth-modal-head .xbtn:hover {
   background: #f3f4f6;
 }
-
-.modal-body {
+.auth-modal .auth-modal-body {
   padding: 1.25rem 1.5rem;
 }
-
-.muted {
+.auth-modal .auth-modal-body .muted {
   font-size: 14px;
   color: var(--ink-500);
 }
-
-.grid-2 {
+.auth-modal .auth-modal-body .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
   margin-top: 0.75rem;
 }
-
-.bbtn {
+.auth-modal .auth-modal-body .bbtn {
   padding: 1.5rem;
   border-radius: 12px;
   border: none;
@@ -475,41 +451,34 @@ nav .bar {
   background: #f3f4f6;
   cursor: pointer;
 }
-
-.bbtn:hover {
+.auth-modal .auth-modal-body .bbtn:hover {
   background: #e5e7eb;
 }
-
-.divline {
+.auth-modal .auth-modal-body .divline {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   margin: 0.5rem 0;
 }
-
-.divline .hr {
+.auth-modal .auth-modal-body .divline .hr {
   flex: 1;
   height: 1px;
   background: #e5e7eb;
 }
-
-.field-col {
+.auth-modal .auth-modal-body .field-col {
   display: grid;
   gap: 0.5rem;
 }
-
-.input {
+.auth-modal .auth-modal-body .input {
   padding: 1.5rem 1rem;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   outline: none;
 }
-
-.input:focus {
+.auth-modal .auth-modal-body .input:focus {
   box-shadow: 0 0 0 0.1rem rgba(79, 70, 229, 0.2);
 }
-
-.cta {
+.auth-modal .auth-modal-body .cta {
   width: 100%;
   padding: 1.5rem 1rem;
   border: none;
@@ -519,8 +488,7 @@ nav .bar {
   font-weight: 800;
   cursor: pointer;
 }
-
-.cta:hover {
+.auth-modal .auth-modal-body .cta:hover {
   background: var(--brand-700);
 }
 

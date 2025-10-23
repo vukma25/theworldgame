@@ -8,20 +8,6 @@
   gap: 2rem;
   /* Style cho modal */
 }
-.sudoku-container .sudoku-modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 99;
-  -webkit-backdrop-filter: saturate(160%) blur(0.2rem);
-          backdrop-filter: saturate(160%) blur(0.2rem);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.65));
-  animation: fadeIn 0.3s ease;
-}
 .sudoku-container .sudoku-modal .modal-content {
   background-color: var(--cl-white-pure);
   box-shadow: 0 0 0.5rem var(--ink-300);

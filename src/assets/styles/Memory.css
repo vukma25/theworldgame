@@ -288,20 +288,7 @@
   font-size: 0.875rem;
 }
 
-.modal-memory {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  -webkit-backdrop-filter: saturate(160%) blur(2px);
-          backdrop-filter: saturate(160%) blur(2px);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.65));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-.modal-memory .modal-content {
+.mm-modal-content {
   background-color: var(--cl-white-pure);
   padding: 1.5rem 1.85rem;
   border-radius: 1rem;
@@ -310,12 +297,12 @@
   width: 100%;
   max-width: 40rem;
 }
-.modal-memory .modal-content .modal-title {
+.mm-modal-content .mm-modal-title {
   color: var(--brand-500);
   font-size: 1.75rem;
   margin-bottom: 1.5rem;
 }
-.modal-memory .modal-content .modal-game-info {
+.mm-modal-content .mm-modal-game-info {
   display: flex;
   justify-content: space-between;
   border-bottom: 0.1rem solid var(--ink-300);
@@ -324,18 +311,18 @@
   margin: 0.5rem 0;
   padding: 0.5rem 0;
 }
-.modal-memory .modal-content .modal-game-info .field {
+.mm-modal-content .mm-modal-game-info .field {
   font-weight: 600;
 }
-.modal-memory .modal-content .modal-game-info .data {
+.mm-modal-content .mm-modal-game-info .data {
   color: var(--ink-500);
 }
-.modal-memory .modal-content .modal-btn-redirect {
+.mm-modal-content .mm-modal-btn-redirect {
   display: flex;
   justify-content: space-between;
   margin-top: 2rem;
 }
-.modal-memory .modal-content .modal-btn-redirect .btn-action {
+.mm-modal-content .mm-modal-btn-redirect .btn-action {
   border: none;
   border-radius: 1rem;
   padding: 1rem 1.5rem;
@@ -343,7 +330,7 @@
   background-color: var(--brand-500);
   color: var(--cl-white-pure);
 }
-.modal-memory .modal-content .modal-btn-redirect .btn-action:hover {
+.mm-modal-content .mm-modal-btn-redirect .btn-action:hover {
   background-color: var(--ink-200);
   color: var(--cl-black-light);
 }

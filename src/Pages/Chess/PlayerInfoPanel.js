@@ -1,5 +1,5 @@
 import { useRef, useMemo, useEffect } from 'react'
-import { Icon, CircularProgress } from '@mui/material'
+import { Icon, CircularProgress, Avatar } from '@mui/material'
 import wp from '../../assets/image/wp.png'
 import wq from '../../assets/image/wq.png'
 import wn from '../../assets/image/wn.png'
@@ -82,6 +82,40 @@ export default function PlayerInfoPanel({
         }
     }, [capturePiece])
 
+    let source = useMemo(() => {
+        return mode?.type === 'bot' ? 
+            mode.opposite.avatar : "https://robohash.org/1"
+    }, [mode.type])
+
+    function stringToColor(string) {
+        let hash = 0;
+        let i;
+
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let color = '#';
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            color += `00${value.toString(16)}`.slice(-2);
+        }
+        /* eslint-enable no-bitwise */
+
+        return color;
+    }
+
+    function stringAvatar(name) {
+        return {
+            sx: {
+                bgcolor: stringToColor(name),
+                width: "90%"
+            }
+        };
+    }
+
     useEffect(() => {
         capturePiece = {'w': [], 'b': []}
         point = { type: "", difference: 0 }
@@ -94,7 +128,11 @@ export default function PlayerInfoPanel({
                 <div className="chess-info-player-area">
                     <div className="chess-info-player left">
                         <div className="left-avatar" >
-                            <img src="https://robohash.org/1" />
+                            <Avatar 
+                                src="https://robohash.org/1" 
+                                variant="square"
+                                {...stringAvatar("player")}
+                            />
                         </div>
                         <div className="left-name-and-elo flex-div">
                             <div className="name">Player1</div>
@@ -110,7 +148,7 @@ export default function PlayerInfoPanel({
                                             className="piece-pool"
                                             style={{
                                                 backgroundImage: `url(${images["b" + type]})`,
-                                                left: `${index * 1.5}rem`
+                                                left: `${index * .5}rem`
                                             }}
                                         ></div>
                                     )
@@ -123,8 +161,10 @@ export default function PlayerInfoPanel({
                     </div>
                     <div className="chess-info-player right">
                         <div className="right-avatar">
-                            <img
-                                src={`${mode?.type === 'bot' ? mode.opposite.avatar : "https://robohash.org/1"}`}
+                            <Avatar
+                                src={source}
+                                variant="square"
+                                {...stringAvatar(source)}
                             />
                         </div>
                         <div className="right-name-and-elo flex-div">
@@ -150,7 +190,7 @@ export default function PlayerInfoPanel({
                                             className="piece-pool"
                                             style={{
                                                 backgroundImage: `url(${images["w" + type]})`,
-                                                right: `${index * 1.5}rem`
+                                                right: `${index * .5}rem`
                                             }}
                                         ></div>
                                     )

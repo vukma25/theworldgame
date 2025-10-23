@@ -1,19 +1,21 @@
 import { useEffect, useRef } from 'react'
+import { useSelector } from 'react-redux'
 
-export default function TextBox({ game }) {
+export default function TextBox() {
+    const { 
+        targetParagraph, userInput, currentIndex
+    } = useSelector((state) => state.fastfinger)
     const refIndex = useRef(null)
     const refBox = useRef(null)
     const refCount = useRef(0)
 
     const renderText = () => {
-        const { targetParagraph, userInput } = game
-
         return targetParagraph.map((word, index) => {
             let className = 'word';
 
             if (index < userInput.length) {
                 className += userInput[index] === word ? ' correct' : ' incorrect';
-            } else if (index === game.currentIndex) {
+            } else if (index === currentIndex) {
                 className += ' current';
             } else {
                 className += ' untyped';
@@ -23,7 +25,7 @@ export default function TextBox({ game }) {
                 <span 
                     key={index} 
                     className={className}
-                    ref={index === game.currentIndex ? refIndex : null}
+                    ref={index === currentIndex ? refIndex : null}
                 >
                     {word}
                 </span>
@@ -45,7 +47,7 @@ export default function TextBox({ game }) {
 
         box.scrollTop = refCount.current * 24.5
 
-    }, [game.currentIndex])
+    }, [currentIndex])
 
     return (
         <div className="text-display">

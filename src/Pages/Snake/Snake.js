@@ -218,7 +218,7 @@ const Snake = () => {
 
             dispatch(preHandleAction.handleSnakeState(snake))
 
-        }, game.speed)
+        }, 370 - game.speed)
 
         return () => clearInterval(loop)
 
@@ -403,11 +403,10 @@ const Snake = () => {
                                         step={10}
                                         marks
                                         value={game.speed}
-                                        valueLabelDisplay='auto'
                                         onChange={handleChangeSpeed}
                                         disabled={game.status === "playing"}
                                     />
-                                    <div className="setting-value">Current speed: {game.speed} ms</div>
+                                    <div className="setting-value">Current speed: {370 - game.speed} ms</div>
                                 </div>
                                 <Button
                                     variant='contained'

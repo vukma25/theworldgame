@@ -1,6 +1,6 @@
-import open_sound from '../../assets/sound/notify.mp3'
-import explosion_sound from '../../assets/sound/explosion.mp3'
-import bind_flag_sound from '../../assets/sound/bind-flag.mp3'
+import open_sound from '../../assets/sound/minesweeper/notify.mp3'
+import explosion_sound from '../../assets/sound/minesweeper/explosion.mp3'
+import bind_flag_sound from '../../assets/sound/minesweeper/bind-flag.mp3'
 
 const open = new Audio(open_sound)
 const explosion = new Audio(explosion_sound)
@@ -94,7 +94,6 @@ export const levels = [
         'hidden': false
     }
 ]
-
 
 //Custom marks of Slider component
 export const marks = [
@@ -259,109 +258,128 @@ function clearFlag(cells) {
     })
 }
 
+function deepCopy(instance) {
+    return {
+        ...instance,
+        'setTime': {
+            ...instance.setTime
+        },
+        'cells': instance.cells.map(cell => ({...cell})),
+        'tool': {
+            ...instance.tool,
+            'style': {
+                ...instance.tool.style
+            }
+        }
+    }
+}
+
 //Click cell for desktop
-export function handleClickCell(index, copySettings) {
+export function handleClickCell(index, minesweeper) {
+    let copy = deepCopy(minesweeper)
 
-    if (copySettings.gameOver || 
-        copySettings.cells[index].flag ||
-        (copySettings.level === 4 && !copySettings.isInGame)
+
+    if (copy.gameOver || 
+        copy.cells[index].flag ||
+        (copy.level === 4 && !copy.isInGame)
     ) {
-        if (copySettings.cells[index].flag) {
-            copySettings.logError = 'This cell had flag! You can not active it'
-            return copySettings
+        if (copy.cells[index].flag) {
+            copy.logError = 'This cell had flag! You can not active it'
+            return copy
         }
-        if (copySettings.level === 4){
-            copySettings.logError = 'You have not confirm settings yet'
-            return copySettings
+        if (copy.level === 4){
+            copy.logError = 'You have not confirm settings yet'
+            return copy
         }
 
-        return copySettings
+        return copy
     }
 
-    if (copySettings.cells[index].isMine) {
+    if (copy.cells[index].isMine) {
         soundEffectExplosion()
-        copySettings.gameOver = true
-        copySettings.message = 'Oh no! You accidentally clicked on the mine'
-        return copySettings
+        copy.gameOver = true
+        copy.message = 'Oh no! You accidentally clicked on the mine'
+        return copy
     }
 
-    if (copySettings.cells[index].opened || copySettings.cells[index].flag) {
-        return copySettings
+    if (copy.cells[index].opened || copy.cells[index].flag) {
+        return copy
     }
 
     soundEffectOpen()
 
     const [row, col] = [
-        Math.floor(index / copySettings.col),
-        index % copySettings.col
+        Math.floor(index / copy.col),
+        index % copy.col
     ]
 
-    copySettings.logError = ''
-    if (copySettings.firstClick) {
+    copy.logError = ''
+    if (copy.firstClick) {
 
-        copySettings.cells = revealEmptyCells(
+        copy.cells = revealEmptyCells(
             row,
             col,
-            copySettings.row,
-            copySettings.col,
+            copy.row,
+            copy.col,
             generateMines(
                 row,
                 col,
-                copySettings.row,
-                copySettings.col,
-                copySettings.mine,
-                clearFlag(copySettings.cells)
+                copy.row,
+                copy.col,
+                copy.mine,
+                clearFlag(copy.cells)
             )
         )
-        copySettings.flag = copySettings.mine
+        copy.flag = copy.mine
 
-        return copySettings
+        return copy
 
     } else {
 
-        copySettings.cells = revealEmptyCells(
+        copy.cells = revealEmptyCells(
             row,
             col,
-            copySettings.row,
-            copySettings.col,
-            copySettings.cells
+            copy.row,
+            copy.col,
+            copy.cells
         )
 
-        copySettings = checkWin(copySettings)
-        return copySettings
+        copy = checkWin(copy)
+        return copy
     }
 
 }
 
-export function handleToggleFlag(index, copySettings) {
+export function handleToggleFlag(index, minesweeper) {
+    let copy = deepCopy(minesweeper)
 
     if (
-        ((copySettings.cells[index].opened ||
-            copySettings.flag === 0) &&
-            !copySettings.cells[index].flag) ||
-        copySettings.gameOver
+        ((copy.cells[index].opened ||
+            copy.flag === 0) &&
+            !copy.cells[index].flag) ||
+        copy.gameOver
     ) {
-        if (copySettings.cells[index].opened) {
-            copySettings.logError = 'This cell was opened! You can not active it'
+        if (copy.cells[index].opened) {
+            copy.logError = 'This cell was opened! You can not active it'
         }
-        else if (copySettings.flag === 0) {
-            copySettings.logError = 'You have reached the limit of flags'
+        else if (copy.flag === 0) {
+            copy.logError = 'You have reached the limit of flags'
         }
 
-        return copySettings
+        return copy
     }
 
     soundEffectBindFlag()
-    copySettings.cells[index].flag = !copySettings.cells[index].flag
+    copy.cells[index].flag = !copy.cells[index].flag
 
     //Upgrade flag
-    if (copySettings.cells[index].flag) {
-        copySettings.flag -= 1
+    if (copy.cells[index].flag) {
+        copy.flag -= 1
     } else {
-        copySettings.flag += 1
+        copy.flag += 1
     }
-    copySettings = checkWin(copySettings)
-    return copySettings
+    copy = checkWin(copy)
+    return copy
 }
 
 // end logic

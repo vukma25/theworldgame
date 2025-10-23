@@ -1,52 +1,66 @@
-import { useState, useReducer } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { resetGame, unmounted } from '../../redux/features/minesweeper';
 import OptionsBar from './OptionBar';
 import SettingsBroad from './SettingsBroad';
-import GameOver from './GameOver'
+import Modal from '../../Components/Modal/Modal'
+import MinesweeperModal from './MinesweeperModal';
 import Cell from './Cell';
 import Tool from './Tool';
 import Logger from '../../Components/Logger/Logger'
 import GoTopBtn from '../../Components/GoTopBtn/GoTopBtn';
-import { initialState, reducer } from './Reducer'
 import {
-    marks,
-    convertToMinute,
     isMobileDevice,
     isWin
 } from './Functions';
+import { Button } from '@mui/material'
 import "../../assets/styles/Minesweeper.css";
+import { close, open } from '../../redux/features/modal';
 
 
 function Minesweeper() {
 
-    const [settings, dispatch] = useReducer(reducer, initialState)
+    const minesweeper = useSelector((state) => state.minesweeper)
+    const modal = useSelector((state) => state.modal)
+    const dispatch = useDispatch()
     const [timeFinish, setTimeFinish] = useState({})
     const [log, setLog] = useState({
-        "message": settings.logError,
+        "message": minesweeper.logError,
         "type": "info"
     })
 
+    function restart() {
+        dispatch(close())
+        dispatch(resetGame())
+    }
+
+    useEffect(() => {
+        dispatch(close())
+        dispatch(unmounted())
+    }, [])
+
+    useEffect(() => {
+        if (minesweeper.gameOver) {
+            dispatch(open())
+        }
+    }, [minesweeper])
+
     return (
         <>
-            <Tool
-                dispatch={dispatch}
-                settings={settings}
-            />
+            <Tool />
             <div className="minesweeper">
                 {/* Thanh thong tin */}
-                <OptionsBar
-                    setTimeFinish={setTimeFinish}
-                    settings={settings}
-                    dispatch={dispatch}
-                />
+                <OptionsBar setTimeFinish={setTimeFinish} />
+                {minesweeper.gameOver &&
+                    <Button 
+                        className="restart-btn"
+                        onClick={restart}
+                    >Restart</Button>
+                }
                 <div className="minesweeper-broad">
                     {/* Bang cau hinh game */}
-                    <SettingsBroad
-                        settings={settings}
-                        dispatch={dispatch}
-                        marks={marks}
-                        convertToMinute={convertToMinute}
-                    />
-                       
+                    <SettingsBroad />
+
                     {/* Bang game chinh */}
                     <div
                         className="game-broad"
@@ -55,25 +69,23 @@ function Minesweeper() {
                                 display: 'grid',
                                 gridTemplateRows:
                                     `repeat(
-                                    ${settings.row},
+                                    ${minesweeper.row},
                                     ${isMobileDevice() ? 3 : 4}rem
                                 )`,
                                 gridTemplateColumns:
                                     `repeat(
-                                    ${settings.col},
+                                    ${minesweeper.col},
                                     ${isMobileDevice() ? 3 : 4}rem
                                 )`,
                             }
                         }
                     >
                         {
-                            settings.cells?.map((cell, index) => {
+                            minesweeper.cells?.map((cell, index) => {
                                 return <Cell
                                     key={index}
                                     mine={cell.mine}
-                                    dispatch={dispatch}
                                     index={index}
-                                    settings={settings}
                                     setLog={setLog}
                                 />
                             })
@@ -82,12 +94,15 @@ function Minesweeper() {
                 </div>
             </div>
             {
-                settings.gameOver &&
-                <GameOver
-                    dispatch={dispatch}
-                    message={settings.message}
-                    isWin={isWin(settings)}
-                />
+                modal.value &&
+                <Modal>
+                    <MinesweeperModal
+                        timeFinish={timeFinish}
+                        message={minesweeper.message}
+                        isWin={isWin(minesweeper)}
+                        restart={restart}
+                    />
+                </Modal>
             }
             <Logger log={log} setLog={setLog} />
             <GoTopBtn />

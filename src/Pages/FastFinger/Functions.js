@@ -107,8 +107,7 @@ export const getWpmAndStat = (userInput, targetPara, startTime) => {
     return [correct, incorrect, currentWpm, currentAccuracy]
 }
 
-export const getProgress = (game) => {
-    const { targetParagraph, currentIndex } = game
+export const getProgress = (targetParagraph, currentIndex) => {
     if (targetParagraph.length === 0) return 0
     return (currentIndex / targetParagraph.length) * 100
 }

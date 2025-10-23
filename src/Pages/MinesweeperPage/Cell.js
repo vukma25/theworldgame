@@ -1,5 +1,6 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { bindFlag, openCell, tooltip } from '../../redux/features/minesweeper'
 import Icon from '@mui/material/Icon'
-import { setCells, setFlag, setToolDisplay } from './Action';
 import {
     handleClickCell,
     handleToggleFlag,
@@ -8,29 +9,15 @@ import {
 
 function Cell({
     mine,
-    dispatch,
     index,
-    settings,
     setLog
 }) {
 
-
-    const copySettings = {
-        ...settings,
-        'cells': settings.cells.map(e => ({ ...e })),
-        'setTime': {
-            ...settings.setTime
-        },
-        'tool': {
-            ...settings.tool,
-            'style': {
-                ...settings.tool.style
-            }
-        }
-    }
+    const minesweeper = useSelector((state) => state.minesweeper)
+    const dispatch = useDispatch()
 
     function leftClickForDesktop() {
-        const updatedCells = handleClickCell(index, copySettings);
+        const updatedCells = handleClickCell(index, minesweeper);
         if (updatedCells?.logError){
             setLog({
                 "message": updatedCells.logError, 
@@ -39,12 +26,12 @@ function Cell({
         }
 
         if (updatedCells) {
-            dispatch(setCells(updatedCells));
+            dispatch(openCell(updatedCells));
         }
     }
 
     function rightClickForDesktop() {
-        const updatedCells = handleToggleFlag(index, copySettings);
+        const updatedCells = handleToggleFlag(index, minesweeper);
         if (updatedCells?.logError) {
             setLog({
                 "message": updatedCells.logError,
@@ -53,7 +40,7 @@ function Cell({
         }
         
         if (updatedCells) {
-            dispatch(setFlag(updatedCells));
+            dispatch(bindFlag(updatedCells));
         }
     }
 
@@ -61,14 +48,14 @@ function Cell({
         <div
             className={`
                 game-broad-cell flex-div 
-                ${settings.cells[index].opened ? "open" + mine : ""}
+                ${minesweeper.cells[index].opened ? "open" + mine : ""}
             `}
             onClick={
 
                 isMobileDevice() ?
                 (e) => {
                     const rect = e.target.getBoundingClientRect();
-                    dispatch(setToolDisplay({
+                    dispatch(tooltip({
                         'style': {
                             display: 'grid',
                             top: rect.top,
@@ -86,7 +73,7 @@ function Cell({
             }}
         >
             {
-                settings.gameOver && settings.cells[index].isMine ?
+                minesweeper.gameOver && minesweeper.cells[index].isMine ?
                     <Icon
                         sx={{
                             fontSize: '2rem',
@@ -95,7 +82,7 @@ function Cell({
                     >donut_large</Icon>
                     :
                     (
-                        settings.cells[index].flag ?
+                        minesweeper.cells[index].flag ?
                             <Icon
                                 sx={{
                                     fontSize: '2rem',

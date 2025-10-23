@@ -1,7 +1,10 @@
+import { useSelector, useDispatch } from "react-redux"
+import { close } from "../../redux/features/modal"
 import Icon from '@mui/material/Icon'
 
-export default function Modal({ targetWord, setModal, newGame, gameStatus }) {
-    console.log(targetWord)
+export default function WordleModal({ newGame }) {
+    const { targetWord, gameStatus } = useSelector((state) => state.wordle)
+    const dispatch = useDispatch()
 
     return (
         <div className="wordle-modal">
@@ -10,7 +13,7 @@ export default function Modal({ targetWord, setModal, newGame, gameStatus }) {
                     <h1 className="inform-title">You {gameStatus}!</h1>
                     <Icon
                         className="inform-close"
-                        onClick={() => { setModal(false) }}
+                        onClick={() => { dispatch(close()) }}
                     >close</Icon>
                 </div>
                 <div className="result">
@@ -39,8 +42,8 @@ export default function Modal({ targetWord, setModal, newGame, gameStatus }) {
                 <button
                     className="reset-btn"
                     onClick={() => {
-                        setModal(false)
                         newGame()
+                        dispatch(close())
                     }}
                 >New game</button>
             </div>

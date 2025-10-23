@@ -1,52 +1,83 @@
+import { useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+    setStatus,
+    exit
+} from '../../../redux/features/fastfinger'
 import TextBox from '../TextBox'
 import TypingBox from '../TypingBox'
 import Timer from '../Timer'
 
-export default function Playing({ game, startGame, endGame, quitGame, dispatch}) {
+export default function Playing({ setBestWpm, setLatestAccuracy }) {
+
+    const { 
+        status,
+        wpm, 
+        accuracy,
+        correctChars,
+        incorrectChars,
+        totalChars,
+        options
+    } = useSelector((state) => state.fastfinger)
+    const dispatch = useDispatch()
+
+    const endGame = useCallback(() => {
+        dispatch(setStatus("finished"))
+        updateRecord()
+    }, [])
+
+    const quitGame = () => {
+        dispatch(exit())
+    }
+
+    const updateRecord = () => {
+        let bestWpm = localStorage.getItem('bestWpm')
+        bestWpm = JSON.parse(bestWpm)
+
+        if (wpm > bestWpm) {
+            bestWpm = wpm
+        }
+
+        localStorage.setItem('bestWpm', JSON.stringify(bestWpm ?? wpm))
+        localStorage.setItem('accuracy', JSON.stringify(accuracy))
+        setBestWpm(bestWpm ?? wpm)
+        setLatestAccuracy(accuracy)
+    }
+
     return (
         <div className="playing-screen">
 
             {/* Text Display */}
-            <TextBox game={game} />
+            <TextBox />
 
             {/* Input Area */}
-            <TypingBox
-                game={game}
-                dispatch={dispatch}
-                endGame={endGame}
-            />
+            <TypingBox endGame={endGame} />
 
             {/* Live Stats */}
             <div className="live-stats">
                 <div className="live-stat blue">
-                    <div className="stat-value">{game.correctChars}</div>
+                    <div className="stat-value">{correctChars}</div>
                     <div className="stat-label">Correct</div>
                 </div>
                 <div className="live-stat red">
-                    <div className="stat-value">{game.incorrectChars}</div>
+                    <div className="stat-value">{incorrectChars}</div>
                     <div className="stat-label">Incorrect</div>
                 </div>
                 <div className="live-stat green">
-                    <div className="stat-value">{game.totalChars}</div>
+                    <div className="stat-value">{totalChars}</div>
                     <div className="stat-label">Total</div>
                 </div>
                 <div className="live-stat gray">
                     <Timer
-                        duration={game.options.duration}
+                        duration={options.duration}
                         endGame={endGame}
-                        state={game.state}
+                        status={status}
                     />
                     <div className="stat-label">Time</div>
                 </div>
             </div>
 
             <div className="reset-section">
-                <button
-                    onClick={() => { startGame() }}
-                    className="reset-button"
-                >
-                    New game
-                </button>
                 <button
                     onClick={quitGame}
                     className="reset-button"

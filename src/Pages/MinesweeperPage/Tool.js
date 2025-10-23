@@ -1,81 +1,75 @@
 
 import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { bindFlag, openCell, tooltip } from '../../redux/features/minesweeper'
 import Icon from '@mui/material/Icon'
-import { setCells, setFlag, setToolDisplay } from './Action'
-import { 
-    handleClickCell, 
+import {
+    handleClickCell,
     handleToggleFlag,
     gridTemplateColumns
 } from './Functions'
 
-function Tool({
-    dispatch,
-    settings
-}) {
+function Tool() {
 
-    const copySettings = {
-        ...settings,
-        'setTime': {
-            ...settings.setTime
-        },
-        'cells': settings.cells.map(e => ({ ...e })),
-        'tool': {
-            ...settings.tool,
-            'style': {
-                ...settings.tool.style
-            }
-        }
+    const minesweeper = useSelector((state) => state.minesweeper)
+    const dispatch = useDispatch()
+    const [style, setStyle] = useState({})
+
+    function handleOpenCell() {
+        dispatch(openCell(
+            handleClickCell(minesweeper.tool.index, minesweeper)
+        ))
     }
 
-    const [style, setStyle] = useState({})
+    function positionTooltip() {
+        dispatch(tooltip({
+            'style': { display: 'none' }
+        }))
+    }
+
+    function tickFlag() {
+        dispatch(bindFlag(
+            handleToggleFlag(minesweeper.tool.index, minesweeper)
+        ))
+    }
 
     useEffect(() => {
         const upgradeStyle = gridTemplateColumns(
-            settings.tool.index,
-            settings.row,
-            settings.col,
-            settings.tool.style.top,
-            settings.tool.style.left
+            minesweeper.tool.index,
+            minesweeper.row,
+            minesweeper.col,
+            minesweeper.tool.style.top,
+            minesweeper.tool.style.left
         )
 
         setStyle(upgradeStyle)
-    }, [settings])
+    }, [minesweeper])
 
     return (
-        <div 
+        <div
             className="tool"
             style={{
-                ...copySettings.tool.style,
+                ...minesweeper.tool.style,
                 ...style
             }}
         >
             <div className="tool-cell refer">
             </div>
-            <div 
+            <div
                 className="tool-cell tool-cell-open flex-div"
-                onClick={() => {
-                    dispatch(setCells(
-                        handleClickCell(copySettings.tool.index, copySettings)
-                    ))
-                }}
+                onClick={handleOpenCell}
             >
                 <Icon className="tool-btn open">my_location</Icon>
             </div>
-            <div 
+            <div
                 className="tool-cell tool-cell-close flex-div"
-                onClick={() => dispatch(setToolDisplay({
-                    'style': { display: 'none' }
-                }))}
+                onClick={positionTooltip}
             >
                 <Icon className="tool-btn close">close</Icon>
             </div>
-            <div 
+            <div
                 className="tool-cell tool-cell-flag flex-div"
-                onClick={() => {
-                    dispatch(setFlag(
-                        handleToggleFlag(copySettings.tool.index, copySettings)
-                    ))
-                }}
+                onClick={tickFlag}
             >
                 <Icon className="tool-btn flag">flag</Icon>
             </div>

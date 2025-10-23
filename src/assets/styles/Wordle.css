@@ -22,14 +22,6 @@
   align-items: center;
   margin-bottom: 1rem;
 }
-.wordle-container .wordle-card .wordle-stats .wordle-btn-new-game {
-  background-color: var(--cl-green);
-  border: none;
-  padding: 1.5rem 2rem;
-  border-radius: 0.5rem;
-  font-size: 1.4rem;
-  color: var(--cl-white-pure);
-}
 .wordle-container .wordle-card .wordle-stats .wordle-select-len-word {
   width: 40%;
 }

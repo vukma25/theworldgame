@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext } from 'react';
+import { useEffect, useState } from 'react';
 import Icon from '@mui/material/Icon';
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -6,10 +6,8 @@ import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import ClockBase from '../../Components/ClockBase/ClockBase';
 import Clock from './Clock'
-import {
-    setToggleSetting,
-    setSelect
-} from './Action'
+import { useSelector, useDispatch } from 'react-redux';
+import { difficulties, toggleSettings } from '../../redux/features/minesweeper'
 
 
 const BootstrapInput = styled(InputBase)(() => ({
@@ -27,19 +25,20 @@ const BootstrapInput = styled(InputBase)(() => ({
 }
 ));
 
-export const ClockContext = createContext()
+function OptionsBar({ setTimeFinish }) {
 
-function OptionsBar({ setTimeFinish, settings, dispatch }) {
+    const minesweeper = useSelector((state) => state.minesweeper)
+    const dispatch = useDispatch()
     const [semaphore, setSemaphore] = useState(false)
 
     function handleAssignSemaphore() {
-        if (settings.gameOver) {
+        if (minesweeper.gameOver) {
             setSemaphore(true)
         }
-        else if (settings.level === 4 && !settings.isInGame) {
+        else if (minesweeper.level === 4 && !minesweeper.isInGame) {
             setSemaphore(true)
         }
-        else if (!settings.setTime.isTime) {
+        else if (!minesweeper.setTime.isTime) {
             setSemaphore(true)
         }
         else {
@@ -47,17 +46,25 @@ function OptionsBar({ setTimeFinish, settings, dispatch }) {
         }
     }
 
+    function setDifficulties(e) {
+        dispatch(difficulties(Number(e.target.value)))
+    }
+
+    function handleToggleSettings() {
+        dispatch(toggleSettings())
+    }
+
     useEffect(() => {
         handleAssignSemaphore()
-    }, [settings.level, settings.gameOver, settings.isInGame, settings.setTime.isTime])
+    }, [minesweeper.level, minesweeper.gameOver, minesweeper.isInGame, minesweeper.setTime.isTime])
 
     return (
         <div className="minesweeper-settings flex-div">
             <Select
                 className="minesweeper-settings-level"
-                value={settings.level}
+                value={minesweeper.level}
                 input={<BootstrapInput />}
-                onChange={e => dispatch(setSelect(e.target.value))}
+                onChange={setDifficulties}
             >
 
                 <MenuItem value={0} sx={{
@@ -84,14 +91,14 @@ function OptionsBar({ setTimeFinish, settings, dispatch }) {
                 }}>Custom</MenuItem>
             </Select>
             {
-                (settings.level === 4 && settings.setTime.isTime) &&
+                (minesweeper.level === 4 && minesweeper.setTime.isTime) &&
                 <Icon
                     sx={{
                         fontSize: '3rem',
                         color: 'var(--cl-primary-purple)'
                     }}
                     title="Modify settings"
-                    onClick={() => dispatch(setToggleSetting())}
+                    onClick={handleToggleSettings}
                 >tune</Icon>
             }
             <div className="minesweeper-settings-flag flex-div">
@@ -99,29 +106,28 @@ function OptionsBar({ setTimeFinish, settings, dispatch }) {
                     fontSize: '3rem',
                     color: 'var(--cl-red-flag)'
                 }}>flag</Icon>
-                <p>{settings.flag}</p>
+                <p>{minesweeper.flag}</p>
             </div>
             <ClockBase
                 type={"countdown"}
-                duration={settings.setTime.duration}
+                duration={minesweeper.setTime.duration}
                 semaphore={semaphore}
                 setTimeFinish={setTimeFinish}
             >
-                <ClockContext.Provider value={{ settings, dispatch }}>
-                    <Clock useTime={settings.setTime.isTime}/>
-                </ClockContext.Provider>
+
+                <Clock />
             </ClockBase>
             {
-                !settings.setTime.isTime &&
-                    <Icon
-                        sx={{
-                            fontSize: '3rem',
-                            color: 'var(--cl-primary-purple)',
-                            marginLeft: 'auto'
-                        }}
-                        title="Modify settings"
-                        onClick={() => dispatch(setToggleSetting())}
-                    >tune</Icon>
+                !minesweeper.setTime.isTime &&
+                <Icon
+                    sx={{
+                        fontSize: '3rem',
+                        color: 'var(--cl-primary-purple)',
+                        marginLeft: 'auto'
+                    }}
+                    title="Modify settings"
+                    onClick={handleToggleSettings}
+                >tune</Icon>
             }
         </div>
     )

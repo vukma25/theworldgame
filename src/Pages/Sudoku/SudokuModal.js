@@ -1,13 +1,28 @@
 
+import { useNavigate } from 'react-router'
+import { useDispatch } from 'react-redux'
+import { close } from '../../redux/features/modal'
 import Icon from '@mui/material/Icon'
-import { Link } from 'react-router'
 
 const formatTime = (clock) => {
     if (!clock) return
     return `${clock.minute.toString().padStart(2, '0')}:${clock.second.toString().padStart(2, '0')}`;
 }
 
-export default function InformBoard({ isWin, errors, timeFinish, setModal, resetOrStartGame }) {
+export default function SudokuModal({ isWin, errors, timeFinish, resetOrStartGame }) {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    function home() {
+        dispatch(close())
+        navigate('/')
+    }
+
+    function restart() {
+        dispatch(close())
+        resetOrStartGame()
+    }
+
     return (
         // Bảng thông báo kết quả
         <div className="sudoku-modal">
@@ -16,7 +31,7 @@ export default function InformBoard({ isWin, errors, timeFinish, setModal, reset
                     <h1 className="inform-title">You {`${isWin ? "win" : "lose"}`}!</h1>
                     <Icon
                         className="inform-close"
-                        onClick={() => { setModal(false) }}
+                        onClick={() => { dispatch(close()) }}
                     >close</Icon>
                 </div>
                 <div className="result-stats">
@@ -35,13 +50,13 @@ export default function InformBoard({ isWin, errors, timeFinish, setModal, reset
                         <p className="stat-data highlight">{errors} / 3</p>
                     </div>
                 </div>
-                <Link to="/" className="result-btn">Home</Link>
                 <button 
                     className="result-btn"
-                    onClick={() => { 
-                        resetOrStartGame() 
-                        setModal(false)
-                    }}
+                    onClick={home}
+                >Home</button>
+                <button 
+                    className="result-btn"
+                    onClick={restart}
                 >New game</button>
             </div>
         </div>

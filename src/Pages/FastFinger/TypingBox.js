@@ -1,9 +1,15 @@
 
 import { useState, useEffect, useRef } from 'react'
-import { setUserInput } from './Action'
+import { useSelector, useDispatch } from 'react-redux';
 import { getWpmAndStat } from './Functions'
+import { typing } from '../../redux/features/fastfinger';
 
-export default function TypingBox({ game, dispatch, endGame }) {
+export default function TypingBox({ endGame }) {
+    const {
+        status, userInput, startTime, targetParagraph, currentIndex
+    } = useSelector((state) => state.fastfinger)
+    const dispatch = useDispatch()
+
     const [buffer, setBuffer] = useState('')
     const inputRef = useRef(null);
 
@@ -22,10 +28,10 @@ export default function TypingBox({ game, dispatch, endGame }) {
     }
 
     const handleInputChange = (e) => {
-        if (game.state !== 'playing') return;
+        if (status !== 'playing') return;
 
         let value = handlePreprocessingInput(e.target.value);
-        let newIndex = game.currentIndex;
+        let newIndex = currentIndex;
 
         if (value.slice(-1) === ' ' || value.slice(-1) === '\n') {
             newIndex += 1
@@ -35,9 +41,9 @@ export default function TypingBox({ game, dispatch, endGame }) {
                 incorrect,
                 wpm,
                 accuracy
-            ] = getWpmAndStat([...game.userInput, buffer], game.targetParagraph, game.startTime)
+            ] = getWpmAndStat([...userInput, buffer], targetParagraph, startTime)
 
-            dispatch(setUserInput({
+            dispatch(typing({
                 buffer,
                 newIndex,
                 correct,
@@ -50,17 +56,17 @@ export default function TypingBox({ game, dispatch, endGame }) {
             setBuffer(value)
         }
 
-        if (newIndex >= game.targetParagraph.length) {
+        if (newIndex >= targetParagraph.length) {
             endGame();
         }
     }
 
     useEffect(() => {
-        if (game.state === 'playing') {
+        if (status === 'playing') {
             inputRef.current?.focus();
         }
         setBuffer('')
-    }, [game.state]);
+    }, [status]);
 
     return (
         <div className="input-area">
@@ -70,10 +76,10 @@ export default function TypingBox({ game, dispatch, endGame }) {
                 onChange={handleInputChange}
                 className="typing-input"
                 placeholder="Bắt đầu gõ ở đây..."
-                disabled={game.state !== 'playing'}
+                disabled={status !== 'playing'}
             />
             <div className="input-counter">
-                {game.userInput.join('').length} / {game.targetParagraph.join('').length}
+                {userInput.join('').length} / {targetParagraph.join('').length}
             </div>
         </div>
     )

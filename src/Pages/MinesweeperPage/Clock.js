@@ -1,13 +1,14 @@
 
 import { useEffect, useContext } from "react";
 import { UseClock } from "../../Components/ClockBase/ClockBase";
-import { ClockContext } from "./OptionBar";
-import { runOutOfTime } from "./Action"
+import { useSelector, useDispatch } from "react-redux";
+import { timeout } from "../../redux/features/minesweeper";
 
-function Clock({ useTime }) {
+function Clock() {
 
     const clock = useContext(UseClock)
-    const { settings, dispatch } = useContext(ClockContext)
+    const minesweeper = useSelector((state) => state.minesweeper)
+    const dispatch = useDispatch()
 
     function formatTime(clock) {
         if (!clock) return
@@ -15,15 +16,14 @@ function Clock({ useTime }) {
     }
 
     useEffect(() => {
-
-        if (clock.remain === 0 && settings.level !== 0 && settings.setTime.isTime) {
-            dispatch(runOutOfTime("Time out"))
+        if (clock.remain === 0 && minesweeper.level !== 0 && minesweeper.setTime.isTime) {
+            dispatch(timeout("Time out"))
         }
     }, [clock.remain])
     
     return (
         <>
-            {useTime && <div className="minesweeper-settings-clock">
+            {minesweeper.setTime.isTime && <div className="minesweeper-settings-clock">
                 <div className="stat-value time">{formatTime(clock)}</div>
                 <div className="stat-label">Thời gian</div>
             </div>}

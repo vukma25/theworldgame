@@ -3,6 +3,15 @@
   height: auto;
   margin-top: 2rem;
 }
+.minesweeper .restart-btn {
+  width: 90%;
+  max-width: 100rem;
+  margin: 1rem auto;
+  display: block;
+  background: var(--brand-500);
+  color: var(--cl-white-pure);
+  font-size: 1.2rem;
+}
 .minesweeper .minesweeper-settings {
   width: 90%;
   max-width: 100rem;
@@ -164,19 +173,7 @@
   color: #7B1FA2;
 }
 
-.wrapper-game-over {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  -webkit-backdrop-filter: saturate(160%) blur(8px);
-          backdrop-filter: saturate(160%) blur(8px);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.65));
-}
-.wrapper-game-over .game-over {
+.game-over {
   color: var(--cl-black);
   box-shadow: 0 0 0.5rem var(--ink-300);
   background-color: var(--cl-white-pure);
@@ -191,24 +188,30 @@
   border-radius: 1rem;
   animation: appear 0.5s;
 }
-.wrapper-game-over .game-over .game-over-state {
+.game-over .game-over-state {
   width: 80%;
   height: auto;
   font-size: 1.8rem;
   text-align: center;
   text-wrap: wrap;
 }
-.wrapper-game-over .game-over .game-over-gif {
+.game-over .time {
+  font-size: 1.4rem;
+  gap: 1rem;
+  border: 0.1rem solid var(--cl-green);
+  padding: 0.5rem;
+}
+.game-over .game-over-gif {
   width: 90%;
   height: auto;
   border-radius: 0.5rem;
 }
-.wrapper-game-over .game-over .game-over-option {
+.game-over .game-over-option {
   width: 100%;
   max-width: 40rem;
   justify-content: space-between;
 }
-.wrapper-game-over .game-over .game-over-option .game-over-option-restart, .wrapper-game-over .game-over .game-over-option .game-over-option-home {
+.game-over .game-over-option .game-over-option-restart, .game-over .game-over-option .game-over-option-home {
   width: 35%;
   min-width: 10rem;
   font-size: 1.6rem;
@@ -219,7 +222,7 @@
   background-color: var(--brand-500);
   transition: all 0.3s;
 }
-.wrapper-game-over .game-over .game-over-option .game-over-option-restart:hover, .wrapper-game-over .game-over .game-over-option .game-over-option-home:hover {
+.game-over .game-over-option .game-over-option-restart:hover, .game-over .game-over-option .game-over-option-home:hover {
   background: var(--ink-500);
 }
 .tool {

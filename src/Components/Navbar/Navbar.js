@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
+import { open, close } from "../../redux/features/modal"
 import Icon from '@mui/material/Icon';
 import { Link } from 'react-router';
 import { useLocalStorage } from './UseLocalStorage';
+import Modal from '../Modal/Modal'
 import SuggestBox from '../SuggestBox/SuggestBox';
 import '../../assets/styles/Navbar.css';
 
 function Navbar() {
+
+    const modal = useSelector((state) => state.modal)
+    const dispatch = useDispatch()
 
     const [dropdown, setDropdown] = useState(false)
     const [mobile, setMobile] = useState({
@@ -263,12 +269,18 @@ function Navbar() {
                     <div className="auth">
                         <button
                             id="loginBtn" className="btn btn-ghost"
-                            onClick={() => { setAuth('Login') }}
-                        >Đăng nhập</button>
+                            onClick={() => { 
+                                setAuth('Login') 
+                                dispatch(open())
+                            }}
+                        >Login</button>
                         <button
                             id="signupBtn" className="btn btn-primary"
-                            onClick={() => { setAuth('Register') }}
-                        >Đăng ký</button>
+                            onClick={() => { 
+                                setAuth('Register') 
+                                dispatch(open())
+                            }}
+                        >Register</button>
                     </div>
 
                     {/* Mobile controls */}
@@ -338,51 +350,50 @@ function Navbar() {
                 <div className="mobile-auth" style={{ marginTop: '.5rem' }}>
                     <button
                         className="btn btn-ghost btn-block"
-                        onClick={() => { setAuth('Login') }}
-                    >Đăng nhập</button>
+                        onClick={() => { 
+                            setAuth('Login') 
+                            dispatch(open())
+                        }}
+                    >Login</button>
                     <button
                         className="btn btn-primary btn-block"
-                        onClick={() => { setAuth('Register') }}
-                    >Đăng ký</button>
+                        onClick={() => { 
+                            setAuth('Register') 
+                            dispatch(open())
+                        }}
+                    >Register</button>
                 </div>
             </div>}
 
-
             {/* Auth */}
-            {(auth !== '') &&
-                <div id="modalBackdrop" className="modal-backdrop"
-                    onClick={(e) => {
-                        if (e.target?.id === "modalBackdrop") {
-                            setAuth('')
-                        }
-                    }}
-                >
-                    <div className="modal">
-                        <div className="modal-head">
-                            <h3 id="modalTitle" className="modal-title">{auth}</h3>
+            {modal.value &&
+                <Modal>
+                    <div className="auth-modal">
+                        <div className="auth-modal-head">
+                            <h3 id="modalTitle" className="auth-modal-title">{auth}</h3>
                             <button
                                 id="modalClose" className="xbtn flex-div" aria-label="Đóng"
-                                onClick={() => { setAuth('') }}
+                                onClick={() => { dispatch(close())}}
                             >
                                 <Icon sx={{ fontSize: "2rem" }}>close</Icon>
                             </button>
                         </div>
-                        <div className="modal-body">
+                        <div className="auth-modal-body">
                             <div className="grid-2">
-                                <button className="bbtn">Tiếp tục với Google</button>
-                                <button className="bbtn">Tiếp tục với Facebook</button>
+                                <button className="bbtn">Google</button>
+                                <button className="bbtn">Facebook</button>
                             </div>
                             <div className="divline">
-                                <div className="hr"></div><span className="muted" style={{ fontSize: "1.2rem" }}>hoặc</span><div className="hr"></div>
+                                <div className="hr"></div><span className="muted" style={{ fontSize: "1.2rem" }}>or</span><div className="hr"></div>
                             </div>
                             <div className="field-col">
                                 <input type="text" placeholder="Email" className="input" />
-                                <input type="text" placeholder="Mật khẩu" className="input" />
+                                <input type="text" placeholder="Password" className="input" />
                             </div>
                             <button className="cta" style={{ marginTop: ".5rem" }}>{auth}</button>
                         </div>
                     </div>
-                </div>}
+                </Modal>}
         </nav>
     )
 }

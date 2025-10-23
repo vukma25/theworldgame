@@ -1,16 +1,17 @@
-import { useState, useRef, useEffect, useReducer } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link } from "react-router"
-import { initialState, reducer } from './Reducer'
+import { open, close } from '../../redux/features/modal'
 import {
-    setSelectSquare,
-    setFillSquare,
-    setInitializeGame,
-    setGameOver,
-    setStartGame,
-    setVariant,
-    setLoading,
-    setUnmountSquare
-} from './Action'
+    start,
+    selectSquare,
+    fillSquare,
+    newGame,
+    selectVariant,
+    loading,
+    unmountSquare,
+    setGameOver
+} from '../../redux/features/sudoku'
 import {
     Icon,
     FormControl,
@@ -22,13 +23,16 @@ import {
 import ClockBase from '../../Components/ClockBase/ClockBase';
 import Clock from './Clock'
 import Logger from '../../Components/Logger/Logger'
-import InformBoard from './InformBoard'
+import Modal from '../../Components/Modal/Modal'
+import SudokuModal from './SudokuModal'
 import SUDOKU_VARIANTS from './Variant'
 import '../../assets/styles/Sudoku.css';
 
 function Sudoku() {
-    const [sudoku, dispatch] = useReducer(reducer, initialState)
-    const [modal, setModal] = useState(false)
+    const sudoku = useSelector((state) => state.sudoku)
+    const modal = useSelector((state) => state.modal)
+    const dispatch = useDispatch()
+
     const [size, setSize] = useState(9)
     const [difficulty, setDifficulty] = useState(1)
     const [timeFinish, setTimeFinish] = useState({})
@@ -68,7 +72,7 @@ function Sudoku() {
             sudoku.puzzle[row][col] === 0 ||
             sudoku.errors.square.has(`${row}-${col}`)
         ) {
-            dispatch(setSelectSquare({ row, col }))
+            dispatch(selectSquare({ row, col }))
         }
     };
 
@@ -98,8 +102,8 @@ function Sudoku() {
 
         if (!result && num !== 0) {
             const times = errors.times + 1
-            const square = new Set(errors.square).add(`${row}-${col}`)
-            dispatch(setFillSquare({
+            const square = new Set([...errors.square]).add(`${row}-${col}`)
+            dispatch(fillSquare({
                 answers: answers,
                 puzzle: updatedPuzzle,
                 errors: {
@@ -113,7 +117,7 @@ function Sudoku() {
                     gameOver: true,
                     isWin: false
                 }))
-                setModal(true)
+                dispatch(open())
             }
         } else {
             const updatedAnswers = answers.filter(({ square }) => {
@@ -122,9 +126,9 @@ function Sudoku() {
             })
 
             const times = errors.times
-            const square = new Set(errors.square)
+            const square = new Set([...errors.square])
             square.delete(`${row}-${col}`)
-            dispatch(setFillSquare({
+            dispatch(fillSquare({
                 puzzle: updatedPuzzle,
                 answers: updatedAnswers,
                 errors: {
@@ -132,14 +136,14 @@ function Sudoku() {
                     square
                 }
             }))
-            dispatch(setUnmountSquare())
+            dispatch(unmountSquare())
 
             if (updatedAnswers.length === 0) {
                 dispatch(setGameOver({
                     gameOver: true,
                     isWin: true
                 }))
-                setModal(true)
+                dispatch(open())
             }
         }
     };
@@ -153,7 +157,7 @@ function Sudoku() {
             })
             refStaticSize.current = size
         } else {
-            dispatch(setStartGame())
+            dispatch(start())
         }
     };
 
@@ -187,7 +191,7 @@ function Sudoku() {
         }
 
         // Ô có lỗi
-        if (errors.square.has(`${row}-${col}`)) {
+        if (new Set([...errors.square]).has(`${row}-${col}`)) {
             baseClass += "cell-error ";
         }
 
@@ -201,6 +205,7 @@ function Sudoku() {
     };
 
     useEffect(() => {
+        dispatch(close())
         refWebWorker.current = new Worker(new URL("./SudokuWebWorker.js", import.meta.url))
 
         refWebWorker.current.onmessage = (event) => {
@@ -208,10 +213,10 @@ function Sudoku() {
 
             switch (type) {
                 case "loading":
-                    dispatch(setLoading(payload))
+                    dispatch(loading(payload))
                     break
                 case "generate_success":
-                    dispatch(setInitializeGame({
+                    dispatch(newGame({
                         puzzle: payload.puzzle,
                         answers: payload.answers
                     }))
@@ -233,7 +238,7 @@ function Sudoku() {
     }, [])
 
     useEffect(() => {
-        dispatch(setVariant({
+        dispatch(selectVariant({
             size,
             difficulty: SUDOKU_VARIANTS[size].difficulties[difficulty].cellsToRemove
         }))
@@ -256,12 +261,16 @@ function Sudoku() {
 
     return (
         <div className="sudoku-container">
-            {modal && <InformBoard 
-                isWin={sudoku.isWin}
-                errors={sudoku.errors.times}
-                timeFinish={timeFinish}
-                setModal={setModal}
-                resetOrStartGame={resetOrStartGame}/>}
+            {modal.value &&
+                <Modal>
+                    <SudokuModal
+                        isWin={sudoku.isWin}
+                        errors={sudoku.errors.times}
+                        timeFinish={timeFinish}
+                        resetOrStartGame={resetOrStartGame}
+                    />
+                </Modal>
+            }
             <div className="sudoku-card-left">
                 {/* Header */}
                 <div className="sudoku-header">
@@ -479,7 +488,7 @@ function Sudoku() {
                     </div>
                 </div>
             </div >
-            <Logger log={log} setLog={setLog}/>
+            <Logger log={log} setLog={setLog} />
         </div>
     );
 }

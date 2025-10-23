@@ -1,11 +1,15 @@
 import { useCallback } from "react"
-import { setOptions } from "../Action"
+import { useSelector, useDispatch } from "react-redux"
+import { changeOptions } from "../../../redux/features/fastfinger"
 
-export default function Waiting({ game, startGame, dispatch, bestWpm, accuracy }) {
+export default function Waiting({ startGame, bestWpm, latestAccuracy }) {
+
+    const { options } = useSelector((state) => state.fastfinger)
+    const dispatch = useDispatch()
 
     const handleSetOption = useCallback((option) => {
-        dispatch(setOptions(option))
-    }, [game.options])
+        dispatch(changeOptions(option))
+    }, [options])
 
     return (
         <div className="waiting-screen">
@@ -20,7 +24,7 @@ export default function Waiting({ game, startGame, dispatch, bestWpm, accuracy }
                                     'duration': time
                                 })
                             }}
-                            className={`option ${game.options.duration === time ? 'selected' : ''}`}
+                            className={`option ${options.duration === time ? 'selected' : ''}`}
                         >
                             {time}s
                         </button>
@@ -37,10 +41,10 @@ export default function Waiting({ game, startGame, dispatch, bestWpm, accuracy }
                                 key={name}
                                 onClick={() => {
                                     handleSetOption({
-                                        [type]: !game.options[type]
+                                        [type]: !options[type]
                                     })
                                 }}
-                                className={`option ${game.options[type] ? 'selected' : ''}`}
+                                className={`option ${options[type] ? 'selected' : ''}`}
                             >
                                 {name}
                             </button>
@@ -62,7 +66,7 @@ export default function Waiting({ game, startGame, dispatch, bestWpm, accuracy }
                     <div className="score-label">The best WPM</div>
                 </div>
                 <div className="best-score green">
-                    <div className="score-value">{accuracy}%</div>
+                    <div className="score-value">{latestAccuracy}%</div>
                     <div className="score-label">Accuracy</div>
                 </div>
             </div>

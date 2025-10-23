@@ -30,26 +30,23 @@
 .chess .chess-left-area .chess-info-player-area .chess-info-player {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
-  grid-template-rows: repeat(4, 1.5rem);
+  grid-template-rows: repeat(4, 1.25rem);
 }
 .chess .chess-left-area .chess-info-player-area .left {
-  grid-column: 1/span 10;
-  row-gap: 0.3rem;
+  grid-column: 2/span 9;
+  row-gap: 0.25rem;
 }
 .chess .chess-left-area .chess-info-player-area .left-avatar {
-  text-align: center;
-  border: 0.1rem solid var(--ink-400);
-  border-radius: 0.5rem;
-  grid-row: 1/4;
-  grid-column: 1/span 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   justify-self: center;
-}
-.chess .chess-left-area .chess-info-player-area .left-avatar img {
-  height: 100%;
+  grid-row: 1/span 3;
+  grid-column: 1/span 2;
 }
 .chess .chess-left-area .chess-info-player-area .left-name-and-elo {
   grid-column: 3/span 7;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   gap: 0.5rem;
 }
 .chess .chess-left-area .chess-info-player-area .left-time {
@@ -64,8 +61,8 @@
   color: var(--cl-black-light);
 }
 .chess .chess-left-area .chess-info-player-area .left .capture-pieces {
-  grid-row: 4/5;
-  grid-column: 1/10;
+  grid-row: 4/span 1;
+  grid-column: 1/span 9;
   position: relative;
 }
 .chess .chess-left-area .chess-info-player-area .left .capture-pieces .pieces {
@@ -93,24 +90,19 @@
 }
 .chess .chess-left-area .chess-info-player-area .right {
   justify-content: end;
-  grid-column: 11/span 10;
+  grid-column: 11/span 9;
   row-gap: 0.3rem;
 }
 .chess .chess-left-area .chess-info-player-area .right-avatar {
-  border: 0.1rem solid var(--ink-400);
-  border-radius: 0.5rem;
   grid-row: 1/span 3;
   grid-column: 8/span 2;
   text-align: center;
   justify-self: center;
 }
-.chess .chess-left-area .chess-info-player-area .right-avatar img {
-  height: 100%;
-}
 .chess .chess-left-area .chess-info-player-area .right-name-and-elo {
   grid-column: 1/span 7;
   justify-content: end;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   gap: 0.5rem;
 }
 .chess .chess-left-area .chess-info-player-area .right-time, .chess .chess-left-area .chess-info-player-area .right .bot-thinking {
@@ -124,18 +116,19 @@
   color: var(--cl-white-pure);
 }
 .chess .chess-left-area .chess-info-player-area .right .bot-thinking {
+  grid-column: 3/span 5;
   background: transparent;
   color: var(--cl-black-light);
   font-weight: 500;
   gap: 0.5rem;
 }
 .chess .chess-left-area .chess-info-player-area .right .bot-thinking p {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-style: italic;
 }
 .chess .chess-left-area .chess-info-player-area .right .capture-pieces {
-  grid-row: 4/5;
-  grid-column: 1/10;
+  grid-row: 4/span 1;
+  grid-column: 1/span 9;
   position: relative;
 }
 .chess .chess-left-area .chess-info-player-area .right .capture-pieces .pieces {
@@ -163,11 +156,12 @@
 }
 .chess .chess-left-area .chess-info-player-area .chess-options {
   flex-direction: column;
-  justify-content: space-between;
+  gap: 1rem;
   align-items: center;
+  grid-column: 20/span 1;
 }
 .chess .chess-left-area .chess-info-player-area .chess-options .chess-options-icon {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--ink-500);
 }
 .chess .chess-left-area .chess-board-area {

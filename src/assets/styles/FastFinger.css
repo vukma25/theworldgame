@@ -159,7 +159,6 @@
 .typing-game-container .typing-game-card .playing-screen .text-display .typing-text .word.current {
   background-color: #dbeafe;
   color: #1e40af;
-  font-weight: 700;
 }
 .typing-game-container .typing-game-card .playing-screen .text-display .typing-text .word.untyped {
   color: #6b7280;
@@ -193,8 +192,8 @@
 }
 .typing-game-container .typing-game-card .playing-screen .live-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
   text-align: center;
 }
 .typing-game-container .typing-game-card .playing-screen .live-stats .live-stat {
@@ -223,16 +222,11 @@
 .typing-game-container .typing-game-card .playing-screen .live-stats .live-stat .danger {
   color: var(--cl-red-flag);
 }
-.typing-game-container .typing-game-card .playing-screen .reset-section {
-  text-align: center;
-  display: flex;
-  justify-content: space-between;
-}
 .typing-game-container .typing-game-card .playing-screen .reset-section .reset-button {
+  width: 100%;
   background-color: #6b7280;
   color: white;
   padding: 1.25rem 0;
-  width: 49%;
   border: none;
   border-radius: 0.5rem;
   font-weight: 500;

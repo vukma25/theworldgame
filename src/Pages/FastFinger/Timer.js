@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 
-export default function Timer({ duration, endGame, state }) {
+export default function Timer({ duration, endGame, status }) {
 
     const [timeLeft, setTimeLeft] = useState(duration)
     const timer = useRef(null)
@@ -12,7 +12,7 @@ export default function Timer({ duration, endGame, state }) {
     }
 
     useEffect(() => {
-        if (state === 'playing') {
+        if (status === 'playing') {
             timer.current = setInterval(() => {
                 setTimeLeft(prev => {
                     if (prev <= 0) {
@@ -28,7 +28,7 @@ export default function Timer({ duration, endGame, state }) {
         return () => {
             if (timer.current) { clearInterval(timer.current) }
         }
-    }, [state, endGame])
+    }, [status, endGame])
 
     return (
         <div className={`stat-value ${timeLeft < 10 ? "danger" : ""}`}>

@@ -1,8 +1,22 @@
-import React, { useState, useReducer, useEffect } from 'react';
-import { defaultState, reducer } from './Reducer';
-import { SETTER } from './Actions';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { 
+    setCard,
+    matchCard,
+    time,
+    status,
+    rows,
+    columns,
+    setDuration,
+    reset,
+    first,
+    busy,
+    setSemaphore
+} from '../../redux/features/memory';
+import { close, open } from '../../redux/features/modal';
 import { EMOJI_POOL, shuffle } from './Function';
-import Modal from './Modal';
+import Modal from '../../Components/Modal/Modal'
+import MemoryModal from './memoryModal';
 import ClockBase from '../../Components/ClockBase/ClockBase'
 import Clock from './Clock'
 import {
@@ -16,17 +30,17 @@ import {
 import '../../assets/styles/Memory.css'
 
 const Memory = () => {
-    const [game, dispatch] = useReducer(reducer, defaultState)
-    const [firstClick, setFirstClick] = useState(null)
-    const [busy, setBusy] = useState(false)
-    const [semaphore, setSemaphore] = useState(true)
+    const memory = useSelector((state) => state.memory)
+    const modal = useSelector((state) => state.modal)
+    const dispatch = useDispatch()
     const [timeFinish, setTimeFinish] = useState(null)
+
     const gridStyle = {
-        gridTemplateColumns: `repeat(${Math.max(game.cols, game.rows)}, minmax(0, 1fr))`
+        gridTemplateColumns: `repeat(${Math.max(memory.cols, memory.rows)}, minmax(0, 1fr))`
     }
 
     const initGame = () => {
-        const pairs = game.pairs
+        const pairs = memory.pairs
         const cards = Array.from({ length: pairs * 2 }, () => 0).map((v, i) => {
             return {
                 id: `card-${i}`,
@@ -35,34 +49,30 @@ const Memory = () => {
                 flipped: false
             }
         })
-
-        setFirstClick(null)
-        setBusy(false)
-        setSemaphore(true)
-        dispatch(SETTER.handleResetGame(cards))
+        dispatch(reset(cards))
     }
 
     const handleChangeCol = (e) => {
-        dispatch(SETTER.handleChangeCol(Number(e.target.value)))
+        dispatch(columns(Number(e.target.value)))
     }
 
     const handleChangeRow = (e) => {
-        dispatch(SETTER.handleChangeRow(Number(e.target.value)))
+        dispatch(rows(Number(e.target.value)))
     }
 
-    const handleChangeDuration = (e) => {
-        dispatch(SETTER.handleChangeDuration(Number(e.target.value)))
+    const handleChangeDuration = (e, value) => {
+        dispatch(setDuration(value))
     }
 
-    const handleUseTime = () => {
-        dispatch(SETTER.handleUseTime())
+    const handleUseTime = (e) => {
+       dispatch(time(e.target.checked))
     }
 
     const handleFlipCard = (id, value, isOpen) => {
         if (isOpen) return
-        if (busy || game.status !== "playing") return
+        if (memory.isBusy || memory.status !== "playing") return
 
-        let cards = game.cards.map((card) => {
+        let cards = memory.cards.map((card) => {
             if (card.id === id) {
                 return {
                     ...card,
@@ -72,21 +82,21 @@ const Memory = () => {
             return { ...card }
         })
 
-        dispatch(SETTER.handleSetCard(cards))
+        dispatch(setCard(cards))
 
-        if (!firstClick) {
-            setFirstClick({ id, value })
+        if (!memory.firstClick) {
+            dispatch(first({ id, value }))
             return
         }
 
-        setBusy(true)
-        let moves = game.moves + 1
-        let matches = game.matches
+        dispatch(busy(true))
+        let moves = memory.moves + 1
+        let matches = memory.matches
 
-        if (firstClick.value === value) {
+        if (memory.firstClick.value === value) {
             matches += 1
             cards = cards.map((card) => {
-                if ([id, firstClick.id].includes(card.id)) {
+                if ([id, memory.firstClick.id].includes(card.id)) {
                     return {
                         ...card,
                         matched: true
@@ -96,7 +106,7 @@ const Memory = () => {
             })
         } else {
             cards = cards.map((card) => {
-                if ([id, firstClick.id].includes(card.id)) {
+                if ([id, memory.firstClick.id].includes(card.id)) {
                     return {
                         ...card,
                         flipped: false
@@ -107,28 +117,27 @@ const Memory = () => {
         }
 
         setTimeout(function () {
-            setFirstClick(null)
-            setBusy(false)
-            dispatch(SETTER.handleMatchCard({ moves, matches, cards }))
+            dispatch(first(null))
+            dispatch(busy(false))
+            dispatch(matchCard({ moves, matches, cards }))
         }, 700)
-
     }
 
     const startGame = () => {
-        const chosen = shuffle(EMOJI_POOL).slice(0, game.pairs)
+        const chosen = shuffle(EMOJI_POOL).slice(0, memory.pairs)
         const value = shuffle([...chosen, ...chosen])
-        const cards = game.cards.map((card, i) => {
+        const cards = memory.cards.map((card, i) => {
             return {
                 ...card,
                 value: value[i]
             }
         })
 
-        dispatch(SETTER.handleSetCard(cards))
-        dispatch(SETTER.handleListenStatus("playing"))
+        dispatch(setCard(cards))
+        dispatch(status("playing"))
 
-        if (game.useTime) {
-            setSemaphore(false)
+        if (memory.useTime) {
+            dispatch(setSemaphore(false))
         }
     }
 
@@ -136,25 +145,34 @@ const Memory = () => {
 
     useEffect(() => {
         initGame()
-    }, [game.rows, game.cols])
+    }, [memory.rows, memory.cols])
+    
+    useEffect(() => {
+        initGame()
+    }, [])
 
     useEffect(() => {
         if (timeFinish?.remain <= 0) {
-            dispatch(SETTER.handleListenStatus("time_out"))
-            setSemaphore(true)
+            dispatch(status("time_out"))
+            dispatch(setSemaphore(true))
         }
     }, [timeFinish])
 
     useEffect(() => {
-        if (game.matches === game.pairs && game.status !== "winning") {
-            dispatch(SETTER.handleListenStatus("winning"))
-            setSemaphore(true)
+        dispatch(close())
+    }, [])
+
+    useEffect(() => {
+        if (memory.matches === memory.pairs && memory.status !== "winning") {
+            dispatch(status("winning"))
+            dispatch(setSemaphore(true))
+            dispatch(open())
         }
-    }, [game])
+    }, [memory])
 
     useEffect(() => {
         initGame()
-    }, [])
+    }, [memory.rows, memory.cols, modal.value])
 
     return (
         <React.Fragment>
@@ -173,25 +191,25 @@ const Memory = () => {
                                 <div className="stats-container">
                                     <div className="stats-group">
                                         <div className="stat moves">
-                                            Turn: {game.moves}
+                                            Turn: {memory.moves}
                                         </div>
                                         <div className="stat matches">
-                                            Pairs: {game.matches}/{game.pairs}
+                                            Pairs: {memory.matches}/{memory.pairs}
                                         </div>
                                         <ClockBase
                                             type={"countdown"}
-                                            duration={game.duration}
-                                            semaphore={semaphore}
+                                            duration={memory.duration}
+                                            semaphore={memory.semaphore}
                                             setTimeFinish={setTimeFinish}
                                         >
-                                            <Clock display={game.useTime} />
+                                            <Clock display={memory.useTime} />
                                         </ClockBase>
                                     </div>
                                     <div className="action-buttons">
                                         <button
                                             onClick={() => { resetGame() }}
                                             className="btn reset"
-                                            disabled={game.status !== "playing"}
+                                            disabled={memory.status !== "playing"}
                                         >
                                             New game
                                         </button>
@@ -200,7 +218,7 @@ const Memory = () => {
 
                                 {/* Grid */}
                                 <div className="cards-grid" style={gridStyle}>
-                                    {game.cards.map((card) => {
+                                    {memory.cards.map((card) => {
                                         const stateClass = card.matched ? 'matched' : card.flipped ? 'flipped' : '';
                                         return (
                                             <button
@@ -224,7 +242,7 @@ const Memory = () => {
                         <div className="side-panel">
                             <button
                                 onClick={() => { startGame() }}
-                                disabled={game.status === "playing"}
+                                disabled={memory.status === "playing"}
                                 className="start-btn"
                             >
                                 Play
@@ -239,12 +257,12 @@ const Memory = () => {
                                                 labelId='settings-row'
                                                 label="Rows"
                                                 className="select"
-                                                value={game.rows}
+                                                value={memory.rows}
                                                 onChange={handleChangeRow}
-                                                disabled={game.status !== "waiting"}
+                                                disabled={memory.status !== "waiting"}
                                             >
                                                 {[2, 3, 4, 5, 6].map(r => {
-                                                    if (game.cols % 2 === 1) {
+                                                    if (memory.cols % 2 === 1) {
                                                         if (r % 2 === 1) return null
                                                         else return <MenuItem key={r} value={r} sx={{ fontSize: "1.4rem" }}>{r}</MenuItem>
                                                     }
@@ -261,12 +279,12 @@ const Memory = () => {
                                                 labelId='settings-col'
                                                 label="Columns"
                                                 className="select"
-                                                value={game.cols}
+                                                value={memory.cols}
                                                 onChange={handleChangeCol}
-                                                disabled={game.status !== "waiting"}
+                                                disabled={memory.status !== "waiting"}
                                             >
                                                 {[2, 3, 4, 5, 6].map(c => {
-                                                    if (game.rows % 2 === 1) {
+                                                    if (memory.rows % 2 === 1) {
                                                         if (c % 2 === 1) return null
                                                         else return <MenuItem key={c} value={c} sx={{ fontSize: "1.4rem" }}>{c}</MenuItem>
                                                     }
@@ -283,12 +301,12 @@ const Memory = () => {
                                         </div>
                                         <Switch
                                             size={"small"}
-                                            checked={game.useTime}
+                                            checked={memory.useTime}
                                             onChange={handleUseTime}
-                                            disabled={game.status !== "waiting"}
+                                            disabled={memory.status !== "waiting"}
                                         />
                                     </div>
-                                    {game.useTime && (
+                                    {memory.useTime && (
                                         <div className="setting-group">
                                             <Slider
                                                 aria-label="set time"
@@ -296,12 +314,11 @@ const Memory = () => {
                                                 marks
                                                 min={60}
                                                 max={180}
-                                                value={game.duration}
+                                                value={memory.duration}
                                                 onChange={handleChangeDuration}
-                                                disabled={game.status !== "waiting"}
-
+                                                disabled={memory.status !== "waiting"}
                                             />
-                                            <div className="time-display">Limit: {game.duration}s</div>
+                                            <div className="time-display">Limit: {memory.duration}s</div>
                                         </div>
                                     )}
                                 </div>
@@ -312,8 +329,10 @@ const Memory = () => {
 
             </div>
             {
-                ["time_out", "winning"].includes(game.status) &&
-                <Modal game={game} remain={timeFinish?.remain || 0} initGame={initGame} />
+                modal.value &&
+                <Modal>
+                    <MemoryModal remain={timeFinish?.remain || 0} initGame={initGame} />
+                </Modal>
             }
         </React.Fragment>
     );

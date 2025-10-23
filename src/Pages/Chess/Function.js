@@ -1,9 +1,13 @@
 
-import move_sound from '../../assets/sound/move-self.mp3'
-import capture_sound from '../../assets/sound/capture.mp3'
-// khong export se dung noi bo trong function
+import move_sound from '../../assets/sound/chess/moveSelf.mp3'
+import capture_sound from '../../assets/sound/chess/capture.mp3'
+import castle_sound from '../../assets/sound/chess/castle.mp3'
+import check_sound from '../../assets/sound/chess/moveCheck.mp3'
+
 const move = new Audio(move_sound)
 const capture = new Audio(capture_sound)
+const check = new Audio(check_sound)
+const castle = new Audio(castle_sound)
 
 //lay vi tri con tro va kich thuoc cua o co 
 export function calculateEssentialSize(e, bounding) {
@@ -832,6 +836,12 @@ export class ChessGame {
         this.moves = state.moves ?? []
         this.bout = state.bout ?? 1
         this.fen = state.fen ?? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+        this.sound = {
+            move,
+            capture,
+            check,
+            castle
+        }
     }
 
     //setters
@@ -1722,7 +1732,7 @@ export class ChessGame {
     }
 
     modifyPins() {
-        this.pins = this.pins.map(({direction, square}) => {
+        this.pins = this.pins.map(({ direction, square }) => {
             return {
                 'direction': direction.map(e => -e),
                 'square': this.modifySquare(square)
@@ -1967,7 +1977,7 @@ export class ChessGame {
                 return square
             })
         })
-            
+
         return cleanedBoard
     }
 
@@ -2259,16 +2269,28 @@ export class ChessGame {
                     ],
                     'alias': methodOfPiece.alias
                 }
-            } if (this.isStraight(direction)) {
+            }
+            else if (direction[1] === 0) {
                 return {
                     'piece': methodOfPiece.piece,
                     'move': methodOfPiece.move,
                     'takeSpecial': [[], []],
                     'alias': methodOfPiece.alias
                 }
+            } else if (direction[0] === 0) {
+                return {
+                    'piece': methodOfPiece.piece,
+                    'move': [[], []],
+                    'takeSpecial': [[], []],
+                    'alias': methodOfPiece.alias
+                }
             }
         }
-        if (['wn', 'bn'].includes(piece)) {
+        else if (
+            ['wn', 'bn'].includes(piece) ||
+            (['wr', 'br'].includes(piece) && this.isDiagonal(direction)) ||
+            (['wb', 'bb'].includes(piece) && this.isStraight(direction))
+        ) {
             return {
                 'piece': methodOfPiece.piece,
                 'move': [],
@@ -2713,6 +2735,26 @@ export class ChessGame {
         })
     }
 
+    soundEffect(castle, type = "move") {
+        if (this.kingDanger('w') || this.kingDanger('b')) {
+            this.sound.check.currentTime = 0
+            this.sound.check.play()
+            return
+        } else if (castle) {
+            this.sound.castle.currentTime = 0
+            this.sound.castle.play()
+            return
+        } else if (type === "move") {
+            this.sound.move.currentTime = 0
+            this.sound.move.play()
+            return
+        } else {
+            this.sound.capture.currentTime = 0
+            this.sound.capture.play()
+            return
+        }
+    }
+
     //di chuyen quan co den vi tri moi
     replacePiece(
         currentSquare,
@@ -2768,6 +2810,9 @@ export class ChessGame {
                 return this.getState()
             }
             //============================================================================
+
+            //============================================================================
+            this.soundEffect(isCastle)
 
             //thêm và show ra nuoc di tren movelist
             let typeMove = 'replace'
@@ -2866,6 +2911,8 @@ export class ChessGame {
             this.matchAllSquaresBePinned()
             this.justAllowMove(this.turn)
             this.checkmate(this.turn)
+
+            this.soundEffect(false, "capture")
 
             const move = this.generateMove(
                 'capture',
