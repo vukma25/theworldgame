@@ -2,12 +2,12 @@
 import Card from '../../Components/Card/Card'
 import GoTopBtn from '../../Components/GoTopBtn/GoTopBtn'
 import { games } from './data'
-import '../../assets/styles/Home.css';
+import '../../assets/styles/Game.css';
 
-function Home () {
+export default function Game () {
 
     return (
-        <div className="homepage">
+        <div className="gamepage">
             {
                 games.map((e, index) => {
                     return <Card 
@@ -21,7 +21,5 @@ function Home () {
             }
             <GoTopBtn />
         </div>
-    );
+    )
 }
-
-export default Home

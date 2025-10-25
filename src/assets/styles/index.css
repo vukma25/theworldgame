@@ -48,6 +48,15 @@
   --offline: #6b7280;
   --online: #10b981;
   --simple: #c7d2fe;
+  --primary: #6c5ce7;
+  --secondary: #a29bfe;
+  --accent: #fd79a8;
+  --dark: #2d3436;
+  --light: #f5f6fa;
+  --text: #2d3436;
+  --text-light: #636e72;
+  --white: #ffffff;
+  --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes floatIn {

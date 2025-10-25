@@ -1,11 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { setQuery, setSuggestBox } from '../../redux/features/navbar'
+import { Nav } from '../Navbar/Navbar'
 import Icon from '@mui/material/Icon'
 import { data, defaultSuggest } from './data'
 import '../../assets/styles/SuggestBox.css'
 
-function SuggestBox({ suggestBox, setSuggestBox, query, setQuery, storage, setStorage }) {
+function SuggestBox() {
 
+    const { query, suggestBox } = useSelector((state) => state.navbar)
+    const { storage, setStorage } = useContext(Nav)
+    const dispatch = useDispatch()
     const [figure, setFigure] = useState([])
     const navigate = useNavigate()
 
@@ -22,12 +28,17 @@ function SuggestBox({ suggestBox, setSuggestBox, query, setQuery, storage, setSt
         return returnData
     }
 
-    function handleSearch(e, name) {
+    function handleRedirect(e, name) {
         e.preventDefault()
         const q = name.trim();
         const convertQuery = q.replaceAll(/\s+/g, "+")
         navigate(`/search?q=${convertQuery}`)
+    }
 
+    function handleSearch(e, q) {
+        handleRedirect(e, q)
+        dispatch(setQuery(q))
+        dispatch(setSuggestBox())
     }
 
     function deleteHistorySearch(query) {
@@ -50,15 +61,15 @@ function SuggestBox({ suggestBox, setSuggestBox, query, setQuery, storage, setSt
                 <div
                     className="suggest-title flex-div"
                 >
-                    <p>Gợi ý</p>
+                    <p>Suggest</p>
                     <Icon
-                        onClick={() => { setSuggestBox(false) }}
+                        onClick={() => { dispatch(setSuggestBox()) }}
                     >close</Icon>
                 </div>
                 <div className="suggest-title">{query.length === 0 ? "Recent search" : "Results"}</div>
                 {query.length !== 0 ? (
                     figure.length === 0 ?
-                        <p className="suggest-btn">Không tìm thấy kết quả nào</p> :
+                        <p className="suggest-btn">Not found any result</p> :
                         figure.map(({ name }) => {
                             return (
                                 <button
@@ -66,8 +77,6 @@ function SuggestBox({ suggestBox, setSuggestBox, query, setQuery, storage, setSt
                                     className="suggest-btn"
                                     onClick={(e) => {
                                         handleSearch(e, name)
-                                        setQuery(name)
-                                        setSuggestBox(false)
                                     }}
                                 >
                                     <Icon sx={{
@@ -87,8 +96,6 @@ function SuggestBox({ suggestBox, setSuggestBox, query, setQuery, storage, setSt
                                         className="suggest-btn-history"
                                         onClick={(e) => {
                                             handleSearch(e, q)
-                                            setQuery(q)
-                                            setSuggestBox(false)
                                         }}
                                     >
                                         <Icon sx={{
@@ -117,8 +124,6 @@ function SuggestBox({ suggestBox, setSuggestBox, query, setQuery, storage, setSt
                                 className="suggest-btn"
                                 onClick={(e) => {
                                     handleSearch(e, name)
-                                    setQuery(name)
-                                    setSuggestBox(false)
                                 }}
                             >
                                 <Icon sx={{

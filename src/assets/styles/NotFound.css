@@ -8,6 +8,7 @@
 .not-found-container .not-found-content {
   flex-direction: column;
   gap: 1rem;
+  text-align: center;
 }
 .not-found-container .not-found-content .error-code {
   font-size: 5rem;

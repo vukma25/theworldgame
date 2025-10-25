@@ -171,18 +171,6 @@
 .wordle-container .wordle-card .instructions .color-sample.absent {
   background-color: #6b7280;
 }
-.wordle-container .wordle-modal {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  -webkit-backdrop-filter: saturate(160%) blur(8px);
-          backdrop-filter: saturate(160%) blur(8px);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.65));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
 .wordle-container .wordle-modal .modal-content {
   width: 30%;
   min-width: 40rem;

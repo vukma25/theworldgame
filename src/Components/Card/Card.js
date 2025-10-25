@@ -1,9 +1,20 @@
+import { useNavigate } from "react-router";
+import { Button } from "@mui/material"
 import { Link } from 'react-router'
 import '../../assets/styles/Card.css'
 
 function Card({ title, tags, description, source }) {
 
     const arrow = '>';
+    const navigate =  useNavigate()
+
+    function handleRedirect(tag) {
+        navigate(`/search?q=${tag.toLowerCase()}`)
+    }
+
+    function go(path) {
+        navigate(`/${path.toLowerCase()}`)
+    }
 
     return (
         <div className="card">
@@ -17,18 +28,24 @@ function Card({ title, tags, description, source }) {
                 <div className="card-detail-tags flex-div">
                     {
                         tags.map(tag => (
-                            <div key={tag} className={`card-detail-tag ${tag.toLowerCase()}`}>{tag}</div>
+                            <Button 
+                                key={tag} 
+                                className={`card-detail-tag ${tag.toLowerCase()}`}
+                                size="small"
+                                onClick={() => handleRedirect(tag)}
+                            >{tag}
+                            </Button>
                         ))
                     }
                 </div>
                 <p className="card-detail-description">{description}</p>
-                <Link
-                    to={`/games/${title.toLowerCase()}`}
+                <button
                     className="card-detail-btn flex-div"
+                    onClick={() => {go(title)}}
                 >
                     Play
                     <span className="card-detail-btn-arrow">{arrow}</span>
-                </Link>
+                </button>
             </div>
         </div>
     )

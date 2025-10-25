@@ -127,7 +127,7 @@
   font-weight: 600;
   justify-content: center;
   align-items: center;
-  margin-top: 0.6rem;
+  margin-top: auto;
   color: var(--cl-primary-purple);
   background: transparent;
   gap: 0.5rem;

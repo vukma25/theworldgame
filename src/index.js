@@ -4,7 +4,8 @@ import '../src/assets/styles/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router';
-import Home from './Pages/HomePage/Home'
+import Home from './Pages/Home/Home'
+import Games from './Pages/Games/Games'
 import SearchPage from './Pages/SearchPage/SearchPage';
 import Minesweeper from './Pages/MinesweeperPage/Minesweeper';
 import Chess from './Pages/Chess/Chess'
@@ -29,44 +30,39 @@ const router = createBrowserRouter([
       },
       {
         path: "games",
-        element: <NotFoundPage />
+        element: <Games />,
       },
       {
-        path: "games",
-        children: [
-          {
-            path: "minesweeper",
-            element: <Minesweeper />
-          },
-          {
-            path: "chess",
-            element: <Chess />
-          },
-          {
-            path: "sudoku",
-            element: <Sudoku />
-          },
-          {
-            path: "caro",
-            element: <Caro />
-          },
-          {
-            path: "fastfinger",
-            element: <FastFinger />
-          },
-          {
-            path: "memorygame",
-            element: <Memory />
-          },
-          {
-            path: "wordle",
-            element: <Wordle />
-          },
-          {
-            path: "snakegame",
-            element: <Snake />
-          },
-        ]
+        path: "minesweeper",
+        element: <Minesweeper />
+      },
+      {
+        path: "chess",
+        element: <Chess />
+      },
+      {
+        path: "sudoku",
+        element: <Sudoku />
+      },
+      {
+        path: "caro",
+        element: <Caro />
+      },
+      {
+        path: "fastfinger",
+        element: <FastFinger />
+      },
+      {
+        path: "memorygame",
+        element: <Memory />
+      },
+      {
+        path: "wordle",
+        element: <Wordle />
+      },
+      {
+        path: "snakegame",
+        element: <Snake />
       },
       {
         path: "search",

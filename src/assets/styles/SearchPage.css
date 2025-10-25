@@ -5,6 +5,9 @@
   height: 92vh;
   z-index: 99;
   justify-content: center;
+  -webkit-backdrop-filter: saturate(160%) blur(0.3rem);
+          backdrop-filter: saturate(160%) blur(0.3rem);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.65));
 }
 
 .searchpage {

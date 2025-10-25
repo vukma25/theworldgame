@@ -14,9 +14,9 @@
 }
 .go-top-container .go-top-wrapper .go-top-ring {
   position: absolute;
-  stroke: var(--cl-primary-purple);
+  stroke: var(--brand-600);
   stroke-width: 0.2rem;
-  fill: var(--cl-primary-yellow);
+  fill: var(--cl-gray);
   transform: rotate(-90deg);
 }
 .go-top-container .go-top-wrapper .go-top-arrow {
@@ -25,5 +25,5 @@
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 2.5rem;
-  color: var(--cl-black);
+  color: var(--cl-black-light);
 }/*# sourceMappingURL=GoTopBtn.css.map */
