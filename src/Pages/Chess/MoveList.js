@@ -1,3 +1,5 @@
+import { useSelector, useDispatch } from 'react-redux';
+import { setChess, setPlayerSide } from '../../redux/features/chess';
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router'
 import Icon from '@mui/material/Icon';
@@ -14,25 +16,15 @@ import bn from '../../assets/image/bn.png'
 import br from '../../assets/image/br.png'
 import bb from '../../assets/image/bb.png'
 
-function MoveList({ chess, setChess }) {
+const image = { wp, wr, wk, wq, wn, wb, bp, br, bk, bq, bn, bb, }
 
-    const image = {
-        wp,
-        wr,
-        wk,
-        wq,
-        wn,
-        wb,
-        bp,
-        br,
-        bk,
-        bq,
-        bn,
-        bb,
+function MoveList(
+    // { chess, setChess }
+) {
 
-    }
-
-    const scrollRef = useRef(null);
+    const { chess } = useSelector((state) => state.chess)
+    const dispatch = useDispatch()
+    const scrollRef = useRef(null)
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -79,7 +71,8 @@ function MoveList({ chess, setChess }) {
                     className='move-list-btn flex-div'
                     onClick={() => {
                         const newChess = chess.getInit()
-                        setChess(newChess)
+                        dispatch(setChess(newChess))
+                        dispatch(setPlayerSide('w'))
                     }}
                 >
                     <Icon

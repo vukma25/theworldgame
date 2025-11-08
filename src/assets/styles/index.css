@@ -56,7 +56,7 @@
   --text: #2d3436;
   --text-light: #636e72;
   --white: #ffffff;
-  --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  --shadow: rgba(0, 0, 0, 0.1);
 }
 
 @keyframes floatIn {

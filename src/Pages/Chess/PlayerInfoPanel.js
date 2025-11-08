@@ -1,4 +1,6 @@
-import { useRef, useMemo, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setChess } from '../../redux/features/chess'
+import { useCallback, useMemo, useEffect } from 'react'
 import { Icon, CircularProgress, Avatar } from '@mui/material'
 import wp from '../../assets/image/wp.png'
 import wq from '../../assets/image/wq.png'
@@ -10,18 +12,16 @@ import bq from '../../assets/image/bq.png'
 import bn from '../../assets/image/bn.png'
 import br from '../../assets/image/br.png'
 import bb from '../../assets/image/bb.png'
+import { setSettingsBoard } from '../../redux/features/chess'
 
 const images = { wp, wq, wn, wr, wb, bp, bq, bn, br, bb }
 
-export default function PlayerInfoPanel({
-    chess,
-    mode,
-    aiThinking,
-    setDisplaySettingBoard,
-    swap }) {
+export default function PlayerInfoPanel() {
 
-    const pieces = useRef(null);
-    pieces.current = chess.pieces;
+
+    const { chess, mode, aiThinking } = useSelector((state) => state.chess)
+    const dispatch = useDispatch()
+    const pieces = chess.pieces;
 
     let capturePiece = useMemo(() => {
         const fullForce = {
@@ -39,7 +39,7 @@ export default function PlayerInfoPanel({
 
         let capturedForce = fullForce
 
-        pieces.current.forEach(({ piece }) => {
+        pieces.forEach(({ piece }) => {
             if (piece[1] !== 'k') {
                 const capture = capturedForce[piece]
                 capture.shift()
@@ -83,7 +83,7 @@ export default function PlayerInfoPanel({
     }, [capturePiece])
 
     let source = useMemo(() => {
-        return mode?.type === 'bot' ? 
+        return mode?.type === 'bot' ?
             mode.opposite.avatar : "https://robohash.org/1"
     }, [mode.type])
 
@@ -116,8 +116,14 @@ export default function PlayerInfoPanel({
         };
     }
 
+    const swap = () => {
+        const newChess = chess.getState()
+        newChess.modifyDirection()
+        dispatch(setChess(newChess))
+    }
+
     useEffect(() => {
-        capturePiece = {'w': [], 'b': []}
+        capturePiece = { 'w': [], 'b': [] }
         point = { type: "", difference: 0 }
     }, [mode])
 
@@ -128,8 +134,8 @@ export default function PlayerInfoPanel({
                 <div className="chess-info-player-area">
                     <div className="chess-info-player left">
                         <div className="left-avatar" >
-                            <Avatar 
-                                src="https://robohash.org/1" 
+                            <Avatar
+                                src="https://robohash.org/1"
                                 variant="square"
                                 {...stringAvatar("player")}
                             />
@@ -204,13 +210,11 @@ export default function PlayerInfoPanel({
                     <div className="chess-options flex-div">
                         <Icon
                             className="chess-options-icon"
-                            onClick={() => {
-                                setDisplaySettingBoard(true)
-                            }}
+                            onClick={() => { dispatch(setSettingsBoard(true)) }}
                         >settings</Icon>
                         <Icon
                             className="chess-options-icon"
-                            onClick={() => { swap() }}
+                            onClick={swap}
                         >cached</Icon>
                     </div>
                 </div>

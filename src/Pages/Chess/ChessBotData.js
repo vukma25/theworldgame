@@ -1,8 +1,8 @@
 export const staticURL = "https://robohash.org/"
 export const timeOptions = {
-    Bullet: ["1", "1 | 1", "2 | 1"],
-    Blitz: ["3", "5", "3 | 2"],
-    Rapid: ["10", "15", "30", "15 | 10"]
+    Bullet: ["1"],
+    Blitz: ["3", "5"],
+    Rapid: ["10", "15", "30"]
 };
 export const bots = {
     Beginner: [

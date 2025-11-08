@@ -102,7 +102,6 @@
 .features {
   padding: 100px 0;
   background-color: var(--white);
-  border-bottom: 0.1rem solid var(--ink-400);
 }
 .features .feature-item {
   display: flex;
@@ -190,14 +189,14 @@
   background: var(--white);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 0 1rem var(--shadow);
   transition: transform 0.3s, box-shadow 0.3s;
   text-align: center;
   padding: 30px 20px;
 }
 .games .games-grid .game-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 0 1rem var(--shadow);
+  cursor: pointer;
 }
 .games .games-grid .game-card .game-icon {
   justify-content: center;
@@ -354,7 +353,8 @@ footer .footer-bottom {
     padding: 4rem 0;
   }
   .features .feature-item {
-    gap: 2rem;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
   }
   .features .feature-item .feature-text {
     text-align: center;

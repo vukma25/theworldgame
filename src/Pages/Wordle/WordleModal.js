@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux"
+import { Button } from '@mui/material'
 import { close } from "../../redux/features/modal"
 import Icon from '@mui/material/Icon'
 
@@ -39,13 +40,13 @@ export default function WordleModal({ newGame }) {
                     </a>
                 </div>
 
-                <button
+                <Button
                     className="reset-btn"
                     onClick={() => {
                         newGame()
                         dispatch(close())
                     }}
-                >New game</button>
+                >New game</Button>
             </div>
         </div>
     )

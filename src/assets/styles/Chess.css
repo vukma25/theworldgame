@@ -197,6 +197,9 @@
   background-repeat: no-repeat;
   z-index: 1;
 }
+.chess .chess-left-area .chess-board-area .piece.have {
+  transition: transform 0.1s;
+}
 .chess .chess-left-area .chess-board-area .square-1 {
   transform: translate(0, 695%);
 }
@@ -439,7 +442,7 @@
   background: transparent;
   z-index: 0;
 }
-.chess .chess-left-area .chess-board-area .suggest-div, .chess .chess-left-area .chess-board-area .promotion-div, .chess .chess-left-area .chess-board-area .taken-div {
+.chess .chess-left-area .chess-board-area .suggest-div, .chess .chess-left-area .chess-board-area .taken-div {
   position: absolute;
   width: 12.5%;
   height: 12.5%;
@@ -455,6 +458,14 @@
   z-index: 2;
 }
 .chess .chess-left-area .chess-board-area .promotion-div {
+  position: absolute;
+  width: 12.5%;
+  height: 12.5%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 3;
 }
 .chess .chess-left-area .chess-board-area .attack {
@@ -479,7 +490,7 @@
 }
 .chess .move-list-wrapper .move-list-header {
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--ink-500);
+  box-shadow: 0.3rem 0 0.5rem var(--shadow);
   width: 100%;
 }
 .chess .move-list-wrapper .move-list {
@@ -505,7 +516,6 @@
   align-items: center;
   padding: 0.5rem 1rem;
   height: 5rem;
-  box-shadow: 0 0.1rem 0.3rem var(--ink-300);
 }
 .chess .move-list-wrapper .move-list .move-row .move-num {
   width: 2.5rem;
@@ -527,7 +537,7 @@
           user-select: none;
 }
 .chess .move-list-wrapper .move-list .move-row .move-container .move:active {
-  background: linear-gradient(135deg, var(--ink-300), var(--ink-400));
+  background: linear-gradient(135deg, var(--ink-300), var(--ink-100) 30%);
   box-shadow: 0 0.1rem 0.2rem var(--cl-black);
 }
 .chess .move-list-wrapper .move-list .move-row .move-container .move img {
@@ -538,11 +548,14 @@
   height: 3rem;
 }
 .chess .move-list-wrapper .move-list .move-row .move-container .move-current {
-  background: linear-gradient(135deg, var(--brand-100), var(--brand-200));
-  box-shadow: 0 0.1rem 0.2rem var(--cl-black);
+  color: var(--cl-green);
+  font-weight: 600;
 }
 .chess .move-list-wrapper .move-list .move-row:nth-child(even) {
-  background: linear-gradient(135deg, var(--brand-100), rgba(255, 255, 255, 0.65));
+  background: linear-gradient(135deg, var(--brand-200), var(--brand-100) 30%);
+}
+.chess .move-list-wrapper .move-list .move-row:nth-child(even) .move-num {
+  color: var(--cl-white-pure);
 }
 .chess .move-list-wrapper .move-list-option {
   width: 90%;
@@ -557,12 +570,12 @@
   color: var(--cl-black-light);
   transition: background 0.2s ease;
   border-radius: 1.5rem;
-  box-shadow: 0.1rem 0.1rem rgba(116, 116, 116, 0.2);
+  box-shadow: 0 0 0.5rem var(--ink-400);
 }
 .chess .move-list-wrapper .move-list-option .move-list-btn:hover {
-  background-color: var(--cl-primary-yellow);
-  color: var(--cl-black);
-  box-shadow: 0.1rem 0.1rem var(--ink-400);
+  color: var(--brand-600);
+  cursor: pointer;
+  box-shadow: inset 0 0 0.5rem var(--ink-400);
 }
 .chess .game-mode-selector {
   position: relative;
@@ -576,10 +589,9 @@
   -webkit-backdrop-filter: saturate(160%) blur(1rem);
           backdrop-filter: saturate(160%) blur(1rem);
   background: var(--cl-white-pure);
-  box-shadow: 0 0 0.5rem var(--ink-500);
+  box-shadow: 0 0 0.5rem var(--shadow);
   padding: 2rem;
   padding-bottom: 0;
-  border-radius: 0.8rem;
   color: var(--cl-black-light);
 }
 .chess .game-mode-selector::-webkit-scrollbar {
@@ -606,14 +618,14 @@
   padding: 1.5rem 1rem;
   border: none;
   border-radius: 0.4rem;
-  background: var(--cl-black-lighter);
+  background: var(--ink-400);
   color: var(--cl-white-pure);
   cursor: pointer;
   transition: background 0.3s;
   font-size: 1.8rem;
 }
 .chess .game-mode-selector .mode-buttons button.active {
-  background: var(--brand-500);
+  background: var(--brand-400);
 }
 .chess .game-mode-selector .bot-groups,
 .chess .game-mode-selector .time-groups {
@@ -629,13 +641,13 @@
   justify-content: center;
   border: none;
   border-radius: 0.4rem;
-  background: var(--cl-black-lighter);
+  background: var(--ink-400);
   padding: 1.5rem 1rem;
   color: var(--cl-white-pure);
   cursor: pointer;
 }
 .chess .game-mode-selector .options-container .time.active, .chess .game-mode-selector .options-container .active.bot-chess {
-  background: var(--brand-500);
+  background: var(--brand-400);
 }
 .chess .game-mode-selector .options-container .bot-chess {
   aspect-ratio: 1;
@@ -699,6 +711,28 @@
 .chess .game-mode-selector .play-container .bot-info-container .bot-details .bot-des .cyberchallenge {
   color: red;
 }
+.chess .game-mode-selector .play-container .bot-info-container .side {
+  background: var(--cl-black-lighter);
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 12rem;
+}
+.chess .game-mode-selector .play-container .bot-info-container .side .box {
+  display: block;
+  width: 3.5rem;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chess .game-mode-selector .play-container .bot-info-container .side .box.black {
+  color: var(--cl-black-light);
+}
+.chess .game-mode-selector .play-container .bot-info-container .side .box.active {
+  background-color: var(--brand-500);
+}
 .chess .game-mode-selector .play-container .play-btn {
   margin-top: 2rem;
   width: 100%;
@@ -717,7 +751,7 @@
   padding: 1.5rem 1rem;
   border: none;
   border-radius: 0.4rem;
-  background: var(--cl-black-lighter);
+  background: var(--ink-400);
   color: var(--cl-white-pure);
   text-align: center;
   cursor: pointer;
@@ -725,7 +759,7 @@
   font-size: 1.8rem;
 }
 .chess .game-mode-selector .back-home:hover {
-  background: var(--brand-500);
+  background: var(--brand-400);
 }
 .chess .chess-settings-container {
   display: flex;
@@ -759,10 +793,15 @@
   grid-template-rows: repeat(8, 1fr);
   width: 40rem;
   height: 40rem;
-  border: 0.4rem solid #1f2937;
   border-radius: 0.5rem;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+.chess .chess-settings-container .preview-section .chess-preview.border {
+  border: 0.2rem solid #1f2937;
+}
+.chess .chess-settings-container .preview-section .chess-preview.none {
+  border: none;
 }
 .chess .chess-settings-container .preview-section .chess-preview .preview-square {
   transition: background-color 0.3s ease;
@@ -865,6 +904,165 @@
 .chess .chess-settings-container .settings-section .setting-card__col h3 {
   font-size: 1.125rem;
   font-weight: 600;
+}
+.chess .chess-result-modal {
+  background: var(--cl-white-pure);
+  border-radius: 20px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  color: var(--cl-black-light);
+  text-align: center;
+}
+.chess .chess-result-modal .modal-header {
+  margin-bottom: 1rem;
+}
+.chess .chess-result-modal .modal-header .result-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.chess .chess-result-modal .modal-header .result-title.win {
+  color: #4ade80;
+}
+.chess .chess-result-modal .modal-header .result-title.lose {
+  color: #ef4444;
+}
+.chess .chess-result-modal .modal-header .result-title.draw {
+  color: #fbbf24;
+}
+.chess .chess-result-modal .result-description p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--ink-500);
+}
+.chess .chess-result-modal .players-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+.chess .chess-result-modal .players-info .player {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.chess .chess-result-modal .players-info .player .player-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 0.3rem solid var(--brand-600);
+  margin-bottom: 10px;
+}
+.chess .chess-result-modal .players-info .player .player-avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.chess .chess-result-modal .players-info .player .player-name {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+.chess .chess-result-modal .players-info .player .winner-badge {
+  font-size: 1.5rem;
+  animation: bounce 1s infinite;
+}
+.chess .chess-result-modal .players-info .vs {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.chess .chess-result-modal .modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+.chess .chess-result-modal .modal-actions .btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.chess .chess-result-modal .modal-actions .btn:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+.chess .chess-result-modal .modal-actions .btn.btn-play-again {
+  background: linear-gradient(45deg, #4ade80, #22c55e);
+  color: white;
+}
+.chess .chess-result-modal .modal-actions .btn.btn-new-game {
+  background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+  color: white;
+}
+.chess .chess-result-modal .close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+@media (max-width: 768px) {
+  .chess .chess-result-modal {
+    padding: 20px;
+    margin: 20px;
+  }
+  .chess .chess-result-modal .modal-header .result-title {
+    font-size: 1.5rem;
+  }
+  .chess .chess-result-modal .modal-actions {
+    flex-direction: column;
+  }
 }
 .chess .color-option {
   width: 4rem;

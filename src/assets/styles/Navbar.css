@@ -477,14 +477,20 @@ nav .bar {
   display: grid;
   gap: 0.5rem;
 }
-.auth-wrapper .auth-modal .auth-modal-body .input {
+.auth-wrapper .auth-modal .auth-modal-body .field-col .input {
   padding: 1.5rem 1rem;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   outline: none;
 }
-.auth-wrapper .auth-modal .auth-modal-body .input:focus {
+.auth-wrapper .auth-modal .auth-modal-body .field-col .input:focus {
   box-shadow: 0 0 0 0.1rem rgba(79, 70, 229, 0.2);
+}
+.auth-wrapper .auth-modal .auth-modal-body .error {
+  display: block;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--cl-red-flag);
 }
 .auth-wrapper .auth-modal .auth-modal-body .cta {
   width: 100%;

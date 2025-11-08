@@ -1,13 +1,35 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { setChess, setMode, setPlayerSide } from '../../redux/features/chess';
 import { Link } from 'react-router'
 import { staticURL, bots, timeOptions } from "./ChessBotData";
+import { Contrast, Fort } from '@mui/icons-material'
 
-export default function ChessModeSelector({ chess, setChess, setMode, setLog }) {
+export default function ChessModeSelector({ setLog }) {
+    const { chess } = useSelector((state => state.chess))
+    const dispatch = useDispatch()
+
     const [type, setType] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
     const [selectedBot, setSelectedBot] = useState(null);
     const [selectedOneDevice, setSelectedOneDevice] = useState(null);
+    const [side, setSide] = useState(0)
 
+    function chooseSide() {
+        if (side == -1) {
+            dispatch(setPlayerSide('b'))
+            return
+        }
+        if (side == 0) {
+            const si = Math.floor(Math.random() * 3) - 1
+
+            if (si == -1) { dispatch(setPlayerSide('b')) }
+            else { dispatch(setPlayerSide('w')) }
+
+            return
+        }
+        dispatch(setPlayerSide('w'))
+    }
 
     return (
         <div className="game-mode-selector">
@@ -108,9 +130,6 @@ export default function ChessModeSelector({ chess, setChess, setMode, setLog }) 
                             </div>
                         ))}
                     </div>
-
-                    {/* Khối thông tin bot + nút Play */}
-
                 </>
             )}
 
@@ -130,7 +149,25 @@ export default function ChessModeSelector({ chess, setChess, setMode, setLog }) 
                                 <span className={`${selectedBot.level.toLowerCase()}`}>{`${selectedBot.level}`}</span>
                             </p>
                         </div>
+                        <div className="side">
+                            <div className={`box black ${side == -1 ? 'active': ''}`}
+                                onClick={() => {setSide(-1)}}
+                            >
+                                <Fort />
+                            </div>
+                            <div className={`box random ${side == 0 ? 'active': ''}`}
+                                onClick={() => {setSide(0)}}
+                            >
+                                <Contrast />
+                            </div>
+                            <div className={`box white ${side == 1 ? 'active': ''}`}
+                                onClick={() => {setSide(1)}}
+                            >
+                                <Fort />
+                            </div>
+                        </div>
                     </div>
+
                 )}
                 <button
                     className="play-btn"
@@ -138,22 +175,23 @@ export default function ChessModeSelector({ chess, setChess, setMode, setLog }) 
                         if (selectedBot) {
                             const newChess = chess.getState()
 
-                            setMode({
+                            dispatch(setMode({
                                 type, 
                                 'opposite': selectedBot
-                            })
+                            }))
+                            chooseSide()
                             newChess.setStatus('playing')
-                            setChess(newChess)
+                            dispatch(setChess(newChess))
                         }
                         else if (selectedOneDevice) {
                             const newChess = chess.getState()
 
-                            setMode({
+                            dispatch(setMode({
                                 type,
                                 'opposite': selectedOneDevice
-                            })
+                            }))
                             newChess.setStatus('playing')
-                            setChess(newChess)
+                            dispatch(setChess(newChess))
                         }
                         else if (selectedTime) {
                             setLog({

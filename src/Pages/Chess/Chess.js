@@ -1,7 +1,7 @@
-
+import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect, useCallback } from 'react'
 import { ChessGame } from './Function'
-import Board from './Board'
+import BAP from './BoardAndPiece/BAP'
 import MoveList from './MoveList'
 import ChessModeSelector from './ChessModeSelector'
 import GoTopBtn from '../../Components/GoTopBtn/GoTopBtn'
@@ -10,81 +10,97 @@ import ChessBot from './chessBot'
 import '../../assets/styles/Chess.css'
 import ChessSettings from './ChessSettings'
 import PlayerInfoPanel from './PlayerInfoPanel'
+import { setChess, setSettings, setStatus } from '../../redux/features/chess'
+import { open, close } from '../../redux/features/modal'
+import ChessModal from './ChessModal'
+import Modal from '../../Components/Modal/Modal'
 
 function Chess() {
-
-    const [chess, setChess] = useState(new ChessGame())
-    const [mode, setMode] = useState({})
-    const [settings, setSettings] = useState(JSON.parse(localStorage.getItem("chess-theme")) ?? {
-        showHints: true,
-        autoRotate: false,
-        sound: true,
-        animation: true,
-        showCoordinates: false,
-        showBorder: true,
-        lightSquareColor: '#FFFFFF',
-        darkSquareColor: '#5309B3'
-    })
-    const [displaySettingBoard, setDisplaySettingBoard] = useState(false)
-    const [aiThinking, setAIThinking] = useState(false)
+    const { chess, mode, settingsBoard, settings, playerSide } = useSelector((state) => state.chess)
+    const modal = useSelector((state) => state.modal)
+    const dispatch = useDispatch()
     const [log, setLog] = useState({
         "message": "",
         "type": "info"
     })
 
     const swap = useCallback(() => {
-        let newChess = chess.getState()
-        newChess.modifyDirection()
-        setChess(newChess)
+        chess.modifyDirection()
+        dispatch(setChess(chess))
     }, [chess])
 
     useEffect(() => {
-        if (chess.status === "preparing") return
+        if (chess) {
+            dispatch(setChess(chess.getInit()))
+        }
+        dispatch(close())
+    }, [])
+
+    useEffect(() => {
+        if (!chess) {
+            dispatch(setChess(new ChessGame()))
+
+            const theme = JSON.parse(localStorage.getItem("chess-theme"))
+            if (theme) {
+                dispatch(setSettings(theme))
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        if (chess?.status === "preparing") return
 
         if (settings.autoRotate) {
             swap()
         }
-    }, [chess.turn])
+    }, [chess?.turn])
 
+    useEffect(() => {
+        if (chess?.hasCheckmate?.checkmate) {
+            if (chess.hasCheckmate.by === playerSide) {
+                dispatch(setStatus({
+                    cur: 'win',
+                    des: 'By checkmate'
+                }))
+            }
+            else {
+                dispatch(setStatus({
+                    cur: 'lose',
+                    des: 'By checkmate'
+                }))
+            }
+            dispatch(open())
+        }
+        else if (chess?.isDraw?.draw) {
+            dispatch(setStatus({
+                cur: 'draw',
+                des: chess.isDraw.reason
+            }))
+            dispatch(open())
+        }
+    }, [chess])
+
+    if (!chess) {
+        return (<></>)
+    }
 
     return (
         <>
             <div className="chess">
                 <div className="chess-left-area flex-div">
-                    <PlayerInfoPanel 
-                        chess={chess}
-                        mode={mode}
-                        aiThinking={aiThinking}
-                        setDisplaySettingBoard={setDisplaySettingBoard}
-                        swap={swap}
-                    />
-                    <Board 
-                        chess={chess} 
-                        setChess={setChess} 
-                        aiThinking={aiThinking} 
-                        settings={settings} 
-                    />
+                    <PlayerInfoPanel swap={swap} />
+                    <BAP />
                 </div>
-                {chess.status === 'playing' && <MoveList chess={chess} setChess={setChess}/>}
-                {chess.status === 'preparing' && 
-                    <ChessModeSelector 
-                        chess={chess} 
-                        setChess={setChess} 
-                        setMode={setMode} 
-                        setLog ={setLog}
-                    />}
-                {mode?.type === 'bot' && 
-                    <ChessBot 
-                        chess={chess} 
-                        chessBot={mode?.opposite} 
-                        setChess={setChess}
-                        setAIThinking={setAIThinking}  
-                    />}
-                {displaySettingBoard && <ChessSettings 
-                    settings={settings} 
-                    setSettings={setSettings}
-                    setDisplaySettingBoard={setDisplaySettingBoard}
-                />}
+                {chess.status === 'playing' &&
+                    <MoveList />}
+                {chess.status === 'preparing' &&
+                    <ChessModeSelector setLog={setLog} />}
+                {mode?.type === 'bot' &&
+                    <ChessBot />}
+                {settingsBoard && <ChessSettings />}
+                {modal.value && <Modal>
+                    <ChessModal />
+                </Modal>}
                 <Logger log={log} setLog={setLog} />
             </div>
             <GoTopBtn />

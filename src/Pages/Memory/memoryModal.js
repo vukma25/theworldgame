@@ -1,9 +1,11 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { close } from '../../redux/features/modal'
 
 export default function MemoryModal({ remain, initGame }) {
     const memory = useSelector((state) => state.memory)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     function formatTime(time) {
         const minute = Math.floor(time / 60)
@@ -13,6 +15,10 @@ export default function MemoryModal({ remain, initGame }) {
 
     function goHome() {
         navigate("/")
+    }
+    function playMore() {
+        dispatch(close())
+        initGame()
     }
 
     return (
@@ -51,11 +57,11 @@ export default function MemoryModal({ remain, initGame }) {
             <div className="mm-modal-btn-redirect">
                 <button
                     className="btn-action play-again"
-                    onClick={() => { initGame() }}
+                    onClick={playMore}
                 >Play more</button>
                 <button
                     className="btn-action cancel"
-                    onClick={() => { goHome() }}
+                    onClick={goHome}
                 >Go home</button>
             </div>
         </div>

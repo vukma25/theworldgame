@@ -833,6 +833,10 @@ export class ChessGame {
             'checkmate': false,
             'by': ''
         }
+        this.isDraw = state.isDraw ?? {
+            draw: false,
+            reason: ''
+        }
         this.moves = state.moves ?? []
         this.bout = state.bout ?? 1
         this.fen = state.fen ?? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -1636,6 +1640,10 @@ export class ChessGame {
             'checkmate': false,
             'by': ''
         }
+        const isDraw = {
+            draw: false,
+            reason: ''
+        }
         const moves = []
         const bout = 1
         const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -1657,6 +1665,7 @@ export class ChessGame {
             hasPawnPromotion,
             listPawnCanBecome,
             hasCheckmate,
+            isDraw,
             bout,
             moves,
             fen,
@@ -1684,6 +1693,7 @@ export class ChessGame {
         let moves = this.moves
         let bout = this.bout
         let fen = this.fen
+        let isDraw = this.isDraw
 
         const state = {
             status,
@@ -1702,6 +1712,7 @@ export class ChessGame {
             hasPawnPromotion,
             listPawnCanBecome,
             hasCheckmate,
+            isDraw,
             moves,
             bout,
             fen,
@@ -2804,6 +2815,12 @@ export class ChessGame {
             this.matchAllSquaresBePinned()
             this.justAllowMove(this.turn)
             this.checkmate(this.turn)
+            if (this.notEnoughForce()) {
+                this.isDraw = {
+                    draw: true,
+                    reason: 'Insufficient Material'
+                }
+            }
 
             //vi nhap thanh va 2 lan di chuyen quan phai gioi han de chi xuat ra 1 nuoc di
             if (isCastle && piece[1] === 'r') {
@@ -2911,6 +2928,12 @@ export class ChessGame {
             this.matchAllSquaresBePinned()
             this.justAllowMove(this.turn)
             this.checkmate(this.turn)
+            if (this.notEnoughForce()) {
+                this.isDraw = {
+                    draw: true,
+                    reason: 'Insufficient Material'
+                }
+            }
 
             this.soundEffect(false, "capture")
 
@@ -3056,13 +3079,13 @@ export class ChessGame {
         }
     }
 
-    fillColor(square) {
+    fillColor(square, light, dark) {
         const [i, j] = this.calRowAndCol(square)
         if (
             (i % 2 === 0 && j % 2 === 0) ||
             (i % 2 === 1 && j % 2 === 1)
-        ) return 'bg-light'
-        return 'bg-dark'
+        ) return light
+        return dark
     }
 
     modifyMaterial(square, type) {
@@ -3323,6 +3346,129 @@ export class ChessGame {
         }
     }
 
+    noMoreMove(color) {
+        for (let i = 0; i < this.pieces.length; i++) {
+            const { piece: name, square } = this.pieces[i]
+            if (name[0] === color && (name[1] !== 'k' || name[1] !== 'q')) {
+                const p = this.methods.find(p => p.alias.includes(name))
+                const pinned = this.pins.find(({ square: sq }) => sq === square)
+                const [r, c] = this.calRowAndCol(square)
+                if (p.piece === 'pawn') {
+                    const conditions = []
+                    const { move, takeSpecial } = p
+
+                    if (pinned) {
+                        if (this.isStraight(pinned.direction) && pinned.direction[0] === 0) continue // ghim ngang thì chắc chắn không thể đi
+                        if (this.isStraight(pinned.direction) && pinned.direction[1] === 0) {
+                            const [i, j] = move[this.direction][0].coordinate
+                            if (Object.keys(this.board[r - i][c + j]).length !== 0) continue // ghim dọc và quân ghim chặn ngay trước 1 ô
+                            else return false
+                        }
+                        if (this.isDiagonal(pinned.direction)) {
+                            let [x, y] = pinned.direction
+                            for (let take of takeSpecial[this.direction]) {
+                                const [i, j] = take.cor
+                                if (x === -i && y === -j) {
+                                    x = -i
+                                    y = -j
+                                }
+                            }
+                            if ((r - i < 0) || (r - i >= 8) || (c + j < 0) || (c + j >= 8)) continue
+                            if (Object.keys(this.board[r - i][c + j]).length === 0) continue // ghim chéo và không thể ăn quân ghim
+                        }
+                    }
+
+                    const [i, j] = move[this.direction][0].coordinate
+                    if (Object.keys(this.board[r - i][c + j]).length === 0) return false // ô ngay phía trước có bị bịt không
+
+                    const takeSomething = []
+                    for (let take of takeSpecial[this.direction]) {
+                        const [i, j] = take.cor
+                        if ((r - i < 0) || (r - i >= 8) || (c + j < 0) || (c + j >= 8)) continue
+                        if (
+                            Object.keys(this.board[r - i][c + j]).length !== 0 &&
+                            this.board[r - i][c + j].type[0] !== name[0]
+                        ) return false // không thể ăn quân nào để thoát 
+                    }
+                    conditions.push(takeSomething.every(e => e))
+
+                    if (this.squaresEP.length !== 0) {
+                        if (this.squaresEP[0].takenSq.includes(square)) return false // con tốt này có thể bắt tốt qua đường không
+                    }
+                }
+                else if (p.piece === 'knight') {
+                    if (pinned) continue
+                    for (let mov of p.move) {
+                        let [i, j] = mov.coordinate
+                        if ((r - i < 0) || (r - i >= 8) || (c + j < 0) || (c + j >= 8)) continue
+                        if (Object.keys(this.board[r - i][c + j]).length === 0) return false
+                        if (
+                            Object.keys(this.board[r - i][c + j]).length !== 0 &&
+                            this.board[r - i][c + j].type[0] !== name[0]
+                        ) return false
+                    }
+                }
+                else if (p.piece === 'bishop') {
+                    if (pinned) {
+                        if (this.isStraight(pinned.direction)) continue
+                    }
+                    for (let mov of p.move) {
+                        let [i, j] = mov.coordinate
+                        if ((r - i < 0) || (r - i >= 8) || (c + j < 0) || (c + j >= 8)) continue
+                        if (Object.keys(this.board[r - i][c + j]).length === 0) return false
+                        if (
+                            Object.keys(this.board[r - i][c + j]).length !== 0 && 
+                            this.board[r - i][c + j].type[0] !== name[0]
+                        ) return false
+                    }
+                }
+                else if (p.piece === 'rook') {
+                    if (pinned) {
+                        if (this.isDiagonal(pinned.direction)) continue
+                    }
+                    for (let mov of p.move) {
+                        let [i, j] = mov.coordinate
+                        if ((r - i < 0) || (r - i >= 8) || (c + j < 0) || (c + j >= 8)) continue
+                        if (Object.keys(this.board[r - i][c + j]).length === 0) return false
+                        if (
+                            Object.keys(this.board[r - i][c + j]).length !== 0 &&
+                            this.board[r - i][c + j].type[0] !== name[0]
+                        ) return false
+                    }
+                }
+            }
+        }
+
+        return true
+    }
+
+    notEnoughForce() {
+        if (this.pieces.length === 2) {
+            return true
+        }
+        if (this.pieces.length === 3) {
+            const remainPiece = this.pieces.filter(p => p.piece[1] === 'n' || p.piece[1] === 'b')
+            if (remainPiece.length === 1) return true
+        }
+        if (this.pieces.length === 4) {
+            const bishops = this.pieces.filter(p => p.piece[1] === 'b')
+            if (bishops.length === 2 && bishops[0].piece !== bishops[1].piece) {
+                const [x, y] = bishops[0].coordinate
+                const [z, t] = bishops[1].coordinate
+
+                const color1 = (x + y) % 2
+                const color2 = (z + t) % 2
+
+                if (color1 === color2) return true
+            }
+
+            const knights = this.pieces.filter(p => p.piece[1] === 'n')
+            if (knights.length === 2 && knights[0].piece === knights[1].piece) return true
+        }
+
+        return false
+    }
+
     checkmate(color) {
         const colorOpp = color === 'w' ? 'b' : 'w'
         const [rowK, colK] = this.kingSquare(color + 'k')
@@ -3360,6 +3506,17 @@ export class ChessGame {
                 'by': colorOpp
             }
             return
+        }
+
+        if (noAnyInvalidMove && !kingDanger) {
+            console.log('ok')
+            if (this.noMoreMove(color)) {
+                console.log('ok')
+                this.isDraw = {
+                    draw: true,
+                    reason: 'Stalemate'
+                }
+            }
         }
 
         this.hasCheckmate = {

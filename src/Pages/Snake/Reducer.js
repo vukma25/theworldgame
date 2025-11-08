@@ -1,5 +1,5 @@
 import ACTIONS from './Actions'
-import { direction, maps } from './Static'
+import { maps } from './Static'
 
 export const defaultState = {
     mode: "no_limit",

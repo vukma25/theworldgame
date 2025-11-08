@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Button } from '@mui/material'
 import { 
     setCard,
     matchCard,
@@ -206,13 +207,13 @@ const Memory = () => {
                                         </ClockBase>
                                     </div>
                                     <div className="action-buttons">
-                                        <button
+                                        <Button
                                             onClick={() => { resetGame() }}
                                             className="btn reset"
                                             disabled={memory.status !== "playing"}
                                         >
                                             New game
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
 
@@ -240,13 +241,13 @@ const Memory = () => {
 
                         {/* Side panel */}
                         <div className="side-panel">
-                            <button
+                            <Button
                                 onClick={() => { startGame() }}
                                 disabled={memory.status === "playing"}
                                 className="start-btn"
                             >
                                 Play
-                            </button>
+                            </Button>
                             <div className="settings-panel">
                                 <div className="panel-title">Settings</div>
                                 <div className="settings-content">

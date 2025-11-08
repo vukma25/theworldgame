@@ -1,8 +1,15 @@
 
+import { useNavigate } from 'react-router-dom'
 import Icon from '@mui/material/Icon'
 import { cards } from './Card'
 
 export default function Games() {
+    const navigate = useNavigate()
+
+    function redirect() {
+        navigate("/games")
+    }
+
     return (
         <section className="games">
             <div className="homepage-container">
@@ -13,7 +20,10 @@ export default function Games() {
                 <div className="games-grid">
                     {
                         cards.map(({icon, name, des}) => (
-                            <div key={name} className="game-card">
+                            <div key={name} 
+                                className="game-card"
+                                onClick={redirect}
+                            >
                                 <div className="game-icon flex-div">
                                     <Icon sx={{ fontSize: "2.5rem" }}>{icon}</Icon>
                                     <h3>{name}</h3>

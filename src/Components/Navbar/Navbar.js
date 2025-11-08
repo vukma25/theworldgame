@@ -71,7 +71,7 @@ function Navbar() {
 
         if (!q) return
         if (q.length > 3) {
-            setSuggestBox(false)
+            setSuggestBox()
             handleStorageQuery(q)
             const convertQuery = q.replaceAll(/\s+/g, "+")
             navigate(`/search?q=${convertQuery}`)
@@ -104,7 +104,7 @@ function Navbar() {
 
                 {menu && <Menu />}
                 {search && <MobileSearch />}
-                {auth && < AuthModal />}
+                {auth !== '' && < AuthModal />}
             </nav>
         </Nav.Provider>
 

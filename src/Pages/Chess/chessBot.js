@@ -1,13 +1,17 @@
 import { useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { setChess, setAiThinking } from '../../redux/features/chess';
 
-function ChessBot({ chess, chessBot, setChess, setAIThinking }) {
+function ChessBot() {
 
+    const { chess, mode: { opposite }, playerSide } = useSelector((state) => state.chess)
+    const dispatch = useDispatch()
     const sfRef = useRef(null);
 
     function postMessageToSf(sf, fen){
         if (!sf) return
 
-        const elo = chessBot.elo ?? 1500;
+        const elo = opposite.elo ?? 1500;
         const skillLevel = Math.min(20, Math.max(Math.ceil(elo - 1350) / 70, 0))
 
         sf.postMessage("uci");
@@ -20,11 +24,13 @@ function ChessBot({ chess, chessBot, setChess, setAIThinking }) {
     }
 
     useEffect(() => {
-        if (!chessBot) return
-        if (chess.hasCheckmate.checkmate) return
-        if (chess.turn === 'w') return
 
-        setAIThinking(true)
+        if (!opposite) return
+        if (chess.hasCheckmate.checkmate) return
+        if (chess.isDraw.draw) return
+        if (chess.turn === playerSide) return
+
+        dispatch(setAiThinking(true))
         const sf = new Worker('/theworldgame/stockfish.js')
         const chessClone = chess.getState()
         sfRef.current = sf
@@ -35,10 +41,9 @@ function ChessBot({ chess, chessBot, setChess, setAIThinking }) {
                 const move = message.split(" ")[1];
                 if (move === "(none)") return;
                 const state = chessClone.chessBotMove(move)
-                console.log(state.turn)
 
-                setChess(state)
-                setAIThinking(false)
+                dispatch(setChess(state))
+                dispatch(setAiThinking(false))
             }
         };
 
@@ -53,7 +58,7 @@ function ChessBot({ chess, chessBot, setChess, setAIThinking }) {
 
 
     return (
-        <div></div>
+        <></>
     )
 }
 
