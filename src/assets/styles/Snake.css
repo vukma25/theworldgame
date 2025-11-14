@@ -44,15 +44,17 @@
 .snake-game .game-container .game-board .board-card .stats-container .stats-group .stat {
   padding: 1rem 1.2rem;
   border-radius: 0.75rem;
+  border: 0.1rem solid var(--brand-700);
   font-weight: 600;
   font-size: 1rem;
 }
 .snake-game .game-container .game-board .board-card .stats-container .stats-group .stat.score {
-  background-color: #e0e7ff;
   color: #4338ca;
 }
+.snake-game .game-container .game-board .board-card .stats-container .stats-group .stat.extra {
+  color: #015901;
+}
 .snake-game .game-container .game-board .board-card .stats-container .stats-group .stat.highscore {
-  background-color: #fef3c7;
   color: #b45309;
 }
 .snake-game .game-container .game-board .board-card .stats-container .action-buttons {
@@ -68,11 +70,8 @@
   width: 10rem;
 }
 .snake-game .game-container .game-board .board-card .stats-container .action-buttons .btn.reset {
-  background-color: #4f46e5;
+  background-color: var(--brand-700);
   color: white;
-}
-.snake-game .game-container .game-board .board-card .stats-container .action-buttons .btn.reset:hover {
-  background-color: #4338ca;
 }
 .snake-game .game-container .game-board .board-card .stats-container .action-buttons .btn.reset:disabled {
   opacity: 0.5;
@@ -96,7 +95,7 @@
 .snake-game .game-container .game-board .board-card .board-wrapper .snake-board {
   display: grid;
   background-color: var(--cl-white-pure);
-  box-shadow: 0 0 0.3rem var(--ink-300);
+  box-shadow: 0 0 0.5rem var(--ink-300);
   margin: 0 auto;
   overscroll-behavior-y: none;
 }
@@ -114,13 +113,16 @@
   content: "";
   width: 100%;
   height: 100%;
-  background-color: #ef4444;
+  background: #ef4444;
   border-radius: 50%;
   animation: zoomInOut 1s ease-in-out infinite alternate;
 }
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.food.extra::before {
+  background-color: var(--brand-700);
+  animation: pop 0.5s ease-in-out infinite alternate;
+}
 .snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head {
   background-color: #059669;
-  transform: scale(1.2);
   position: relative;
 }
 .snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.up {
@@ -231,12 +233,16 @@
   border: 0.1rem solid var(--ink-500);
 }
 .snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell:not(.head):not(.body):not(.fence) {
-  background-color: var(--brand-100);
+  background-color: var(--ink-100);
 }
 .snake-game .game-container .game-board .board-card .board-wrapper .btn-group {
   width: 100%;
   justify-content: center;
   margin-top: 1.5rem;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .btn-group .control-btn {
+  background-color: var(--brand-700);
+  color: var(--cl-white-pure);
 }
 .snake-game .game-container .side-panel {
   display: flex;
@@ -302,6 +308,7 @@
   font-weight: 600;
   margin-bottom: 0.75rem;
   color: var(--cl-black-light);
+  justify-content: space-between;
 }
 .snake-game .game-container .side-panel .instruction-general .overall {
   margin-bottom: 1rem;
@@ -338,6 +345,11 @@
 }
 .snake-game .game-container .side-panel .instruction-general .instruction-block .description {
   text-align: justify;
+}
+.snake-game .game-container .side-panel .instruction-btn {
+  background-color: var(--brand-700);
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 /* Animations */

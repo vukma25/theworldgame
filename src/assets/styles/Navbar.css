@@ -458,6 +458,8 @@ nav .bar {
   font-weight: 600;
   background: #f3f4f6;
   cursor: pointer;
+  justify-content: center;
+  gap: 0.5rem;
 }
 .auth-wrapper .auth-modal .auth-modal-body .bbtn:hover {
   background: #e5e7eb;

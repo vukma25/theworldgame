@@ -183,6 +183,7 @@
   border-radius: 0.5rem;
   font-weight: 500;
   transition: background-color 0.2s;
+  margin-bottom: 0.5rem;
 }
 .caro-container .caro-card .side-panel .reset-section .reset-button:hover {
   background-color: #4338ca;

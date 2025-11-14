@@ -5,6 +5,8 @@ import memoryReducer from "../features/memory";
 import sudokuReducer from "../features/sudoku";
 import wordleReduer from "../features/wordle";
 import fastFingerReducer from "../features/fastfinger"
+import snakeReducer from "../features/snake"
+import caroReducer from "../features/caro"
 import authSlice from "../features/auth"
 import navbarReducer from "../features/navbar"
 import modalReducer from "../features/modal";
@@ -17,6 +19,8 @@ export const store = configureStore({
         sudoku: sudokuReducer,
         wordle: wordleReduer,
         fastfinger: fastFingerReducer,
+        snake: snakeReducer,
+        caro: caroReducer,
         auth: authSlice,
         navbar: navbarReducer,
         modal: modalReducer

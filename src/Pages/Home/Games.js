@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom'
 import Icon from '@mui/material/Icon'
 import { cards } from './Card'
+import ColliderBackground from "../../Components/ColliderBackground"
 
 export default function Games() {
     const navigate = useNavigate()
@@ -12,6 +13,7 @@ export default function Games() {
 
     return (
         <section className="games">
+            <ColliderBackground />
             <div className="homepage-container">
                 <div className="section-title">
                     <h2>Our games</h2>

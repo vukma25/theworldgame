@@ -64,7 +64,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="footer-bottom">
-                    <p>&copy; 2023 - {new Date().getFullYear()} The World Game.</p>
+                    <p>&copy; {new Date().getFullYear()} The World Game.</p>
                 </div>
             </div>
         </footer>

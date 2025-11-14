@@ -30,12 +30,49 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 .hero .hero-image img {
   max-width: 100%;
   border-radius: 10px;
   box-shadow: var(--shadow);
   animation: float 5s ease-in-out infinite;
+}
+.hero .hero-image::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  aspect-ratio: 1.5;
+  border-radius: 50%;
+  border: 0.1rem solid;
+  border-top-color: red;
+  border-left-color: orange;
+  border-right-color: green;
+  border-bottom-color: blue;
+  z-index: -1;
+  animation: roll 10s linear infinite;
+}
+.hero .hero-image::after {
+  content: "";
+  position: absolute;
+  width: 120%;
+  aspect-ratio: 0.5;
+  border-radius: 50%;
+  border: 0.1rem solid;
+  border-right-color: red;
+  border-top-color: orange;
+  border-bottom-color: green;
+  border-left-color: blue;
+  z-index: -1;
+  animation: roll 12s linear infinite;
+}
+@keyframes roll {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .hero h1 {
   font-size: 48px;
@@ -162,7 +199,8 @@
 /* Games Section */
 .games {
   padding: 5rem 0 10rem 0;
-  background-color: var(--white);
+  background: transparent;
+  position: relative;
 }
 .games .section-title {
   text-align: center;

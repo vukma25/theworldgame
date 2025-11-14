@@ -67,6 +67,8 @@ function MoveList(
                 })}
             </div>
             <div className='move-list-option flex-div'>
+                {(chess.hasCheckmate.checkmate ||
+                chess.isDraw.draw) &&
                 <div 
                     className='move-list-btn flex-div'
                     onClick={() => {
@@ -79,7 +81,7 @@ function MoveList(
                         sx={{ fontSize: '3.5rem' }}
                     >add</Icon>
                     <p>New Game</p>
-                </div>
+                </div>}
                 <div 
                     className='move-list-btn flex-div'
                 >

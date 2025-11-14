@@ -5,8 +5,9 @@ import {
     EmojiEvents, Star, Mouse, Flag, Keyboard
 } from '@mui/icons-material'
 import heroImage from '../../assets/image/hero-page-img.jpeg'
+import logo from "../../assets/image/logo.jpg"
 
-const alternative = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+const alternative = heroImage
 
 export default function Hero() {
     const navigate = useNavigate()
@@ -35,8 +36,6 @@ export default function Hero() {
         })
     }, [])
 
-    console.log(renderFloatingIcon)
-
     return (
         <section className="hero">
             <div className="floating-icons">
@@ -55,7 +54,7 @@ export default function Hero() {
                         </div>
                     </div>
                     <div className="hero-image">
-                        <img src={heroImage ?? alternative}
+                        <img src={logo ?? alternative}
                             alt="The World Game" />
                     </div>
                 </div>

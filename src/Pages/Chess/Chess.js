@@ -30,13 +30,6 @@ function Chess() {
     }, [chess])
 
     useEffect(() => {
-        if (chess) {
-            dispatch(setChess(chess.getInit()))
-        }
-        dispatch(close())
-    }, [])
-
-    useEffect(() => {
         if (!chess) {
             dispatch(setChess(new ChessGame()))
 
@@ -79,6 +72,13 @@ function Chess() {
             dispatch(open())
         }
     }, [chess])
+
+    useEffect(() => {
+        if (chess) {
+            dispatch(setChess(chess.getInit()))
+        }
+        dispatch(close())
+    }, [])
 
     if (!chess) {
         return (<></>)

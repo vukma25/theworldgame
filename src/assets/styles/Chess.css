@@ -683,6 +683,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 .chess .game-mode-selector .play-container .bot-info-container .avatar-bot-large {
   width: 80px;
@@ -712,6 +713,7 @@
   color: red;
 }
 .chess .game-mode-selector .play-container .bot-info-container .side {
+  flex: 1;
   background: var(--cl-black-lighter);
   border-radius: 1rem;
   display: flex;
@@ -959,8 +961,10 @@
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  border: 0.3rem solid var(--brand-600);
   margin-bottom: 10px;
+}
+.chess .chess-result-modal .players-info .player .player-avatar.active {
+  border: 0.3rem solid var(--brand-600);
 }
 .chess .chess-result-modal .players-info .player .player-avatar img {
   width: 100%;

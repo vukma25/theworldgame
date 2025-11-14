@@ -20,7 +20,7 @@ export const maps = [
         ],
         snake: [[10, 4], [10, 3], [10, 2]],
         direction: "RIGHT",
-        food: [5, 7]
+        food: {type: "normal", fd: [5, 7]}
     },
     {
         name: "Maze",
@@ -45,7 +45,7 @@ export const maps = [
         ],
         snake: [[4, 12], [3, 12], [2, 12]],
         direction: "DOWN",
-        food: [5, 7]
+        food: { type: "normal", fd: [5, 7] }
     },
     {
         name: "Cross",
@@ -64,7 +64,7 @@ export const maps = [
         ],
         snake: [[10, 4], [10, 3], [10, 2]],
         direction: "RIGHT",
-        food: [5, 7]
+        food: { type: "normal", fd: [5, 7] }
     },
     {
         name: "Islands",
@@ -90,7 +90,7 @@ export const maps = [
         ],
         snake: [[10, 4], [10, 3], [10, 2]],
         direction: "RIGHT",
-        food: [5, 7]
+        food: { type: "normal", fd: [5, 7] }
     },
     {
         name: "Spiral",
@@ -115,7 +115,7 @@ export const maps = [
         ],
         snake: [[10, 4], [11, 4], [12, 4]],
         direction: "UP",
-        food: [5, 7]
+        food: { type: "normal", fd: [5, 7] }
     },
     {
         name: "Channels",
@@ -132,7 +132,7 @@ export const maps = [
             [10, 11], [11, 11], [12, 11], [13, 11],
             [10, 12], [11, 12], [12, 12], [13, 12],
         ],
-        food: [7, 11],
+        food: { type: "normal", fd: [7, 11] },
         snake: [[10, 4], [10, 3], [10, 2]],
         direction: "RIGHT",
     }

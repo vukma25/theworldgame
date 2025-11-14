@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setAuth } from '../../redux/features/navbar'
 import { loginUser, registerUser, clearError } from '../../redux/features/auth'
 import { Icon, CircularProgress } from "@mui/material"
+import { Google, Facebook } from '@mui/icons-material'
 
 export default function AuthModal() {
 
@@ -92,8 +93,12 @@ export default function AuthModal() {
                 </div>
                 <div className="auth-modal-body">
                     <div className="grid-2">
-                        <button className="bbtn">Google</button>
-                        <button className="bbtn">Facebook</button>
+                        <div className="bbtn flex-div">
+                            <Google sx={{ fontSize: '2.5rem'}}/> Google
+                        </div>
+                        <div className="bbtn flex-div">
+                            <Facebook sx={{ fontSize: '2.5rem' }} /> Facebook
+                        </div>
                     </div>
                     <div className="divline">
                         <div className="hr"></div><span className="muted" style={{ fontSize: "1.2rem" }}>or</span><div className="hr"></div>

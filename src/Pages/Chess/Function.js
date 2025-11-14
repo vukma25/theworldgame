@@ -3511,7 +3511,6 @@ export class ChessGame {
         if (noAnyInvalidMove && !kingDanger) {
             console.log('ok')
             if (this.noMoreMove(color)) {
-                console.log('ok')
                 this.isDraw = {
                     draw: true,
                     reason: 'Stalemate'

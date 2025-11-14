@@ -4,9 +4,9 @@
   "description": "The world game where you can play everything",
   "icons": [
     {
-      "src": "logo.png",
+      "src": "logo.jpg",
       "size": "192x192",
-      "type": "image/png"
+      "type": "image/jpg"
     }
   ],
   "start_url": ".",
