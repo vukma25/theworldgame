@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { setChess } from '../../redux/features/chess'
-import { useCallback, useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useContext } from 'react'
+import { ChessContext } from './Chess'
 import { Icon, CircularProgress, Avatar } from '@mui/material'
 import wp from '../../assets/image/wp.png'
 import wq from '../../assets/image/wq.png'
@@ -13,6 +14,7 @@ import bn from '../../assets/image/bn.png'
 import br from '../../assets/image/br.png'
 import bb from '../../assets/image/bb.png'
 import { setSettingsBoard } from '../../redux/features/chess'
+import stringAvatar from '../../lib/avatar'
 
 const images = { wp, wq, wn, wr, wb, bp, bq, bn, br, bb }
 
@@ -21,6 +23,7 @@ export default function PlayerInfoPanel() {
 
     const { chess, mode, aiThinking } = useSelector((state) => state.chess)
     const dispatch = useDispatch()
+    const { user } = useContext(ChessContext)
     const pieces = chess.pieces;
 
     let capturePiece = useMemo(() => {
@@ -87,35 +90,6 @@ export default function PlayerInfoPanel() {
             mode.opposite.avatar : "https://robohash.org/1"
     }, [mode.type])
 
-    function stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return color;
-    }
-
-    function stringAvatar(name) {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-                width: "90%"
-            }
-        };
-    }
-
     const swap = () => {
         const newChess = chess.getState()
         newChess.modifyDirection()
@@ -134,14 +108,18 @@ export default function PlayerInfoPanel() {
                 <div className="chess-info-player-area">
                     <div className="chess-info-player left">
                         <div className="left-avatar" >
-                            <Avatar
+                            {!user ? <Avatar
                                 src="https://robohash.org/1"
                                 variant="square"
                                 {...stringAvatar("player")}
-                            />
+                            /> :
+                                <Avatar
+                                    variant="square"
+                                    {...stringAvatar(user.username)}
+                                />}
                         </div>
                         <div className="left-name-and-elo flex-div">
-                            <div className="name">Player1</div>
+                            <div className="name">{user?.username || "Player 1"}</div>
                             <div className="elo">(1500)</div>
                         </div>
                         {mode?.type === 'player' && <div className="left-time flex-div">10:00</div>}

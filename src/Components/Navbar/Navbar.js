@@ -12,7 +12,7 @@ import Search from "./Parts/Search"
 import Controller from "./MobileControl/Controller"
 import Menu from "./MobileControl/Menu"
 import { Search as MobileSearch } from "./MobileControl/Search"
-import AuthModal from "./AuthModal"
+import AuthModal from "./AuthModal/Auth"
 import "../../assets/styles/Navbar.css"
 
 export const Nav = createContext()

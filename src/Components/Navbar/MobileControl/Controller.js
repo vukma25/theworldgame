@@ -1,13 +1,15 @@
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import {
     controlBoth,
     controlMenu,
     controlSearch,
 } from "../../../redux/features/navbar"
+import AccountMenu from "../Parts/AccountMenu"
 
 
 export default function Controller() {
+    const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
     function setInit() {
@@ -40,14 +42,15 @@ export default function Controller() {
                     <path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
             </button>
-            <button
+            {!user && <button
                 id="menuToggle" className="icon-btn" aria-label="Menu"
                 onClick={toggleMenu}
             >
                 <svg className="ico-lg" viewBox="0 0 24 24" fill="none">
                     <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
-            </button>
+            </button>}
+            {user && <AccountMenu />}
         </div>
     )
 }

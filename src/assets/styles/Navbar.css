@@ -293,6 +293,13 @@ nav .bar {
 .auth, .mobile-auth {
   display: none;
 }
+.auth .greeting, .mobile-auth .greeting {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.auth .greeting span, .mobile-auth .greeting span {
+  color: var(--brand-500);
+}
 .auth .btn, .mobile-auth .btn {
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
@@ -350,7 +357,10 @@ nav .bar {
 
 /* Mobile search/menu panels */
 .mobile-panel {
+  position: absolute;
   padding: 0 1rem 1rem;
+  width: 100%;
+  margin-top: 0.5rem;
 }
 
 .mobile-search .field {
@@ -484,9 +494,21 @@ nav .bar {
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   outline: none;
+  width: 100%;
 }
 .auth-wrapper .auth-modal .auth-modal-body .field-col .input:focus {
   box-shadow: 0 0 0 0.1rem rgba(79, 70, 229, 0.2);
+}
+.auth-wrapper .auth-modal .auth-modal-body .field-col .pwd-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.auth-wrapper .auth-modal .auth-modal-body .field-col .pwd-field .show-icon {
+  position: absolute;
+  margin-top: 0.4rem;
+  right: 1rem;
+  background-color: var(--cl-white-pure);
 }
 .auth-wrapper .auth-modal .auth-modal-body .error {
   display: block;

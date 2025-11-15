@@ -1,12 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setChess } from '../../redux/features/chess';
 import { close } from '../../redux/features/modal';
-import { Icon } from '@mui/material'
+import { ChessContext } from './Chess';
+import { Icon, Avatar } from '@mui/material'
+import stringAvatar from '../../lib/avatar';
 
 export default function ChessModal() {
     const { chess, status: { cur, des }, mode: { opposite }, playerSide } = useSelector((state) => state.chess)
     const dispatch = useDispatch()
+    const { user } = useContext(ChessContext)
+
     const winner = useMemo(() => {
         return chess.hasCheckmate.by === playerSide
     }, [chess.hasCheckmate.by])
@@ -23,6 +27,16 @@ export default function ChessModal() {
         dispatch(close())
     }
 
+    function formatAvatar() {
+        const res = stringAvatar(user.username)
+        res.sx = {
+            ...res.sx,
+            width: "100%",
+            height: "100%"
+        }
+        return res
+    }
+
     return (
         <div className="chess-result-modal">
             <div className="modal-header">
@@ -36,9 +50,13 @@ export default function ChessModal() {
             <div className="players-info">
                 <div className="player player1">
                     <div className= {`player-avatar ${winner ? 'active' : ''}`} >
-                        <img src={'https://robohash.org/1'} alt={''} />
+                        {!user ? <img src="https://robohash.org/1" /> :
+                            <Avatar
+                                variant="square"
+                                {...formatAvatar()}
+                            />}
                     </div>
-                    <div className="player-name">{'Player 1'}</div>
+                    <div className="player-name">{user?.username || 'Player 1'}</div>
                 </div>
                 <div className="vs">VS</div>
                 <div className="player player2">

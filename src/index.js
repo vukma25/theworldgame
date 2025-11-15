@@ -15,6 +15,7 @@ import FastFinger from './Pages/FastFinger/FastFinger'
 import Memory from './Pages/Memory/Memory';
 import Wordle from './Pages/Wordle/Wordle'
 import Snake from './Pages/Snake/Snake'
+import Protected from './ProtectedRouter/Protected'
 import NotFoundPage from './Pages/NotFound/NotFound'
 import ErrorPage from './Pages/ErrorPage/ErrorPage'
 
@@ -38,7 +39,18 @@ const router = createBrowserRouter([
       },
       {
         path: "chess",
-        element: <Chess />
+        element: <Chess />,
+        children: [
+          {
+            index: true,
+            path: "online",
+            element: (
+              <Protected path="/chess">
+                <Chess />
+              </Protected>
+            ),
+          }
+        ]
       },
       {
         path: "sudoku",

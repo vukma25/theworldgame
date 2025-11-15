@@ -1,17 +1,21 @@
 
 import { Provider } from 'react-redux'
-import { store } from './redux/app/store'
+import { PersistGate } from 'redux-persist/lib/integration/react';
+import { store, persistor } from './redux/app/store'
 import { Outlet } from 'react-router-dom'
 import Navbar from './Components/Navbar/Navbar';
-//import Protected from './ProtectedRouter/Protected';
+import SpeedDial from './Components/SpeedDial/SpeedDial'
 
 
 function App() {
 
   return (
     <Provider store={store}>
-      <Navbar />
-      <Outlet />
+      <PersistGate loading={null} persistor={persistor}>
+        <Navbar />
+        <Outlet />
+        <SpeedDial />
+      </PersistGate>
     </Provider>
   );
 }

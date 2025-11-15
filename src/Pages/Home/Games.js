@@ -13,7 +13,7 @@ export default function Games() {
 
     return (
         <section className="games">
-            <ColliderBackground />
+            {/* <ColliderBackground /> */}
             <div className="homepage-container">
                 <div className="section-title">
                     <h2>Our games</h2>

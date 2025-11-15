@@ -1,21 +1,24 @@
-import { useDispatch } from 'react-redux'
-import { setAuth } from '../../../redux/features/navbar'
-import { Link } from "react-router"
+import { useDispatch, useSelector } from 'react-redux'
+import { setAuth, controlMenu } from '../../../redux/features/navbar'
 import { Button } from '@mui/material'
+import { useEffect } from 'react'
 
 export default function Menu() {
+    const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
     function handleSetAuth(type) {
         dispatch(setAuth(type))
     }
 
+    useEffect(() => {
+        if (user) {
+            dispatch(controlMenu())
+        }
+    }, [user])
+
     return (
         <div id="mobileMenu" className="mobile-panel mobile-menu">
-            <div className="grid">
-                <Link to="/" className="chip">Home</Link>
-                <Link to="/lead-board" className="chip">LeadBoard</Link>
-            </div>
             <div className="mobile-auth" style={{ marginTop: '.5rem' }}>
                 <Button
                     variant='outlined'

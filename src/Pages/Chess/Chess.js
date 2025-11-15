@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, createContext } from 'react'
+import { Outlet } from 'react-router-dom'
 import { ChessGame } from './Function'
 import BAP from './BoardAndPiece/BAP'
 import MoveList from './MoveList'
@@ -15,8 +16,11 @@ import { open, close } from '../../redux/features/modal'
 import ChessModal from './ChessModal'
 import Modal from '../../Components/Modal/Modal'
 
-function Chess() {
+export const ChessContext = createContext()
+
+export default function Chess() {
     const { chess, mode, settingsBoard, settings, playerSide } = useSelector((state) => state.chess)
+    const { user } = useSelector((state) => state.auth)
     const modal = useSelector((state) => state.modal)
     const dispatch = useDispatch()
     const [log, setLog] = useState({
@@ -85,7 +89,7 @@ function Chess() {
     }
 
     return (
-        <>
+        <ChessContext.Provider value={{ user }}>
             <div className="chess">
                 <div className="chess-left-area flex-div">
                     <PlayerInfoPanel swap={swap} />
@@ -104,8 +108,7 @@ function Chess() {
                 <Logger log={log} setLog={setLog} />
             </div>
             <GoTopBtn />
-        </>
+            <Outlet />
+        </ChessContext.Provider>
     )
 }
-
-export default Chess

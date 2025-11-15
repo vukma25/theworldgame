@@ -192,6 +192,9 @@ body {
   /* min-h-screen */
   background: linear-gradient(to bottom right, #f5f3ff, #dbeafe);
 }
+body #root {
+  position: relative;
+}
 body .flex-div {
   display: flex;
   align-items: center;

@@ -6,16 +6,12 @@ export const loginUser = createAsyncThunk(
     'auth/login',
     async ({ email, password }, { rejectWithValue }) => {
         try {
-            const response = await fetch('http://localhost:4000/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
+            const response = await api.post('/auth/login', {
+                email, password
+            }, { withCredentials: true })
+            if (response.statusText !== 'OK') throw new Error('Error: login failed');
 
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message);
-
-            return data;
+            return response.data;
         } catch (error) {
             return rejectWithValue(error.message);
         }
@@ -26,16 +22,12 @@ export const registerUser = createAsyncThunk(
     'auth/register',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await fetch(`http://localhost:4000/api/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData),
-            });
+            const { username, password, email } = userData
+            const response = await api.post('/auth/register', { username, password, email });
 
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message);
+            if (response.statusText !== 'OK') throw new Error('Error: register failed');
 
-            return data;
+            return response.data;
         } catch (error) {
             return rejectWithValue(error.message);
         }
@@ -46,16 +38,6 @@ export const logoutUser = createAsyncThunk(
     'auth/logout',
     async (_, { rejectWithValue }) => {
         try {
-            // await fetch('http://localhost:4000/api/auth/logout', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Authorization': `Bearer ${accessToken}`
-            //     },
-            //     body: JSON.stringify({ message: 'ok'}),
-            //     credentials: 'include'
-            // });
-
             await api.post("http://localhost:4000/api/auth/logout", {data: "test"}, { withCredentials: true })
             return true;
         } catch (error) {
@@ -70,8 +52,8 @@ export const refreshToken = createAsyncThunk(
         try {
             const response = await api.post('http://localhost:4000/api/auth/refresh', {}, { withCredentials: true });
 
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message);
+            if (response.statusText !== 'OK') throw new Error('Error: refresh token failed');
+            const data = response.data;
 
             if (data.accessToken) {
                 dispatch(fetchUser());
@@ -88,12 +70,11 @@ export const fetchUser = createAsyncThunk(
     'auth/fetchUser',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await api.get('http://localhost:4000/api/user/fetchUser')
+            const response = await api.get('/user/fetchUser')
 
-            const data = await response.json();
-            if (!response.ok) throw new Error("In maintaining process")
+            if (response.statusText !== 'OK') throw new Error("In maintaining process")
 
-            return data.user
+            return response.data.user
         } catch (error) {
             return rejectWithValue(error);
         }
@@ -138,9 +119,17 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
             })
             // Register
-            .addCase(registerUser.fulfilled, (state, action) => {
-                state.user = action.payload.user;
-                state.isAuthenticated = true;
+            .addCase(registerUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(registerUser.fulfilled, (state) => {
+                state.isLoading = false;
+                state.error = null;
+            })
+            .addCase(registerUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload
             })
             // Logout
             .addCase(logoutUser.fulfilled, (state) => {
@@ -149,14 +138,28 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
             })
             // Refresh Token
+            .addCase(refreshToken.pending, (state) => {
+                state.isLoading = true
+            })
             .addCase(refreshToken.fulfilled, (state, action) => {
                 state.accessToken = action.payload;
+                state.isLoading = false;
+                state.isAuthenticated = true;
             })
             .addCase(refreshToken.rejected, (state) => {
+                state.isLoading = false;
                 state.isAuthenticated = false;
+            })
+            .addCase(fetchUser.pending, (state) => {
+                state.isLoading = true
             })
             .addCase(fetchUser.fulfilled, (state, action) => {
                 state.user = action.payload;
+                state.isLoading = false
+            })
+            .addCase(fetchUser.rejected, (state, action) => {
+                state.isLoading = false
+                state.error = action.payload
             });
     }
 });

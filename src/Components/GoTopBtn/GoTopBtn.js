@@ -48,7 +48,7 @@ function GoTopBtn() {
         return () => {
             window.removeEventListener('scroll', updateOffset)
         }
-    })
+    }, [])
 
     const scrollToTop = () => {
         window.scrollTo({
