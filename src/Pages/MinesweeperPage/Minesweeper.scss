@@ -1,0 +1,319 @@
+@import '../../mixins';
+
+.minesweeper {
+    width: 100vw;
+    height: auto;
+    margin-top: 2rem;
+
+    .minesweeper-settings {
+        width: 90%;
+        max-width: 100rem;
+        gap: 1rem;
+        margin: 0 auto;
+
+        .minesweeper-settings-level {
+            width: 25rem;
+            height: 4rem;
+            color: var(--cl-primary-purple);
+        }
+
+        .minesweeper-settings-flag {
+            p {
+                font-size: 1.6rem;
+            }
+        }
+
+        .minesweeper-settings-clock {
+            margin-left: auto;
+
+            .countdown-clock {
+                height: 5rem;
+                width: 10rem;
+                border: .1rem solid var(--cl-primary-purple);
+                border-radius: .4rem;
+                justify-content: space-evenly;
+
+                .countdown-clock-time {
+                    width: 42%;
+                    aspect-ratio: 1;
+                    background: var(--cl-primary-yellow);
+                    border-radius: .4rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 1.8rem;
+                    font-family: monospace;
+                }
+
+                .countdown-clock-spread {
+                    font-size: 1.6rem;
+                    font-weight: 600;
+                    color: var(--cl-primary-purple);
+                }
+            }
+        }
+    }
+
+    .minesweeper-broad {
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+        position: relative;
+        margin-top: 1rem;
+        //background-color: black;
+
+        .customize-broad {
+            position: absolute;
+            left: 50%;
+            width: 100vw;
+            max-width: 50rem;
+            font-size: 1.6rem;
+            background: var(--cl-white);
+            padding: 2rem;
+            border-radius: .5rem;
+            transform: translateX(-50%);
+            z-index: 1;
+
+            .customize-container {
+                margin-bottom: 1rem;
+
+                .customize-field {
+                    display: flex;
+                    align-items: center;
+                    width: 20rem;
+                    justify-content: space-between;
+                    gap: 1rem;
+
+                    .customize-name {
+                        color: var(--cl-primary-purple);
+                    }
+
+                    .customize-data {
+                        background: transparent;
+                        color: var(--cl-primary-purple);
+                        padding: .5rem;
+                        display: block;
+                        width: 10rem;
+                        border-bottom: .2rem solid var(--cl-primary-purple);
+                        text-align: center;
+                    }
+                }
+
+                .range-allow {
+                    color: var(--cl-primary-purple);
+
+                    .easy-green {
+                        color: green;
+                    }
+
+                    .hard-red {
+                        color: var(--cl-red-flag);
+                    }
+
+                }
+            }
+
+            .setting-time {
+                gap: .5rem;
+                height: 2rem;
+                margin: 1rem 0;
+
+                input {
+                    accent-color: var(--cl-primary-yellow);
+                }
+
+                label {
+                    font-size: 1.2rem;
+                }
+            }
+
+            .confirm-customize {
+                @include btnForm(100%, 4rem, none, .5rem, 1.6rem, 600);
+                background: var(--cl-primary-yellow);
+                color: var(--cl-white-pure);
+                margin-bottom: 1rem;
+            }
+
+            .reset-customize {
+                @extend .confirm-customize;
+                background: var(--cl-primary-purple);
+            }
+
+        }
+
+        .customize-broad__hidden {
+            display: none;
+        }
+
+        .logger {
+            width: 100%;
+            height: 4rem;
+            text-wrap: wrap;
+            background: transparent;
+            padding: 1rem;
+            font-size: 1.4rem;
+            text-align: center;
+            color: var(--cl-red-flag)
+        }
+
+        .game-broad {
+            gap: .1rem;
+            justify-content: center;
+            position: relative;
+
+            .wrapper-game-over {
+                background: transparent;
+                height: 100%;
+                width: 100%;
+                position: absolute;
+
+                .game-over {
+                    background: var(--cl-primary-purple);
+                    color: var(--cl-white-pure);
+                    width: 50%;
+                    height: auto;
+                    text-align: center;
+                    padding: 1.5rem;
+                    font-size: 2.4rem;
+                    position: sticky;
+                    top: 1rem;
+                    flex-direction: column;
+                    gap: 1.8rem;
+                    margin: 0 auto;
+                    border-radius: 1rem;
+                    animation: appear .5s;
+
+                    .game-over-state {
+                        width: 80%;
+                        height: auto;
+                        text-align: center;
+                        text-wrap: wrap;
+                    }
+
+                    .game-over-option {
+                        width: 100%;
+                        max-width: 40rem;
+                        justify-content: space-between;
+
+                        .game-over-option-restart {
+                            width: 35%;
+                            min-width: 10rem;
+                            font-size: 1.6rem;
+                            padding: 1rem;
+                            border: none;
+                            border-radius: .5rem;
+                            background: var(--cl-white-pure);
+                            color: var(--cl-primary-purple);
+                            transition: all .3s;
+
+                            &:hover {
+                                background: var(--cl-primary-yellow);
+                                color: var(--cl-black);
+                            }
+                        }
+
+                        .game-over-option-home {
+                            @extend .game-over-option-restart;
+                        }
+                    }
+                }
+            }
+
+            .game-broad-cell {
+                border: .1rem solid var(--cl-gray);
+                justify-content: center;
+                font-size: 1.4rem;
+                font-weight: 600;
+
+                &:hover {
+                    background-color: var(--cl-gray);
+                }
+
+                &.bomb {
+                    background-color: var(--cl-red-flag);
+                }
+
+                &.open0 {
+                    background-color: var(--cl-gray);
+                }
+
+                &.open1 {
+                    color: #1976D2;
+                }
+
+                &.open2 {
+                    color: #388E3C;
+                }
+
+                &.open3 {
+                    color: #D32F2F;
+                }
+
+                &.open4 {
+                    color: #7B1FA2;
+                }
+
+                &.open5 {
+                    color: #1976D2;
+                }
+
+                &.open6 {
+                    color: #388E3C;
+                }
+
+                &.open7 {
+                    color: #D32F2F;
+                }
+
+                &.open8 {
+                    color: #7B1FA2;
+                }
+            }
+        }
+    }
+}
+
+.tool {
+    display: grid;
+    grid-template-columns: repeat(2, 4rem);
+    grid-template-rows: repeat(2, 4rem);
+    gap: .1rem;
+    position: absolute;
+    z-index: 2;
+    transition: top .2s, left .2s;
+
+    .tool-cell {
+        justify-content: center;
+        background: var(--cl-gray);
+
+        .tool-btn {
+            font-size: 3rem;
+        }
+
+        .open {
+            color: var(--cl-primary-purple)
+        }
+
+        .flag {
+            color: var(--cl-red-flag)
+        }
+
+    }
+
+    .refer {
+        background: transparent;
+    }
+
+    .tool-cell-open {
+        grid-area: open;
+    }
+
+    .tool-cell-close {
+        grid-area: close;
+    }
+
+    .tool-cell-flag {
+        grid-area: flag;
+    }
+
+}

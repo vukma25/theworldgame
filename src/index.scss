@@ -1,0 +1,33 @@
+@import 'colors';
+@import 'keyframes';
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 62.5%;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    scrollbar-width: thin;
+}
+
+body {
+    .flex-div {
+        display: flex;
+        align-items: center;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    input, button, textarea, select {
+        font-size: inherit;
+    }
+}

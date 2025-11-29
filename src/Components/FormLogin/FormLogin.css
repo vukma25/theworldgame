@@ -1,0 +1,156 @@
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 99;
+}
+.wrapper .dropdown {
+  background: var(--cl-primary-purple);
+  color: var(--cl-white-pure);
+  font-weight: lighter;
+  width: 40rem;
+  border-radius: 1rem;
+  padding-bottom: 2rem;
+}
+.wrapper .dropdown .loginForm {
+  flex-direction: column;
+  padding: 0 2rem;
+}
+.wrapper .dropdown .loginForm .field-container {
+  position: relative;
+  width: 95%;
+  height: auto;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+.wrapper .dropdown .loginForm .field-container .text-type, .wrapper .dropdown .loginForm .field-container .password-type {
+  width: 100%;
+  height: 4rem;
+  border: none;
+  border-bottom: 0.2rem solid var(--cl-white-pure);
+  outline: none;
+  margin-top: 2rem;
+  background: transparent;
+  color: var(--cl-white-pure);
+}
+.wrapper .dropdown .loginForm .field-container .text-type:focus ~ .name-field, .wrapper .dropdown .loginForm .field-container .password-type:focus ~ .name-field {
+  transform: translateY(-2.2rem);
+  opacity: 1;
+}
+.wrapper .dropdown .loginForm .field-container .text-type:focus ~ .display-password, .wrapper .dropdown .loginForm .field-container .password-type:focus ~ .display-password {
+  opacity: 1;
+}
+.wrapper .dropdown .loginForm .field-container .name-field {
+  position: absolute;
+  left: 0;
+  bottom: 1rem;
+  opacity: 0.8;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.wrapper .dropdown .loginForm .field-container .valid {
+  transform: translateY(-1.8rem);
+  opacity: 1;
+}
+.wrapper .dropdown .loginForm .field-container .display-password {
+  position: absolute;
+  right: 0;
+  bottom: 1rem;
+  opacity: 0.8;
+  cursor: pointer;
+}
+.wrapper .dropdown .loginForm .additionalLinks-before {
+  font-size: 1.4rem;
+  color: var(--cl-red-error);
+  margin: 0.5rem 0;
+}
+.wrapper .dropdown .loginForm .additionalLinks {
+  font-size: 1.2rem;
+  width: 95%;
+}
+.wrapper .dropdown .loginForm .additionalLinks .additionalLinks-left {
+  justify-content: flex-start;
+  width: 50%;
+  gap: 0.5rem;
+}
+.wrapper .dropdown .loginForm .additionalLinks .additionalLinks-left input[type=checkbox] {
+  accent-color: var(--cl-primary-yellow);
+}
+.wrapper .dropdown .loginForm .additionalLinks .additionalLinks-right {
+  width: 50%;
+}
+.wrapper .dropdown .loginForm .additionalLinks .additionalLinks-right .additionalLinks-right-anchor {
+  display: block;
+  width: 100%;
+  color: var(--cl-white-pure);
+  text-decoration: none;
+  text-align: end;
+}
+.wrapper .dropdown .loginForm .additionalLinks .additionalLinks-right .additionalLinks-right-anchor:hover {
+  color: var(--cl-red-error);
+}
+.wrapper .dropdown .loginForm .submitBtn {
+  width: 95%;
+  height: 4rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin: 1rem 0;
+  color: var(--cl-primary-purple);
+  transition: color 0.3s, background 0.3s;
+}
+.wrapper .dropdown .loginForm .submitBtn:hover {
+  color: var(--cl-black);
+  background: var(--cl-primary-yellow);
+}
+.wrapper .dropdown .different-method, .wrapper .dropdown .signup {
+  width: 85%;
+  height: 4rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 1rem auto;
+  justify-content: center;
+  color: var(--cl-primary-purple);
+  background-color: var(--cl-white-pure);
+  transition: color 0.3s, background 0.3s;
+}
+.wrapper .dropdown .different-method:hover, .wrapper .dropdown .signup:hover {
+  color: var(--cl-black);
+  background: var(--cl-primary-yellow);
+}
+.wrapper .dropdown .more {
+  width: 85%;
+  margin: 1rem auto;
+  pointer-events: none;
+  position: relative;
+  justify-content: center;
+}
+.wrapper .dropdown .more .label {
+  background: var(--cl-primary-purple);
+}
+.wrapper .dropdown .more .hr-element {
+  width: 100%;
+  position: absolute;
+  height: 0.1rem;
+  background-color: var(--cl-white-pure);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: -1;
+}
+.wrapper .position-right {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.wrapper .over-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.close {
+  display: none;
+}/*# sourceMappingURL=FormLogin.css.map */

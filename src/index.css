@@ -1,0 +1,55 @@
+:root {
+  --cl-primary-purple: #5309B3;
+  --cl-primary-yellow: #FACC14;
+  --cl-gray: #CED4DA;
+  --cl-white-pure: #FFFFFF;
+  --cl-white: #F2F2F2;
+  --cl-black: #222222;
+  --cl-red-flag: #EF0A0A;
+  --cl-red-error: #FBD0D0;
+}
+
+@keyframes floatIn {
+  0% {
+    transform: translate(50%, 3rem);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(50%, 1rem);
+    opacity: 1;
+  }
+}
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+  font-family: "Be Vietnam Pro", sans-serif;
+  scrollbar-width: thin;
+}
+
+body .flex-div {
+  display: flex;
+  align-items: center;
+}
+body a {
+  text-decoration: none;
+}
+body input, body button, body textarea, body select {
+  font-size: inherit;
+}/*# sourceMappingURL=index.css.map */
