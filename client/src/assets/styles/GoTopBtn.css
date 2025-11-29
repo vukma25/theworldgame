@@ -1,0 +1,29 @@
+.go-top-container {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  width: 5rem;
+  aspect-ratio: 1;
+  animation: floatInForGoTopBtn 0.5s;
+  z-index: 99;
+}
+.go-top-container .go-top-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.go-top-container .go-top-wrapper .go-top-ring {
+  position: absolute;
+  stroke: var(--brand-600);
+  stroke-width: 0.2rem;
+  fill: var(--cl-gray);
+  transform: rotate(-90deg);
+}
+.go-top-container .go-top-wrapper .go-top-arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  color: var(--cl-black-light);
+}/*# sourceMappingURL=GoTopBtn.css.map */

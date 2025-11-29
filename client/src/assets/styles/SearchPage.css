@@ -1,0 +1,39 @@
+.search-overlay {
+  position: fixed;
+  background: transparent;
+  width: 100%;
+  height: 92vh;
+  z-index: 99;
+  justify-content: center;
+  -webkit-backdrop-filter: saturate(160%) blur(0.3rem);
+          backdrop-filter: saturate(160%) blur(0.3rem);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.65));
+}
+
+.searchpage {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(36rem, 1fr));
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+.expect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+.expect .expect-des {
+  font-size: 2rem;
+  text-align: center;
+}
+.expect .expect-return {
+  padding: 1rem 1.5rem;
+  font-size: 1.6rem;
+  color: var(--cl-white-pure);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, var(--brand-600), var(--purple-600));
+}/*# sourceMappingURL=SearchPage.css.map */

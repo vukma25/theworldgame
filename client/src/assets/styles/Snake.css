@@ -1,0 +1,389 @@
+.snake-game {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+  color: #1e293b;
+}
+.snake-game .game-container {
+  width: 100%;
+  max-width: 80rem;
+}
+.snake-game .game-container .game-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .snake-game .game-container .game-layout {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+.snake-game .game-container .game-board .board-card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1f5f9;
+  padding: 1.5rem;
+  width: 100%;
+  min-width: 40rem;
+}
+.snake-game .game-container .game-board .board-card .stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.snake-game .game-container .game-board .board-card .stats-container .stats-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.snake-game .game-container .game-board .board-card .stats-container .stats-group .stat {
+  padding: 1rem 1.2rem;
+  border-radius: 0.75rem;
+  border: 0.1rem solid var(--brand-700);
+  font-weight: 600;
+  font-size: 1rem;
+}
+.snake-game .game-container .game-board .board-card .stats-container .stats-group .stat.score {
+  color: #4338ca;
+}
+.snake-game .game-container .game-board .board-card .stats-container .stats-group .stat.extra {
+  color: #015901;
+}
+.snake-game .game-container .game-board .board-card .stats-container .stats-group .stat.highscore {
+  color: #b45309;
+}
+.snake-game .game-container .game-board .board-card .stats-container .action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.snake-game .game-container .game-board .board-card .stats-container .action-buttons .btn {
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  width: 10rem;
+}
+.snake-game .game-container .game-board .board-card .stats-container .action-buttons .btn.reset {
+  background-color: var(--brand-700);
+  color: white;
+}
+.snake-game .game-container .game-board .board-card .stats-container .action-buttons .btn.reset:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.snake-game .game-container .game-board .board-card .stats-container .action-buttons .pause {
+  background-color: #1e293b;
+  color: white;
+}
+.snake-game .game-container .game-board .board-card .stats-container .action-buttons .pause:hover {
+  background-color: #0f172a;
+}
+.snake-game .game-container .game-board .board-card .stats-container .action-buttons .pause:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper {
+  width: 100%;
+  height: auto;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board {
+  display: grid;
+  background-color: var(--cl-white-pure);
+  box-shadow: 0 0 0.5rem var(--ink-300);
+  margin: 0 auto;
+  overscroll-behavior-y: none;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell {
+  transition: background-color 0.08s ease, transform 0.08s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.food {
+  position: relative;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.food::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: zoomInOut 1s ease-in-out infinite alternate;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.food.extra::before {
+  background-color: var(--brand-700);
+  animation: pop 0.5s ease-in-out infinite alternate;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head {
+  background-color: #059669;
+  position: relative;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.up {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.up::before {
+  content: "";
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background-color: var(--cl-white-pure);
+  width: 0.5rem;
+  top: 0.3rem;
+  left: 0.2rem;
+  aspect-ratio: 1;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.up::after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--cl-white-pure);
+  width: 0.5rem;
+  top: 0.3rem;
+  right: 0.2rem;
+  aspect-ratio: 1;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.down {
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.down::before {
+  content: "";
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background-color: var(--cl-white-pure);
+  width: 0.5rem;
+  bottom: 0.3rem;
+  left: 0.2rem;
+  aspect-ratio: 1;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.down::after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--cl-white-pure);
+  width: 0.5rem;
+  bottom: 0.3rem;
+  right: 0.2rem;
+  aspect-ratio: 1;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.right {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.right::before {
+  content: "";
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background-color: var(--cl-white-pure);
+  width: 0.5rem;
+  top: 0.2rem;
+  right: 0.3rem;
+  aspect-ratio: 1;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.right::after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--cl-white-pure);
+  width: 0.5rem;
+  bottom: 0.2rem;
+  right: 0.3rem;
+  aspect-ratio: 1;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.left {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.left::before {
+  content: "";
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background-color: var(--cl-white-pure);
+  width: 0.5rem;
+  top: 0.2rem;
+  left: 0.3rem;
+  aspect-ratio: 1;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.head.left::after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--cl-white-pure);
+  width: 0.5rem;
+  bottom: 0.2rem;
+  left: 0.3rem;
+  aspect-ratio: 1;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.body {
+  background-color: #10b981;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell.fence {
+  background-color: var(--ink-300);
+  border: 0.1rem solid var(--ink-500);
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell:not(.head):not(.body):not(.fence) {
+  background-color: var(--ink-100);
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .btn-group {
+  width: 100%;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+.snake-game .game-container .game-board .board-card .board-wrapper .btn-group .control-btn {
+  background-color: var(--brand-700);
+  color: var(--cl-white-pure);
+}
+.snake-game .game-container .side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.snake-game .game-container .side-panel .panel-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--cl-black-light);
+}
+.snake-game .game-container .side-panel .settings-panel {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1f5f9;
+  padding: 1.25rem;
+}
+.snake-game .game-container .side-panel .settings-panel .settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.snake-game .game-container .side-panel .settings-panel .settings-content .setting-group label {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.25rem;
+}
+.snake-game .game-container .side-panel .settings-panel .settings-content .setting-group input[type=range] {
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+.snake-game .game-container .side-panel .settings-panel .settings-content .setting-group .setting-value {
+  font-size: 1rem;
+  color: var(--ink-500);
+}
+.snake-game .game-container .side-panel .settings-panel .settings-content .reset {
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0.8rem;
+  background-color: #4f46e5;
+  color: white;
+}
+.snake-game .game-container .side-panel .settings-panel .settings-content .reset:hover {
+  background-color: #4338ca;
+}
+.snake-game .game-container .side-panel .settings-panel .settings-content .reset:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.snake-game .game-container .side-panel .instruction-general {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1f5f9;
+  padding: 1.25rem;
+}
+.snake-game .game-container .side-panel .instruction-general .title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--cl-black-light);
+  justify-content: space-between;
+}
+.snake-game .game-container .side-panel .instruction-general .overall {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+.snake-game .game-container .side-panel .instruction-general .overall strong {
+  color: var(--cl-red-flag);
+}
+.snake-game .game-container .side-panel .instruction-general .instruction-block {
+  margin-bottom: 1.5rem;
+}
+.snake-game .game-container .side-panel .instruction-general .instruction-block .title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.snake-game .game-container .side-panel .instruction-general .instruction-block .control-key {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.85rem;
+}
+.snake-game .game-container .side-panel .instruction-general .instruction-block .control-key .keys {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.snake-game .game-container .side-panel .instruction-general .instruction-block .control-key .keys .kdb {
+  background-color: var(--ink-200);
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+}
+.snake-game .game-container .side-panel .instruction-general .instruction-block .control-key .control {
+  text-transform: uppercase;
+}
+.snake-game .game-container .side-panel .instruction-general .instruction-block .description {
+  text-align: justify;
+}
+.snake-game .game-container .side-panel .instruction-btn {
+  background-color: var(--brand-700);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Animations */
+@keyframes pop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes zoomInOut {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.score-pop {
+  animation: pop 0.4s ease;
+}
+
+.btn {
+  transition: transform 0.08s ease, filter 0.18s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.98);
+}/*# sourceMappingURL=Snake.css.map */
