@@ -1,0 +1,174 @@
+.card {
+  height: auto;
+  border: 0.1rem solid var(--cl-gray);
+  border-radius: 1.2rem;
+  overflow: hidden;
+  background: var(--cl-white-pure);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+.card:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.1);
+  border-color: rgba(139, 92, 246, 0.35);
+}
+.card .card-image {
+  width: 100%;
+  height: 12rem;
+  position: relative;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.card .card-detail {
+  position: relative;
+  padding: 5.5rem 1.2rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.card .card-detail .card-detail-logo {
+  width: 8rem;
+  aspect-ratio: 1;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  position: absolute;
+  top: -4rem;
+  left: 1.2rem;
+  border: 0.18rem solid var(--cl-white-pure);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+.card .card-detail .card-detail-title {
+  font-size: 2rem;
+  line-height: 1.25;
+  color: var(--cl-primary-purple);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  overflow: hidden;
+}
+.card .card-detail .card-detail-tags {
+  width: 100%;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  /* Class cho tag Multiplayer */
+  /* Class cho tag Relaxing */
+  /* Class cho tag Keyboard */
+  /* Class cho tag Competitive */
+  /* Class cho tag Time */
+  /* Class cho tag Skill */
+  /* Class cho tag Brain */
+  /* Class cho tag Offline */
+  /* Class cho tag Online */
+  /* Class cho tag Simple */
+}
+.card .card-detail .card-detail-tags .card-detail-tag {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: var(--cl-black);
+}
+.card .card-detail .card-detail-tags .multiplayer {
+  border-color: var(--multiplayer);
+  border: 2px solid #4338ca;
+}
+.card .card-detail .card-detail-tags .relaxing {
+  border-color: var(--relaxing);
+  border: 2px solid #6366f1;
+}
+.card .card-detail .card-detail-tags .keyboard {
+  border-color: var(--keyboard);
+  border: 2px solid #5b21b6;
+}
+.card .card-detail .card-detail-tags .competitive {
+  border-color: var(--competitive);
+  border: 2px solid #b91c1c;
+}
+.card .card-detail .card-detail-tags .time {
+  border-color: var(--time);
+  border: 2px solid #d97706;
+}
+.card .card-detail .card-detail-tags .skill {
+  border-color: var(--skill);
+  border: 2px solid #1d4ed8;
+}
+.card .card-detail .card-detail-tags .brain {
+  border-color: var(--brain);
+  border: 2px solid #4c1d95;
+}
+.card .card-detail .card-detail-tags .offline {
+  border-color: var(--offline);
+  border: 2px solid #4b5563;
+}
+.card .card-detail .card-detail-tags .online {
+  border-color: var(--online);
+  border: 2px solid #047857;
+}
+.card .card-detail .card-detail-tags .simple {
+  border-color: var(--simple);
+  border: 2px solid #a5b4fc;
+}
+.card .card-detail .card-detail-description {
+  font-size: 1.3rem;
+  color: #4b5563;
+  line-height: 1.55;
+  min-height: 3.8rem;
+  height: auto;
+  margin-top: 0.2rem;
+  overflow: hidden;
+}
+.card .card-detail .card-detail-btn {
+  width: 12rem;
+  height: 4rem;
+  border: 0.12rem solid var(--cl-primary-purple);
+  border-radius: 0.8rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+  color: var(--cl-primary-purple);
+  background: transparent;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+.card .card-detail .card-detail-btn:hover {
+  background: var(--cl-primary-purple);
+  color: var(--cl-white-pure);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+}
+.card .card-detail .card-detail-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+}
+.card .card-detail .card-detail-btn .card-detail-btn-arrow {
+  display: inline-flex;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.9;
+}
+.card .card-detail .card-detail-btn:hover .card-detail-btn-arrow {
+  transform: translateX(0.35rem);
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .card {
+    border-radius: 1rem;
+  }
+  .card .card-detail {
+    padding: 5rem 1rem 1rem;
+  }
+  .card .card-detail .card-detail-title {
+    font-size: 1.8rem;
+  }
+  .card .card-detail .card-detail-description {
+    font-size: 1.25rem;
+  }
+  .card .card-detail .card-detail-btn {
+    width: 100%;
+  }
+}/*# sourceMappingURL=Card.css.map */

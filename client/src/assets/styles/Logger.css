@@ -1,0 +1,125 @@
+@charset "UTF-8";
+:root {
+  --logger-bg: var(--cl-white-pure);
+  --logger-text: var(--cl-red-flag);
+  --logger-border: var(--cl-primary-purple);
+  --logger-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+}
+
+/* Khung chính */
+.logger {
+  position: fixed;
+  left: 50%;
+  top: 2.5rem;
+  transform: translateX(-50%) translateY(16px);
+  width: calc(100% - 2rem);
+  max-width: 38rem;
+  min-height: 3.5rem;
+  padding: 1rem 1rem;
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  border: 0.1rem solid var(--logger-border);
+  border-radius: 0.75rem;
+  background: var(--logger-bg);
+  color: var(--logger-text);
+  font-size: 1.6rem;
+  line-height: 1.4;
+  z-index: 9999;
+  box-shadow: var(--logger-shadow);
+  text-wrap: wrap;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+  opacity: 0;
+}
+
+/* Khi hiển thị */
+.logger-display {
+  display: flex;
+  justify-content: center;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  /* trượt lên nhẹ */
+}
+
+/* Nội dung + icon căn hàng ngang đẹp mắt */
+.logger__inner {
+  display: grid;
+  width: -moz-fit-content;
+  width: fit-content;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* Icon tròn nhỏ theo trạng thái */
+.logger__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+/* Nút đóng */
+.logger__close {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.logger__close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Vùng text an toàn, không dính viền */
+.logger__message {
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Trạng thái nhanh: thêm class vào .logger để đổi màu */
+.logger--info {
+  --logger-text: #1f4f8a;
+  --logger-border: #9ec5ff;
+  --logger-bg: #eef6ff;
+}
+
+.logger--success {
+  --logger-text: #0f5132;
+  --logger-border: #a3e4c4;
+  --logger-bg: #e9fbf1;
+}
+
+.logger--warning {
+  --logger-text: #664d03;
+  --logger-border: #ffd27a;
+  --logger-bg: #fff7e6;
+}
+
+.logger--error {
+  --logger-text: #842029;
+  --logger-border: #f5a5ac;
+  --logger-bg: #ffecee;
+}
+
+.logger.logger-display {
+  animation: floatInForLog 0.28s ease;
+}
+
+/* Responsive nhỏ gọn trên màn hình bé */
+@media (max-width: 420px) {
+  .logger {
+    padding: 0.75rem 0.875rem;
+    border-radius: 0.625rem;
+    font-size: 0.95rem;
+  }
+}/*# sourceMappingURL=Logger.css.map */

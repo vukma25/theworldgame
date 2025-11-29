@@ -1,0 +1,253 @@
+.winning-line {
+  animation: glow 1s ease-in-out infinite alternate;
+  position: relative;
+}
+
+.line-cross-main:before {
+  content: "";
+  display: block;
+  background-color: black;
+  width: 140%;
+  height: 0.1rem;
+  position: absolute;
+  transform: rotate(-45deg);
+}
+
+.line-cross-not-main:before {
+  content: "";
+  display: block;
+  background-color: black;
+  width: 140%;
+  height: 0.1rem;
+  position: absolute;
+  transform: rotate(45deg);
+}
+
+.line-vertical:before {
+  content: "";
+  display: block;
+  background-color: black;
+  width: 100%;
+  height: 0.1rem;
+  position: absolute;
+  transform: rotate(90deg);
+}
+
+.line-horizontal:before {
+  content: "";
+  display: block;
+  background-color: black;
+  width: 100%;
+  height: 0.1rem;
+  position: absolute;
+}
+
+.piece-appear {
+  animation: appear 0.3s ease-out;
+}
+
+.caro-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.caro-container .caro-card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 1.5rem;
+  max-width: 80rem;
+  width: 100%;
+}
+.caro-container .caro-card .caro-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.caro-container .caro-card .caro-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+.caro-container .caro-card .caro-header p {
+  color: #4b5563;
+}
+.caro-container .caro-card .caro-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .caro-container .caro-card .caro-content {
+    flex-direction: row;
+  }
+}
+.caro-container .caro-card .caro-board-section {
+  flex: 1;
+  align-items: center;
+  flex-direction: column;
+}
+.caro-container .caro-card .caro-board-section .evaluate-bar {
+  display: flex;
+  width: 100%;
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+.caro-container .caro-card .caro-board-section .evaluate-bar .evaluate-x {
+  width: 40%;
+  height: 100%;
+  background-color: var(--cl-red-flag);
+}
+.caro-container .caro-card .caro-board-section .evaluate-bar .evaluate-o {
+  width: 60%;
+  height: 100%;
+  background-color: var(--brand-500);
+}
+.caro-container .caro-card .caro-board-section .board-container {
+  overflow: scroll;
+  margin-bottom: 1rem;
+  height: auto;
+  width: 100%;
+  min-width: 40vh;
+}
+.caro-container .caro-card .caro-board-section .board-container::-webkit-scrollbar {
+  width: 0.5rem;
+}
+.caro-container .caro-card .caro-board-section .board-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.caro-container .caro-card .caro-board-section .board-container::-webkit-scrollbar-thumb {
+  background: var(--cl-gray);
+  border-radius: 0.5rem;
+}
+.caro-container .caro-card .caro-board-section .board-container .caro-board {
+  display: grid;
+  gap: 0;
+  border: 0.1rem solid var(--cl-black-light);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+.caro-container .caro-card .caro-board-section .board-container .caro-board .caro-cell {
+  aspect-ratio: 1;
+  border: 0.1rem solid var(--ink-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: white;
+  transition: background-color 0.2s;
+}
+.caro-container .caro-card .caro-board-section .board-container .caro-board .caro-cell:hover {
+  background-color: #f3f4f6;
+}
+.caro-container .caro-card .caro-board-section .board-container .caro-board .caro-cell.winning-cell {
+  background-color: #bbf7d0;
+}
+.caro-container .caro-card .caro-board-section .board-container .caro-board .caro-cell .player-x {
+  font-weight: 700;
+  color: #ef4444;
+  animation: appear 0.3s;
+}
+.caro-container .caro-card .caro-board-section .board-container .caro-board .caro-cell .player-o {
+  font-weight: 700;
+  color: var(--cl-white-pure);
+  border: 0.2rem solid #3b82f6;
+  border-radius: 50%;
+  animation: appear 0.3s;
+}
+.caro-container .caro-card .side-panel {
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .caro-container .caro-card .side-panel {
+    width: 23rem;
+  }
+}
+.caro-container .caro-card .side-panel > * {
+  margin-bottom: 1.5rem;
+}
+.caro-container .caro-card .side-panel > *:last-child {
+  margin-bottom: 0;
+}
+.caro-container .caro-card .side-panel .reset-section {
+  text-align: center;
+}
+.caro-container .caro-card .side-panel .reset-section .reset-button {
+  width: 100%;
+  background-color: #4f46e5;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  margin-bottom: 0.5rem;
+}
+.caro-container .caro-card .side-panel .reset-section .reset-button:hover {
+  background-color: #4338ca;
+}
+.caro-container .caro-card .side-panel h3 {
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin-bottom: 0.75rem;
+}
+.caro-container .caro-card .side-panel .statistics-match-panel {
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 0 0.5rem var(--ink-400);
+}
+.caro-container .caro-card .side-panel .statistics-match-panel .statistics-content {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: var(--cl-black-light);
+}
+.caro-container .caro-card .side-panel .statistics-match-panel .statistics-content .statistics-name {
+  font-weight: 600;
+}
+.caro-container .caro-card .side-panel .statistics-match-panel .statistics-content .statistics-data .player-x {
+  font-weight: 700;
+  color: #ef4444;
+  animation: appear 0.3s;
+}
+.caro-container .caro-card .side-panel .statistics-match-panel .statistics-content .statistics-data .player-o {
+  font-weight: 700;
+  color: var(--cl-white-pure);
+  border: 0.2rem solid #3b82f6;
+  border-radius: 50%;
+  animation: appear 0.3s;
+}
+.caro-container .caro-card .side-panel .statistics-match-panel .statistics-content .statistics-data .status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.caro-container .caro-card .side-panel .statistics-match-panel .statistics-content .statistics-data .status.waiting {
+  color: var(--cl-primary-yellow);
+}
+.caro-container .caro-card .side-panel .statistics-match-panel .statistics-content .statistics-data .status.success {
+  color: var(--cl-green);
+}
+.caro-container .caro-card .side-panel .settings-panel {
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 0 0.5rem var(--ink-400);
+}
+.caro-container .caro-card .side-panel .settings-panel .setting-group {
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.caro-container .caro-card .side-panel .settings-panel .setting-group:last-child {
+  margin-bottom: 0;
+}
+.caro-container .caro-card .side-panel .settings-panel .setting-group .group-label {
+  font-size: 1.2rem;
+  color: var(--cl-black-lighter);
+}/*# sourceMappingURL=Caro.css.map */

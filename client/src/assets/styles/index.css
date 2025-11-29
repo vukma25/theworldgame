@@ -1,0 +1,209 @@
+:root {
+  --bg-grad-a: #eef2ff;
+  --bg-grad-b: #f0f9ff;
+  --bg-grad-c: #ecfeff;
+  --ink-900: #111827;
+  --ink-800: #1f2937;
+  --ink-700: #374151;
+  --ink-600: #4b5563;
+  --ink-500: #6b7280;
+  --ink-400: #9ca3af;
+  --ink-300: #d1d5db;
+  --ink-200: #e5e7eb;
+  --ink-100: #f3f4f6;
+  --brand-50: #eef2ff;
+  --brand-100: #e0e7ff;
+  --brand-200: #c7d2fe;
+  --brand-400: #818cf8;
+  --brand-500: #6366f1;
+  --brand-600: #4f46e5;
+  --brand-700: #4338ca;
+  --purple-600: #7c3aed;
+  --white: #ffffff;
+  --shadow-lg: 0 10px 30px rgba(2, 6, 23, .07);
+  --shadow-md: 0 6px 18px rgba(2, 6, 23, .06);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --cl-primary-purple: #5309B3;
+  --cl-primary-blue: #2563eb;
+  --cl-primary-yellow: #FACC14;
+  --cl-gray: #CED4DA;
+  --cl-white-pure: #FFFFFF;
+  --cl-white: #F2F2F2;
+  --cl-black: #222222;
+  --cl-black-light: #2d2d2d;
+  --cl-black-lighter: #555;
+  --cl-red-flag: #EF0A0A;
+  --cl-red-error: #FBD0D0;
+  --cl-green: #10b981;
+  --multiplayer: #4f46e5;
+  --relaxing: #818cf8;
+  --keyboard: #7c3aed;
+  /* tags */
+  --competitive: #EF0A0A;
+  --time: #FACC14;
+  --skill: #2563eb;
+  --brain: #5309B3;
+  --offline: #6b7280;
+  --online: #10b981;
+  --simple: #c7d2fe;
+  --primary: #6c5ce7;
+  --secondary: #a29bfe;
+  --accent: #fd79a8;
+  --dark: #2d3436;
+  --light: #f5f6fa;
+  --text: #2d3436;
+  --text-light: #636e72;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+@keyframes floatIn {
+  0% {
+    transform: translate(50%, 3rem);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(50%, 1rem);
+    opacity: 1;
+  }
+}
+@keyframes appear {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px #10b981;
+  }
+  to {
+    box-shadow: 0 0 20px #10b981, 0 0 30px #10b981;
+  }
+}
+@keyframes floatInForLog {
+  from {
+    transform: translateX(-50%) translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes floatInForGoTopBtn {
+  0% {
+    transform: translateY(7rem);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes generating {
+  0% {
+    opacity: 0.5;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  font-family: "Be Vietnam Pro", sans-serif !important;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+  font-family: "Be Vietnam Pro", sans-serif;
+  scrollbar-width: thin;
+}
+
+body {
+  min-height: 100vh;
+  /* min-h-screen */
+  background: linear-gradient(to bottom right, #f5f3ff, #dbeafe);
+}
+body #root {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+}
+body .flex-div {
+  display: flex;
+  align-items: center;
+}
+body a {
+  text-decoration: none;
+}
+body input, body button, body textarea, body select {
+  font-size: inherit;
+}/*# sourceMappingURL=index.css.map */

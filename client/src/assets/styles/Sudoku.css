@@ -1,0 +1,299 @@
+.sudoku-container {
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  gap: 2rem;
+  /* Style cho modal */
+}
+.sudoku-container .sudoku-modal .modal-content {
+  background-color: var(--cl-white-pure);
+  box-shadow: 0 0 0.5rem var(--ink-300);
+  border-radius: 15px;
+  width: 30%;
+  min-width: 400px;
+  padding: 0 0 2rem 0;
+  text-align: center;
+  position: relative;
+  color: var(--cl-black);
+  animation: slideDown 0.4s ease;
+}
+.sudoku-container .sudoku-modal .modal-content .inform {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  position: relative;
+  border-bottom: 0.1rem solid var(--ink-300);
+}
+.sudoku-container .sudoku-modal .modal-content .inform .inform-title {
+  text-align: center;
+}
+.sudoku-container .sudoku-modal .modal-content .inform .inform-close {
+  position: absolute;
+  right: 1rem;
+  font-size: 2rem;
+}
+.sudoku-container .sudoku-modal .modal-content .result-stats {
+  padding: 1.5rem 1rem;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+}
+.sudoku-container .sudoku-modal .modal-content .result-stats .result-stat {
+  margin: 0.8rem 0;
+  padding: 1rem 0;
+  font-size: 1.6rem;
+  justify-content: space-between;
+  border-bottom: 0.1rem solid var(--ink-300);
+}
+.sudoku-container .sudoku-modal .modal-content .result-stats .result-stat .stat-name {
+  height: auto;
+  gap: 0.5rem;
+}
+.sudoku-container .sudoku-modal .modal-content .result-stats .result-stat .stat-name .icon {
+  color: var(--ink-500);
+}
+.sudoku-container .sudoku-modal .modal-content .result-stats .highlight {
+  color: var(--brand-500);
+}
+.sudoku-container .sudoku-modal .modal-content .result-btn {
+  background-color: var(--brand-500);
+  padding: 1rem;
+  border-radius: 1rem;
+  display: block;
+  width: 95%;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  color: var(--cl-white-pure);
+  font-size: 1.4rem;
+  border: none;
+  margin-bottom: 1rem;
+}
+.sudoku-container .sudoku-card-left {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  max-width: 42rem;
+  width: 100%;
+}
+.sudoku-container .sudoku-card-left .game-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+.sudoku-container .sudoku-card-left .game-stats .stat-item {
+  text-align: center;
+  width: 5rem;
+}
+.sudoku-container .sudoku-card-left .game-stats .stat-item .stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.sudoku-container .sudoku-card-left .game-stats .stat-item .stat-value.time {
+  color: #2563eb;
+}
+.sudoku-container .sudoku-card-left .game-stats .stat-item .stat-value.errors {
+  color: #16a34a;
+}
+.sudoku-container .sudoku-card-left .game-stats .stat-item .stat-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+.sudoku-container .sudoku-card-left .game-stats .reset-button {
+  background-color: #4f46e5;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+.sudoku-container .sudoku-card-left .game-stats .reset-button:hover {
+  background-color: #4338ca;
+}
+.sudoku-container .sudoku-card-left .sudoku-loading {
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+.sudoku-container .sudoku-card-left .sudoku-loading .sudoku-loading__description {
+  font-size: 1.4rem;
+  transform: opacity 0.3s;
+  animation: generating 1.5s infinite ease-in-out;
+}
+.sudoku-container .sudoku-card-left .sudoku-loading .sudoku-loading__info {
+  gap: 0.5rem;
+}
+.sudoku-container .sudoku-card-left .sudoku-board {
+  display: grid;
+  gap: 0;
+  border: 2px solid #1f2937;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.sudoku-container .sudoku-card-left .sudoku-board .cell-base {
+  aspect-ratio: 1;
+  border: 0.1rem solid var(--ink-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sudoku-container .sudoku-card-left .sudoku-board .cell-base__small-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.sudoku-container .sudoku-card-left .sudoku-board .cell-base__number {
+  background-color: var(--ink-200);
+}
+.sudoku-container .sudoku-card-left .sudoku-board .cell-base__empty {
+  background-color: var(--white);
+}
+.sudoku-container .sudoku-card-left .sudoku-board .cell-base__empty:hover {
+  background-color: var(--brand-100);
+}
+.sudoku-container .sudoku-card-left .sudoku-board .cell-active {
+  background-color: var(--brand-400);
+}
+.sudoku-container .sudoku-card-left .sudoku-board .cell-error {
+  background-color: #ef4444;
+  color: var(--white);
+}
+.sudoku-container .sudoku-card-left .sudoku-board .row-border {
+  border-top: 2px solid #1f2937;
+}
+.sudoku-container .sudoku-card-left .sudoku-board .col-border {
+  border-left: 2px solid #1f2937;
+}
+.sudoku-container .sudoku-card-left .number-input {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sudoku-container .sudoku-card-left .number-input .number-button {
+  height: 3rem;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  font-size: 1.125rem;
+}
+.sudoku-container .sudoku-card-left .number-input .number-button:hover {
+  background-color: #1d4ed8;
+}
+.sudoku-container .sudoku-card-left .number-input .number-button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+.sudoku-container .sudoku-card-left .number-input .clear-button {
+  height: 3rem;
+  background-color: #ef4444;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+.sudoku-container .sudoku-card-left .number-input .clear-button:hover {
+  background-color: #dc2626;
+}
+.sudoku-container .sudoku-card-left .number-input .clear-button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+.sudoku-container .sudoku-card-right {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  max-width: 42rem;
+  width: 100%;
+}
+.sudoku-container .sudoku-card-right .back-home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  margin-bottom: 0.5rem;
+  background-color: var(--brand-500);
+  border-radius: 0.8rem;
+  color: var(--cl-white-pure);
+}
+.sudoku-container .sudoku-card-right .sudoku-settings,
+.sudoku-container .sudoku-card-right .sudoku-detail {
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--ink-500);
+}
+.sudoku-container .sudoku-card-right .sudoku-settings .select-label {
+  font-size: 1.5rem;
+  color: var(--ink-500);
+}
+.sudoku-container .sudoku-card-right .sudoku-settings .select-settings {
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+.sudoku-container .sudoku-card-right .sudoku-detail .sudoku-detail-containers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0.85rem;
+  border-radius: 1rem;
+  font-size: 1.2rem;
+  background: linear-gradient(90deg, #f9fafb 0%, #f3f4f6 100%);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 0.1rem solid #e5e7eb;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+.sudoku-container .sudoku-card-right .sudoku-detail .sudoku-detail-containers:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+.sudoku-container .sudoku-card-right .sudoku-detail .sudoku-detail-containers .sudoku-detail-name::after {
+  content: ":";
+}
+.sudoku-container .sudoku-card-right .sudoku-detail .sudoku-detail-containers .difficulty-1 {
+  color: green;
+}
+.sudoku-container .sudoku-card-right .sudoku-detail .sudoku-detail-containers .difficulty-2 {
+  color: var(--brand-500);
+}
+.sudoku-container .sudoku-card-right .sudoku-detail .sudoku-detail-containers .difficulty-3 {
+  color: var(--cl-red-flag);
+}
+.sudoku-container .sudoku-card-right .sudoku-detail .sudoku-detail-containers .difficulty-4 {
+  color: var(--cl-primary-purple);
+}
+.sudoku-container .sudoku-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.sudoku-container .sudoku-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}/*# sourceMappingURL=Sudoku.css.map */

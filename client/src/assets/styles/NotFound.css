@@ -1,0 +1,36 @@
+.not-found-container {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.not-found-container .not-found-content {
+  flex-direction: column;
+  gap: 1rem;
+  text-align: center;
+}
+.not-found-container .not-found-content .error-code {
+  font-size: 5rem;
+}
+.not-found-container .not-found-content .error-title {
+  font-size: 2.4rem;
+  text-align: center;
+}
+.not-found-container .not-found-content .error-message {
+  font-size: 1.6rem;
+}
+.not-found-container .not-found-content .error-code {
+  font-size: 5rem;
+}
+.not-found-container .not-found-content .action-buttons .home-button, .not-found-container .not-found-content .action-buttons .back-button {
+  font-size: 1.4rem;
+  color: var(--cl-black);
+  padding: 1rem;
+}
+.not-found-container .not-found-content .action-buttons .back-button {
+  border: none;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, var(--brand-600), var(--purple-600));
+  color: var(--cl-white-pure);
+}/*# sourceMappingURL=NotFound.css.map */

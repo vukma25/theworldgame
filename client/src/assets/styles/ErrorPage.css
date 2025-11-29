@@ -1,0 +1,99 @@
+.error-container {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.error-container .error-content {
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+.error-container .error-content .error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+.error-container .error-content .error-title {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+.error-container .error-content .error-message {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+.error-container .error-content .action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.error-container .error-content .home-button,
+.error-container .error-content .back-button,
+.error-container .error-content .reload-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-block;
+}
+.error-container .error-content .home-button {
+  background: #3498db;
+  color: white;
+}
+.error-container .error-content .back-button {
+  background: #95a5a6;
+  color: white;
+}
+.error-container .error-content .reload-button {
+  background: #27ae60;
+  color: white;
+}
+.error-container .error-content .home-button:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+}
+.error-container .error-content .back-button:hover {
+  background: #7f8c8d;
+  transform: translateY(-2px);
+}
+.error-container .error-content .reload-button:hover {
+  background: #229954;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .error-container .error-content {
+    padding: 2rem;
+    margin: 1rem;
+  }
+  .error-container .error-content .error-code {
+    font-size: 4rem;
+  }
+  .error-container .error-content .action-buttons {
+    flex-direction: column;
+  }
+  .error-container .error-content .home-button,
+  .error-container .error-content .back-button,
+  .error-container .error-content .reload-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}/*# sourceMappingURL=ErrorPage.css.map */
