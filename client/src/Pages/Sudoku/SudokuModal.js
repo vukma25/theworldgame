@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router'
 import { useDispatch } from 'react-redux'
 import { close } from '../../redux/features/modal'
-import Icon from '@mui/material/Icon'
+import { Close, Timer, Error } from '@mui/icons-material'
 
 const formatTime = (clock) => {
     if (!clock) return
@@ -24,37 +24,36 @@ export default function SudokuModal({ isWin, errors, timeFinish, resetOrStartGam
     }
 
     return (
-        // Bảng thông báo kết quả
         <div className="sudoku-modal">
             <div className="modal-content">
                 <div className="inform">
                     <h1 className="inform-title">You {`${isWin ? "win" : "lose"}`}!</h1>
-                    <Icon
+                    <Close
                         className="inform-close"
                         onClick={() => { dispatch(close()) }}
-                    >close</Icon>
+                    />
                 </div>
                 <div className="result-stats">
                     <div className="result-stat flex-div">
                         <div className="stat-name flex-div">
-                            <p>Thời gian</p>
-                            <Icon className="icon">timer</Icon>
+                            <p>Time</p>
+                            <Timer className="icon" />
                         </div>
                         <p className="stat-data highlight">{formatTime(timeFinish)}</p>
                     </div>
                     <div className="result-stat flex-div">
                         <div className="stat-name flex-div">
-                            <p>Số lỗi</p>
-                            <Icon className="icon">error</Icon>
+                            <p>Error</p>
+                            <Error className="icon" />
                         </div>
                         <p className="stat-data highlight">{errors} / 3</p>
                     </div>
                 </div>
-                <button 
+                <button
                     className="result-btn"
                     onClick={home}
                 >Home</button>
-                <button 
+                <button
                     className="result-btn"
                     onClick={restart}
                 >New game</button>

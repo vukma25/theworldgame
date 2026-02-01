@@ -6,7 +6,7 @@ import { connectSocket, disconnectSocket } from './redux/features/socket';
 import { initSocket } from './socket';
 
 export default function AppContent() {
-    const { accessToken, user } = useSelector((state) => state.auth)
+    const { accessToken } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -17,7 +17,7 @@ export default function AppContent() {
 
         return () => dispatch(disconnectSocket())
     }, [accessToken])
-    
+
     return (
         <Fragment>
             <Outlet />

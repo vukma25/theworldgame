@@ -27,13 +27,15 @@ import modalReducer from "../features/modal";
 import socketReducer from "../features/socket"
 import eventSocketReducer from "../features/eventSocket"
 import userReducer from "../features/user"
+import menuReducer from "../features/menu"
+import profileReducer from "../features/profile"
 
 
 const persistConfig = {
     key: 'root',
     version: 1,
     storage,
-    whitelist: ['auth', 'event']
+    whitelist: ['auth']
 }
 
 
@@ -53,6 +55,8 @@ const rootReducer = combineReducers({
     socket: socketReducer,
     event: eventSocketReducer,
     user: userReducer,
+    menu: menuReducer,
+    profile: profileReducer
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
@@ -62,13 +66,13 @@ export const store = configureStore({
         getDefaultMiddleware({
             serializableCheck: {
                 // Ignore these action types
-                ignoredActions: ['chess/setChess','socket/connectSocket', 'message/send/pending',
+                ignoredActions: ['chess/setChess', 'socket/connectSocket', 'message/send/pending', 'menu/setAnchor',
                     'message/send/fulfilled', 'message/send/rejected', 'message/read/pending', 'message/read/pending', 'message/read/pending',
                     FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
                 // Ignore these field paths in all actions
-                ignoredActionPaths: ['payload.chess', 'payload.socket', 'payload.user'],
+                ignoredActionPaths: ['payload.chess', 'payload.socket', 'payload.user', 'payload.menu'],
                 // Ignore these paths in the state
-                ignoredPaths: ['chess.chess', 'socket.socket', 'user'],
+                ignoredPaths: ['chess.chess', 'socket.socket', 'user', 'menu.anchorEl'],
             },
         }),
 })

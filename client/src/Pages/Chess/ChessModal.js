@@ -6,6 +6,7 @@ import { ChessContext } from './Chess';
 import { Avatar } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import stringAvatar from '../../lib/avatar';
+import BadgeAvatar from '../../Components/BadgeAvatar/BadgeAvatar';
 
 export default function ChessModal() {
     const { chess, status: { cur, des }, mode: { opposite }, playerSide } = useSelector((state) => state.chess)
@@ -50,18 +51,15 @@ export default function ChessModal() {
 
             <div className="players-info">
                 <div className="player player1">
-                    <div className= {`player-avatar ${winner ? 'active' : ''}`} >
+                    <div className={`player-avatar ${winner ? 'active' : ''}`} >
                         {!user ? <img src="https://robohash.org/1" /> :
-                            <Avatar
-                                variant="square"
-                                {...formatAvatar()}
-                            />}
+                            <BadgeAvatar username={user.username} src={user.avatar} online={false} sx={{ width: "100%", height: "auto" }} />}
                     </div>
                     <div className="player-name">{user?.username || 'Player 1'}</div>
                 </div>
                 <div className="vs">VS</div>
                 <div className="player player2">
-                    <div className= {`player-avatar ${!winner ? 'active' : ''}`} >
+                    <div className={`player-avatar ${!winner ? 'active' : ''}`} >
                         <img src={`${opposite?.avatar || 'https://robohash.org/2'}`} alt={''} />
                     </div>
                     <div className="player-name">{opposite.name}</div>
@@ -77,8 +75,8 @@ export default function ChessModal() {
                 </button>
             </div>
 
-            <button className="close-button" onClick={() => {dispatch(close())}}>
-                <Close/>
+            <button className="close-button" onClick={() => { dispatch(close()) }}>
+                <Close />
             </button>
         </div>
     );

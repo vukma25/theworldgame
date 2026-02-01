@@ -120,10 +120,13 @@ function Sudoku() {
                 dispatch(open())
             }
         } else {
-            const updatedAnswers = answers.filter(({ square }) => {
-                const [r, c] = square
-                return row !== r || col !== c
-            })
+            let updatedAnswers = answers
+            if (num !== 0) {
+                updatedAnswers = answers.filter(({ square }) => {
+                    const [r, c] = square
+                    return row !== r || col !== c
+                })
+            }
 
             const times = errors.times
             const square = new Set([...errors.square])
@@ -291,19 +294,18 @@ function Sudoku() {
                         <div className="stat-value errors">
                             {sudoku.errors.times} / 3
                         </div>
-                        <div className="stat-label">Lỗi</div>
+                        <div className="stat-label">Error</div>
                     </div>
                     <button
                         onClick={resetOrStartGame}
                         className="reset-button"
                         disabled={sudoku.loading}
                     >
-                        {`${sudoku.status === "waiting" ? "Bắt đầu" : "Ván mới"}`}
+                        {`${sudoku.status === "waiting" ? "Start" : "New game"}`}
                     </button>
                 </div>
 
 
-                {/* Loading */}
                 {sudoku.loading &&
                     <div className="sudoku-loading flex-div">
                         <CircularProgress sx={{ color: "var(--brand-500)" }} />
@@ -315,7 +317,6 @@ function Sudoku() {
                             <p>16x16 puzzles can take a while to generate</p>
                         </div>
                     </div>}
-                {/* Sudoku Board */}
                 {!sudoku.loading && <div
                     className="sudoku-board"
                     style={{
@@ -336,7 +337,6 @@ function Sudoku() {
                     )}
                 </div>}
 
-                {/* Number Input */}
                 <div className="number-input">
                     {Array.from({ length: refStaticSize.current }, () => 0).map((_, index) => {
                         const num = refStaticSize.current - (refStaticSize.current - index - 1)

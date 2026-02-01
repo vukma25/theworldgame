@@ -38,15 +38,25 @@ export const logoutUser = createAsyncThunk(
     'auth/logout',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await api.post("/auth/logout", {data: "test"}, { withCredentials: true })
-
-            //if (response.status !== 200) { throw new Error('Error: logout failed') }
+            const response = await api.post("/auth/logout", { data: "test" }, { withCredentials: true })
             return true;
         } catch (error) {
             return rejectWithValue(error.response.data.message);
         }
     }
 );
+
+export const logoutForceUser = createAsyncThunk(
+    'auth/logout/force',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.post("/auth/logout/force", { data: "test" })
+            return true;
+        } catch (error) {
+            return rejectWithValue(error.response.data.message);
+        }
+    }
+)
 
 export const refreshToken = createAsyncThunk(
     'auth/refresh',
@@ -68,7 +78,7 @@ export const fetchUser = createAsyncThunk(
     'auth/fetchUser',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await api.get('/user/fetchUser')
+            const response = await api.get('/user/fetchMe')
 
             if (response.statusText !== 'OK') throw new Error("In maintaining process")
 
@@ -90,6 +100,12 @@ const authSlice = createSlice({
         isAuthenticated: false
     },
     reducers: {
+        updateFriendList: (state, action) => {
+            state.user.friends = [...state.user.friends, action.payload]
+        },
+        updateAvatar: (state, action) => {
+            state.user.avatar = action.payload
+        },
         clearError: (state) => {
             state.error = null;
         },
@@ -136,6 +152,11 @@ const authSlice = createSlice({
                 state.accessToken = null;
                 state.isAuthenticated = false;
             })
+            .addCase(logoutForceUser.fulfilled, (state) => {
+                state.user = null;
+                state.accessToken = null;
+                state.isAuthenticated = false;
+            })
             // Refresh Token
             .addCase(refreshToken.pending, (state) => {
                 state.isLoading = true
@@ -163,5 +184,5 @@ const authSlice = createSlice({
     }
 });
 
-export const { clearError, setAuthenticated } = authSlice.actions;
+export const { clearError, setAuthenticated, updateFriendList, updateAvatar } = authSlice.actions;
 export default authSlice.reducer;

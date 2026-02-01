@@ -11,17 +11,14 @@ export const messageController = {
         let { conversationId, content, sentAt, sender } = req.body;
 
         try {
-            // Validate required fields
             if (!conversationId || !content || !sender || !sentAt) {
                 return res.status(400).json({ message: "conversationId, content, and sender are required" });
             }
 
-            // Validate ObjectIds
             if (!isValidObjectId(conversationId) || !isValidObjectId(sender)) {
                 return res.status(400).json({ message: "Invalid conversationId or sender ID" });
             }
 
-            // Check if conversation exists and user is a member
             const conversation = await Conversation.findById(conversationId);
             if (!conversation) {
                 return res.status(404).json({ message: "Conversation not found" });
@@ -83,27 +80,23 @@ export const messageController = {
     },
 
     editMessage: async (req, res) => {
-        let { messageId, newContent } = req.body;
+        let { conversationId, messageId, newContent } = req.body;
 
         try {
-            // Validate required fields
-            if (!messageId || !newContent) {
+            if (!conversationId || !messageId || !newContent) {
                 return res.status(400).json({ message: "messageId and newContent are required" });
             }
 
-            // Validate ObjectId
-            if (!isValidObjectId(messageId)) {
+            if (!isValidObjectId(messageId) && !isValidObjectId(conversationId)) {
                 return res.status(400).json({ message: "Invalid message ID" });
             }
 
-            // Check if message exists
             const existingMessage = await Message.findById(messageId);
             if (!existingMessage) {
                 return res.status(404).json({ message: "Message not found" });
             }
 
-            // Check if user is the sender of the message
-            const { userId } = req.user; // Assuming user ID is in req.user from auth middleware
+            const { _id: userId } = req.user;
             if (!existingMessage.sender.equals(new ObjectId(userId))) {
                 return res.status(403).json({ message: "You can only edit your own messages" });
             }
@@ -112,12 +105,18 @@ export const messageController = {
                 { _id: new ObjectId(messageId) },
                 {
                     content: newContent,
+                    edited: true,
                     editedAt: new Date()
                 },
                 { new: true }
             );
 
             if (updatedMessage) {
+                const room = new ObjectId(conversationId)
+                Socs.emitToRoom(room.toString(), 'message:edit', {
+                    messageId, newContent
+                })
+
                 return res.json({
                     message: "Message updated successfully",
                     updatedMessage
@@ -136,24 +135,20 @@ export const messageController = {
         let { messageId, conversationId } = req.body;
 
         try {
-            // Validate required fields
             if (!messageId || !conversationId) {
                 return res.status(400).json({ message: "messageId is required" });
             }
 
-            // Validate ObjectId
             if (!isValidObjectId(messageId) || !isValidObjectId(conversationId)) {
                 return res.status(400).json({ message: "Invalid message ID" });
             }
 
-            // Check if message exists
             const existingMessage = await Message.findById(messageId);
             if (!existingMessage) {
                 return res.status(404).json({ message: "Message not found" });
             }
 
-            // Check if user is the sender or has admin rights
-            const { userId, role } = req.user;
+            const { _id: userId, role } = req.user;
             const isSender = existingMessage.sender.equals(new ObjectId(userId));
 
             if (!isSender && role !== 'admin') {
@@ -165,9 +160,32 @@ export const messageController = {
             });
 
             if (deletedMessage) {
-                Socs.emitToRoom(conversationId.toString(), 'message:delete', {deletedMessageId:deletedMessage._id})
 
-                return res.json({
+                let isPin = false
+                if (existingMessage.pinned) {
+                    await Conversation.updateOne(
+                        { _id: new ObjectId(conversationId) },
+                        { $pull: { pinnedMessage: existingMessage._id } },
+                        { new: true }
+                    )
+                    isPin = true
+                }
+
+                const newLastMessage = await Message.find({ conversationId: new ObjectId(conversationId) }).sort({ sentAt: -1 }).limit(1);
+
+                await Conversation.updateOne(
+                    { _id: new ObjectId(conversationId) },
+                    {
+                        $set: {
+                            lastMessage: newLastMessage.length > 0 ?
+                                newLastMessage[0]._id : null
+                        }
+                    }
+                )
+
+                Socs.emitToRoom(conversationId.toString(), 'message:delete', { deletedMessageId: deletedMessage._id, isPin })
+
+                return res.status(200).json({
                     message: "Message deleted successfully",
                     deletedMessageId: deletedMessage._id
                 });
@@ -185,12 +203,10 @@ export const messageController = {
         let { conversationId, userId } = req.body;
 
         try {
-            // Validate required fields
             if (!conversationId || !userId) {
                 return res.status(400).json({ message: "conversationId and userId are required" });
             }
 
-            // Validate ObjectIds
             if (!isValidObjectId(conversationId) || !isValidObjectId(userId)) {
                 return res.status(400).json({ message: "Invalid conversationId or userId" });
             }
@@ -198,7 +214,6 @@ export const messageController = {
             conversationId = new ObjectId(conversationId);
             userId = new ObjectId(userId);
 
-            // Check if conversation exists and user is a member
             const conversation = await Conversation.findById(conversationId);
             if (!conversation) {
                 return res.status(404).json({ message: "Conversation not found" });
@@ -217,7 +232,6 @@ export const messageController = {
                 readBy: { $ne: userId }
             })
 
-            // Mark messages as read
             const updateResult = await Message.updateMany(
                 {
                     conversationId,
@@ -229,10 +243,9 @@ export const messageController = {
             );
 
             if (!updateResult) {
-                return res.status(404).send({message: "Not found messages or you read all them"})
+                return res.status(404).send({ message: "Not found messages or you read all them" })
             }
 
-            // Reset unread count in conversation
             const convo = await Conversation.findById(conversationId);
             const unreadEntry = convo.unread.find(u => u.user.equals(userId));
             if (unreadEntry) {
@@ -251,10 +264,80 @@ export const messageController = {
                 });
             }
 
-            return res.status(404).send({message: "Not found number of unread message of user"})
+            return res.status(404).send({ message: "Not found number of unread message of user" })
         } catch (err) {
             console.error(err);
             return res.status(500).json({ message: "Server error" });
+        }
+    },
+
+    pinMessage: async (req, res) => {
+        try {
+            let { messageId, conversationId } = req.body;
+            if (!messageId || !conversationId) return res.status(400).json({ "message": "Lack of a message or conversation identify" });
+
+            if (!isValidObjectId(messageId) || !isValidObjectId(conversationId)) return res.status(400).json({ "message": "Message identify is not valid" });
+
+            const message = await Message.findOne({ _id: new ObjectId(messageId) });
+            const conversation = await Conversation.findOne({ _id: new ObjectId(conversationId) });
+
+            if (!message || !conversation) return res.status(404).json({ "message": "Message or conversation does not exist" });
+
+            const updated = await Conversation.updateOne(
+                { _id: new ObjectId(conversationId) },
+                { $addToSet: { pinnedMessage: message._id } },
+                { new: true }
+            )
+
+            message.pinned = true;
+            message.save();
+
+            if (updated) {
+                const room = new ObjectId(conversationId);
+                Socs.emitToRoom(room.toString(), "message:pin", { messageId })
+                return res.status(200).json({ "message": "Update successfully" });
+            }
+
+            return res.status(500).json({ "message": "Update failed" });
+
+        } catch (err) {
+            console.log("Server error: ", err);
+            return res.status(500).json({ "message": "Pin message failed" });
+        }
+    },
+
+    unPinMessage: async (req, res) => {
+        const { messageId, conversationId } = req.body;
+
+        try {
+
+            if (!messageId || !conversationId) return res.status(400).json({ "message": "Lack of a message or conversation identify" });
+
+            if (!isValidObjectId(messageId) || !isValidObjectId(conversationId)) return res.status(400).json({ "message": "Message identify is not valid" });
+
+            const message = await Message.findOne({ _id: new ObjectId(messageId) });
+            const conversation = await Conversation.findOne({ _id: new ObjectId(conversationId) });
+
+            if (!message || !conversation) return res.status(404).json({ "message": "Message or conversation does not exist" });
+
+            const updated = await Conversation.updateOne(
+                { _id: new ObjectId(conversationId) },
+                { $pull: { pinnedMessage: message._id } },
+                { new: true }
+            )
+
+            message.pinned = false;
+            message.save();
+
+            if (updated) {
+                const room = new ObjectId(conversationId);
+                Socs.emitToRoom(room.toString(), "message:un:pin", { messageId })
+                return res.status(200).json({ "message": "Update successfully" });
+            }
+
+        } catch (e) {
+            console.log("Server error: ", err);
+            return res.status(500).json({ "message": "Un pin message failed" });
         }
     },
 
@@ -263,12 +346,10 @@ export const messageController = {
         const { page = 1, limit = 50 } = req.query;
 
         try {
-            // Validate ObjectId
             if (!isValidObjectId(conversationId)) {
                 return res.status(400).json({ message: "Invalid conversation ID" });
             }
 
-            // Check if conversation exists and user is a member
             const conversation = await Conversation.findById(conversationId);
             if (!conversation) {
                 return res.status(404).json({ message: "Conversation not found" });
@@ -308,9 +389,9 @@ export const messageController = {
     deleteAllMessage: async (req, res) => {
         try {
             await Message.deleteMany({ deleted: false })
-            return res.status(200).send({message: "Clear"})
+            return res.status(200).send({ message: "Clear" })
         } catch {
-            return res.status(500).send({message:"Server error"})
+            return res.status(500).send({ message: "Server error" })
         }
 
     }

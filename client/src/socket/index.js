@@ -1,10 +1,16 @@
 import { store } from '../redux/app/store'
-import { setUsersOnline, setNotifications, setConversations, setUnreadMessagePosition } from '../redux/features/eventSocket';
-import { setListMessage, updateListMessage } from '../redux/features/chat'
+import { setUsersOnline, setNotifications, setConversations, selectConversation } from '../redux/features/eventSocket';
+import { setListMessage, updateListMessage, setPinnedMessage } from '../redux/features/chat'
+import { updateAvatar, updateFriendList } from '../redux/features/auth';
+import { setAvatar } from '../redux/features/profile'
 
 export const initSocket = () => {
     const { socket } = store.getState().socket;
-    
+
+    socket.on("connect", () => {
+        console.log("Connected")
+    })
+
     socket.on("user:online", (data) => {
         store.dispatch(setUsersOnline(data))
     })
@@ -17,10 +23,11 @@ export const initSocket = () => {
             reveal: data
         };
         const updatedNotifications = [...currentNotifications, newNotification];
-        store.dispatch(setNotifications(updatedNotifications));
+        store.dispatch(setNotifications(updatedNotifications))
     });
 
     socket.on("notification:new:friend:response", (data) => {
+        const { friendId } = data
         const currentNotifications = store.getState().event.notifications;
         const newNotification = {
             title: "New friend response",
@@ -29,15 +36,22 @@ export const initSocket = () => {
         };
         const updatedNotifications = [...currentNotifications, newNotification];
         store.dispatch(setNotifications(updatedNotifications));
+        if (friendId) {
+            store.dispatch(updateFriendList(friendId))
+        }
     });
 
     socket.on("notification:delete:friend:request", (data) => {
+        const { friendId } = data
         let notifications = store.getState().event.notifications;
-        notifications = notifications.filter(({reveal}) => {
+        notifications = notifications.filter(({ reveal }) => {
             return reveal.id !== data.oldId.toString()
         })
 
         store.dispatch(setNotifications(notifications))
+        if (friendId) {
+            store.dispatch(updateFriendList(friendId))
+        }
     })
 
     socket.on("conversation:new", (data) => {
@@ -48,7 +62,7 @@ export const initSocket = () => {
 
     socket.on("notification:delete", (data) => {
         const curNotifications = store.getState().event.notifications;
-        const newNotifications = curNotifications.filter(({ reveal: { id }}) => (
+        const newNotifications = curNotifications.filter(({ reveal: { id } }) => (
             id !== data.notificationId
         ))
 
@@ -74,8 +88,7 @@ export const initSocket = () => {
 
     socket.on("message:new", (data) => {
         const conversations = store.getState().event.conversations
-        const { selectedConversation, unreadMessagePosition } = store.getState().event
-        const listMessages = store.getState().chat.listMessages
+        const { selectedConversation } = store.getState().event
         const _id = store.getState().auth.user._id
 
         const newConversations = conversations.map(con => {
@@ -90,8 +103,11 @@ export const initSocket = () => {
         })
         store.dispatch(setConversations(newConversations))
 
-        if (_id.toString() !== data.sender._id.toString() && unreadMessagePosition === 0) {
-            store.dispatch(setUnreadMessagePosition(1))
+        if (_id.toString() !== data.sender._id.toString() && selectedConversation.read) {
+            store.dispatch(selectConversation({
+                ...selectedConversation,
+                read: false
+            }))
         }
 
         if (selectedConversation) {
@@ -126,6 +142,7 @@ export const initSocket = () => {
 
     socket.on("message:read", (data) => {
         const { userReadMessage, count } = data
+        const { selectedConversation } = store.getState().event
         const listMessages = store.getState().chat.listMessages
 
         if (!count) return
@@ -140,7 +157,95 @@ export const initSocket = () => {
             return message
         })
 
-        store.dispatch(setUnreadMessagePosition(0))
+        store.dispatch(selectConversation({
+            ...selectedConversation,
+            read: true
+        }))
         store.dispatch(setListMessage(newListMessages))
+    })
+
+    socket.on("message:edit", (data) => {
+        const { messageId, newContent } = data;
+
+        const { listMessages } = store.getState().chat
+
+        const updateListMessage = listMessages.map(mess => {
+            const { _id } = mess
+            if (_id.toString() === messageId.toString()) {
+                return {
+                    ...mess,
+                    content: newContent
+                }
+            }
+            return { ...mess }
+        })
+
+        store.dispatch(setListMessage(updateListMessage))
+    })
+
+    socket.on("message:delete", (data) => {
+        console.log("Catched event")
+        const { deletedMessageId, isPin } = data;
+
+        const { listMessages, listPinnedMessages } = store.getState().chat
+
+        const updateListMessage = listMessages.filter(({ _id }) => _id.toString() !== deletedMessageId.toString())
+        if (isPin) {
+            const updatePinnedMessage = listPinnedMessages.filter(({ _id }) => _id.toString() !== deletedMessageId.toString())
+            store.dispatch(setPinnedMessage(updatePinnedMessage))
+        }
+
+        store.dispatch(setListMessage(updateListMessage))
+    })
+
+    socket.on("message:pin", (data) => {
+        const { messageId } = data
+        const { listMessages, listPinnedMessages } = store.getState().chat
+        let updatePinnedMessage = []
+
+        const updateListMessage = listMessages.map((mess) => {
+            const { _id, content, sentAt, sender } = mess
+            if (_id.toString() === messageId) {
+
+                updatePinnedMessage = [{ _id, content, sentAt, sender }, ...listPinnedMessages]
+
+                return {
+                    ...mess,
+                    pinned: true
+                }
+            }
+            return mess
+        })
+
+        store.dispatch(setListMessage(updateListMessage))
+        store.dispatch(setPinnedMessage(updatePinnedMessage))
+    })
+
+    socket.on("message:un:pin", (data) => {
+        const { messageId } = data
+        const { listMessages, listPinnedMessages } = store.getState().chat
+        let updatePinnedMessage = []
+
+        const updateListMessage = listMessages.map((mess) => {
+            const { _id, content, sentAt, sender } = mess
+            if (_id.toString() === messageId) {
+
+                updatePinnedMessage = listPinnedMessages.filter(({ _id }) => _id.toString() !== messageId.toString())
+
+                return {
+                    ...mess,
+                    pinned: false
+                }
+            }
+            return mess
+        })
+
+        store.dispatch(setListMessage(updateListMessage))
+        store.dispatch(setPinnedMessage(updatePinnedMessage))
+    })
+
+    socket.on("upload:avatar", (data) => {
+        store.dispatch(updateAvatar(data.url))
+        store.dispatch(setAvatar(data.url))
     })
 }

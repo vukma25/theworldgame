@@ -1,15 +1,17 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { setNotifications } from '../../redux/features/eventSocket';
-import { Box, Typography, Button } from '@mui/material' 
+import { Box, Typography, Button } from '@mui/material'
 import Friend from './Type/Friend'
 import Info from './Type/Info'
 import api from '../../lib/api';
 
 export default function Notification() {
     const { notifications } = useSelector((state) => state.event)
-    const { user: {_id}} = useSelector((state) => state.auth)
+    const { user: { _id } } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const style = {
         width: "100%",
@@ -17,6 +19,10 @@ export default function Notification() {
         display: "flex",
         flexDirection: "column",
         alignItem: "center"
+    }
+
+    function redirect() {
+        navigate("/")
     }
 
     useEffect(() => {
@@ -34,13 +40,17 @@ export default function Notification() {
 
     if (notifications.length === 0) {
         return (
-            <Box 
-                sx={{textAlign:"center",width:"100%", 
-                    height:"100vh",display:"flex",
-                    flexDirection:"column",justifyContent:"center",
-                    alignItems:"center",gap:"1rem"}}>
+            <Box
+                sx={{
+                    textAlign: "center", width: "100%",
+                    height: "100vh", display: "flex",
+                    flexDirection: "column", justifyContent: "center",
+                    alignItems: "center", gap: "1rem"
+                }}>
                 <Typography variant='h4'>You do not have any notification</Typography>
-                <Button sx={{background:"var(--brand-500)",color:"var(--cl-white-pure)",width:"10rem",height:"3.5rem",fontSize:"1.2rem"}}>Back</Button>
+                <Button sx={{ background: "var(--brand-500)", color: "var(--cl-white-pure)", width: "10rem", height: "3.5rem", fontSize: "1.2rem" }}
+                    onClick={redirect}
+                >Back</Button>
             </Box>
         )
     }
@@ -50,10 +60,10 @@ export default function Notification() {
             {notifications.map(({ title, content, reveal }) => {
                 if (reveal.type === "friend") {
                     return (
-                        <Friend key={reveal.id} title={title} content={content} reveal={reveal}/>
+                        <Friend key={reveal.id} title={title} content={content} reveal={reveal} />
                     )
                 } else {
-                    return <Info key={reveal.id} title={title} content={content} reveal={reveal}/>
+                    return <Info key={reveal.id} title={title} content={content} reveal={reveal} />
                 }
             })}
         </div>

@@ -3,25 +3,24 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '../../../redux/features/auth';
 import {
-    Box,  Menu, MenuItem, ListItemIcon,
+    Box, Menu, MenuItem, ListItemIcon,
     Divider, IconButton, Badge
 } from '@mui/material';
 import { Settings, Logout, Notifications } from '@mui/icons-material';
 import BadgeAvatar from '../../../Components/BadgeAvatar/BadgeAvatar'
+import { useOnline } from '../../../hook/useOnline';
 
 export default function AccountMenu() {
 
-    const { user: { username, _id },  } = useSelector((state) => state.auth)
-    const { usersOnline, notifications } = useSelector((state) => state.event)
+    const { user: { username, _id, avatar } } = useSelector((state) => state.auth)
+    const { notifications } = useSelector((state) => state.event)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
-    const on = useMemo(() => {
-        return !!usersOnline.find(([id, _]) => id === _id.toString())
-    }, [usersOnline])
+    const isOnline = useOnline()
 
     const invisible = useMemo(() => {
         return !notifications.some(({ reveal }) => reveal.unread)
@@ -38,8 +37,8 @@ export default function AccountMenu() {
         setAnchorEl(null);
     };
 
-    function redirect() {
-        navigate('/notification')
+    function redirect(path) {
+        navigate(path)
     }
 
     useEffect(() => {
@@ -63,10 +62,10 @@ export default function AccountMenu() {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                 >
-                    <BadgeAvatar 
-                        username={username} 
-                        src={null} 
-                        online={on}
+                    <BadgeAvatar
+                        username={username}
+                        src={avatar}
+                        online={isOnline(_id)}
                     />
                 </IconButton>
             </Box>
@@ -107,28 +106,30 @@ export default function AccountMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem sx={{fontSize: "1.4rem"}} onClick={handleClose}>
+                <MenuItem sx={{ fontSize: "1.4rem" }} onClick={() => {
+                    handleClose(); redirect("/profile")
+                }}>
                     <BadgeAvatar
                         username={username}
-                        src={null}
-                        online={on}
+                        src={avatar}
+                        online={isOnline(_id)}
                     /> {username}
                 </MenuItem>
                 <Divider />
-                <MenuItem sx={{fontSize: "1.4rem"}} onClick={handleClose}>
+                <MenuItem sx={{ fontSize: "1.4rem" }} onClick={handleClose}>
                     <ListItemIcon>
                         <Settings fontSize="large" />
                     </ListItemIcon>
                     Settings
                 </MenuItem>
-                <MenuItem sx={{fontSize: "1.4rem"}} onClick={handleLogout}>
+                <MenuItem sx={{ fontSize: "1.4rem" }} onClick={handleLogout}>
                     <ListItemIcon>
                         <Logout fontSize="large" />
                     </ListItemIcon>
                     Logout
                 </MenuItem>
             </Menu>
-            <IconButton onClick={redirect}>
+            <IconButton onClick={() => redirect('/notification')}>
                 <Badge color="secondary" variant="dot" invisible={invisible}>
                     <Notifications />
                 </Badge>

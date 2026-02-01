@@ -5,8 +5,7 @@ const initialState = {
     usersOnline: [],
     conversations: [],
     notifications: [],
-    selectedConversation: null,
-    unreadMessagePosition: null
+    selectedConversation: null //id_conversation
 }
 
 const eventSocket = createSlice({
@@ -16,7 +15,7 @@ const eventSocket = createSlice({
         setUsersOnline: (state, action) => {
             state.usersOnline = action.payload
         },
-        setConversations: (state, action) => { 
+        setConversations: (state, action) => {
             state.conversations = action.payload
         },
         setNotifications: (state, action) => {
@@ -24,14 +23,11 @@ const eventSocket = createSlice({
         },
         selectConversation: (state, action) => {
             state.selectedConversation = action.payload
-        },
-        setUnreadMessagePosition: (state, action) => {
-            state.unreadMessagePosition = action.payload
         }
     }
 })
 
-export const { 
+export const {
     setUsersOnline, setConversations, setNotifications, selectConversation,
     setUnreadMessagePosition
 } = eventSocket.actions

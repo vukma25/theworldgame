@@ -1,7 +1,7 @@
 // utils/axiosConfig.js
 import axios from 'axios';
 import { store } from '../redux/app/store';
-import { refreshToken, logoutUser } from '../redux/features/auth';
+import { refreshToken, logoutForceUser } from '../redux/features/auth';
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -17,7 +17,7 @@ const processQueue = (error, token = null) => {
 
 const api = axios.create()
 
-api.defaults.baseURL = 'http://localhost:4000/api';
+api.defaults.baseURL = `${process.env.REACT_APP_SERVER_URL}`;
 api.defaults.withCredentials = true;
 
 api.interceptors.request.use(
@@ -38,7 +38,7 @@ api.interceptors.response.use(
 
             originalRequest._retryCount = originalRequest._retryCount || 0;
             if (originalRequest._retryCount >= MAX_RETRY) {
-                store.dispatch(logoutUser());
+                store.dispatch(logoutForceUser());
                 return Promise.reject(error);
             }
 
@@ -66,7 +66,7 @@ api.interceptors.response.use(
                     return api(originalRequest);
                 } catch (refreshError) {
                     processQueue(refreshError, null);
-                    store.dispatch(logoutUser());
+                    store.dispatch(logoutForceUser());
                     return Promise.reject(refreshError);
                 } finally {
                     isRefreshing = false;

@@ -1,7 +1,9 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
 import { styled, alpha } from '@mui/material/styles';
-import { IconButton, Menu, MenuItem, Divider } from '@mui/material';
-import { MoreVert, Add, Flag } from '@mui/icons-material';
+import { setAnchor, setClose } from '../../redux/features/menu';
+import { IconButton, Menu } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -22,8 +24,6 @@ const StyledMenu = styled((props) => (
         marginTop: theme.spacing(1),
         minWidth: 180,
         color: 'rgb(55, 65, 81)',
-        boxShadow:
-            'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
         '& .MuiMenu-list': {
             padding: '4px 0',
         },
@@ -49,52 +49,59 @@ const StyledMenu = styled((props) => (
     },
 }));
 
-export default function CustomizedMenus({ send }) {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+const shadow =
+    'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px'
+
+export default function CustomizedMenus({ children, hasShadow = false }) {
+    const { closeByChildren } = useSelector((state) => state.menu)
+    const dispatch = useDispatch()
+    const [anchorEl, setAnchorEl] = useState(null)
+
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+        dispatch(setAnchor())
+        setAnchorEl(event.currentTarget)
     };
     const handleClose = () => {
-        setAnchorEl(null);
+        dispatch(setClose())
+        setAnchorEl(null)
     };
+
+    useEffect(() => {
+        if (closeByChildren) {
+            handleClose()
+        }
+    }, [closeByChildren])
 
     return (
         <div>
             <IconButton
-                id="demo-customized-button"
-                aria-controls={open ? 'demo-customized-menu' : undefined}
+                id="customized-button"
+                aria-controls={open ? 'customized-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
                 variant="contained"
-                disableElevation
                 onClick={handleClick}
             >
                 <MoreVert />
             </IconButton>
             <StyledMenu
-                id="demo-customized-menu"
+                sx={{
+                    '& .MuiPaper-root': {
+                        boxShadow: `${hasShadow ? shadow : "none"}`
+                    }
+                }}
+                id="customized-menu"
                 slotProps={{
                     list: {
-                        'aria-labelledby': 'demo-customized-button',
+                        'aria-labelledby': 'customized-button',
                     },
                 }}
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem onClick={() => {
-                    send(); handleClose()
-                }} disableRipple>
-                    <Add />
-                    Add friend
-                </MenuItem>
-                <Divider sx={{ my: 0.5 }} />
-                <MenuItem onClick={handleClose} disableRipple>
-                    <Flag />
-                    Report for cheating
-                </MenuItem>
-
+                {children}
             </StyledMenu>
         </div>
     );

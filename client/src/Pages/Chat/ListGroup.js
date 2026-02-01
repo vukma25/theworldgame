@@ -1,21 +1,27 @@
 import { Fragment, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setSidebar } from "../../redux/features/chat"
-import { Typography, List, ListItem, ListItemButton, Avatar, Box } from "@mui/material"
+import { Typography, List, ListItem, ListItemButton, Box } from "@mui/material"
 import BadgeAvatar from "../../Components/BadgeAvatar/BadgeAvatar"
 import api from "../../lib/api"
 import { setConversations, selectConversation } from "../../redux/features/eventSocket"
-import { setListMessage } from "../../redux/features/chat"
+import { setListMessage, setPinnedMessage } from "../../redux/features/chat"
+import { useOnline } from "../../hook/useOnline"
 
-function Conversation({ avatar, name, count, latestMessage, conversationId }) {
+function Conversation({ avatar, name, count, lastMessage, conversationId, userId = null, pinnedMessage }) {
     const dispatch = useDispatch()
+    const isOnline = useOnline()
 
     function handleSidebar() {
         dispatch(setSidebar(false))
     }
 
     function handleSelectConversation() {
-        dispatch(selectConversation({ avatar, name, conversationId }))
+        dispatch(selectConversation({ avatar, name, conversationId, read: count > 0 ? false : true, userId }))
+    }
+
+    function handleSetPinnedMessage() {
+        dispatch(setPinnedMessage(pinnedMessage));
     }
 
     return (
@@ -23,13 +29,13 @@ function Conversation({ avatar, name, count, latestMessage, conversationId }) {
             <ListItemButton
                 sx={{ gap: "1rem" }}
                 onClick={() => {
-                    handleSidebar(); handleSelectConversation()
+                    handleSidebar(); handleSelectConversation(); handleSetPinnedMessage()
                 }}
             >
-                <BadgeAvatar username={name} src={avatar} online={null}/>
+                <BadgeAvatar username={name} src={avatar} online={isOnline(userId)} />
                 <Box>
                     <Typography variant='h6'>{name}</Typography>
-                    <Typography variant='body1' sx={{ color: "var(--ink-500)" }}>{latestMessage}</Typography>
+                    <Typography variant='body1' sx={{ color: "var(--ink-500)" }}>{lastMessage?.content || "No message yet"}</Typography>
                 </Box>
                 {count !== 0 &&
                     <Typography
@@ -87,11 +93,11 @@ export default function ListGroup() {
         <Fragment>
             <List>
                 {conversations.map((group, index) => {
-                    const { name, members, latestMessage, unread, type, _id } = group
+                    const { name, members, lastMessage, unread, type, _id, pinnedMessage } = group
                     const count = unread.find(({ user: id }) => id.toString() === user._id.toString())?.count
 
                     if (type === 'private') {
-                        const { username, avatar } = members.find(({ _id }) => _id.toString() !== user._id.toString())
+                        const { username, avatar, _id: userId } = members.find(({ _id }) => _id.toString() !== user._id.toString())
 
                         return (
                             <Conversation
@@ -99,8 +105,10 @@ export default function ListGroup() {
                                 name={username}
                                 avatar={avatar}
                                 count={count}
-                                latestMessage={latestMessage}
+                                lastMessage={lastMessage}
                                 conversationId={_id}
+                                userId={userId}
+                                pinnedMessage={pinnedMessage}
                             />
                         )
                     } else {
@@ -110,8 +118,9 @@ export default function ListGroup() {
                                 name={name}
                                 avatar={group.avatar}
                                 count={count}
-                                latestMessage={latestMessage}
+                                lastMessage={lastMessage}
                                 conversationId={_id}
+                                pinnedMessage={pinnedMessage}
                             />
                         )
                     }

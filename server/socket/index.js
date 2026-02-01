@@ -34,11 +34,6 @@ io.on('connection', (socket) => {
         })
     })
 
-    // socket.on('leave:conversation', (conversationId) => {
-    //     socket.leave(conversationId);
-    //     console.log(`User ${socket.id} left conversation ${conversationId}`);
-    // });
-
     socket.on('disconnect', () => {
         console.log(`User ${userId} disconnected`)
 

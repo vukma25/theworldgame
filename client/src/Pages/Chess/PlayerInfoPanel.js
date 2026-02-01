@@ -4,6 +4,7 @@ import { useMemo, useEffect, useContext } from 'react'
 import { ChessContext } from './Chess'
 import { CircularProgress, Avatar } from '@mui/material'
 import { Settings, Cached } from '@mui/icons-material'
+import BadgeAvatar from '../../Components/BadgeAvatar/BadgeAvatar'
 import wp from '../../assets/image/wp.png'
 import wq from '../../assets/image/wq.png'
 import wn from '../../assets/image/wn.png'
@@ -111,13 +112,10 @@ export default function PlayerInfoPanel() {
                         <div className="left-avatar" >
                             {!user ? <Avatar
                                 src="https://robohash.org/1"
-                                variant="square"
+                                variant="circular"
                                 {...stringAvatar("player")}
                             /> :
-                                <Avatar
-                                    variant="square"
-                                    {...stringAvatar(user.username)}
-                                />}
+                                <BadgeAvatar username={user.username} src={user.avatar} online={false} />}
                         </div>
                         <div className="left-name-and-elo flex-div">
                             <div className="name">{user?.username || "Player 1"}</div>
@@ -148,7 +146,7 @@ export default function PlayerInfoPanel() {
                         <div className="right-avatar">
                             <Avatar
                                 src={source}
-                                variant="square"
+                                variant="circular"
                                 {...stringAvatar(source)}
                             />
                         </div>

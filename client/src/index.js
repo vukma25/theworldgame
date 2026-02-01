@@ -17,6 +17,7 @@ import Memory from './Pages/Memory/Memory';
 import Wordle from './Pages/Wordle/Wordle'
 import Snake from './Pages/Snake/Snake'
 import Chat from "./Pages/Chat/Chat"
+import Profile from "./Pages/Profile/Profile"
 import Notification from './Pages/Notification/Notification';
 import Protected from './ProtectedRouter/Protected'
 import NotFoundPage from './Pages/NotFound/NotFound'
@@ -103,7 +104,15 @@ const router = createBrowserRouter([
         path: "notification",
         element: (
           <Protected>
-            <Notification/>
+            <Notification />
+          </Protected>
+        )
+      },
+      {
+        path: "profile/:id?",
+        element: (
+          <Protected>
+            <Profile />
           </Protected>
         )
       },

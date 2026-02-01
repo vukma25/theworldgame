@@ -19,10 +19,6 @@ const socketSlice = createSlice({
             });
 
             state.socket = socket
-
-            socket.on("connect", () => {
-                console.log("Connected")
-            })
         },
         disconnectSocket: (state) => {
             if (state.socket) {

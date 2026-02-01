@@ -52,7 +52,7 @@ export const conversationController = {
 
             await newConversation.save();
             const conv = await Conversation.
-                findOne({_id: newConversation._id})
+                findOne({ _id: newConversation._id })
                 .populate("members", "_id username avatar")
                 .populate("lastMessage", "content")
                 .exec()
@@ -360,13 +360,37 @@ export const conversationController = {
                 .find({ members: { $in: [new ObjectId(id)] } })
                 .populate("members", "_id username avatar")
                 .populate("lastMessage", "content")
+                .populate({
+                    path: "pinnedMessage",
+                    select: "_id content sentAt sender",
+                    populate: {
+                        path: "sender",
+                        select: "_id username avatar"
+                    }
+                })
                 .exec();
-            if (!conversations) return res.status(404).send({message: "Not found any conversation"});
+            if (!conversations) return res.status(404).send({ message: "Not found any conversation" });
 
-            return res.status(200).send({ message: "Get all conversation successfully", conversations})
+            return res.status(200).send({ message: "Get all conversation successfully", conversations })
         } catch (err) {
             console.error(err);
             res.status(500).send({ message: "Server error" })
         }
-    }
+    },
+
+    updateModel: async (req, res) => {
+        try {
+            const update = await Conversation.updateMany(
+                { type: "private" },
+                { $set: { pinnedMessage: [] } }
+            )
+
+            if (update) {
+                res.sendStatus(204);
+            }
+        } catch (err) {
+            console.log("Server error: ", e);
+            return res.status(500).json({ "message": "Failed update" })
+        }
+    },
 }

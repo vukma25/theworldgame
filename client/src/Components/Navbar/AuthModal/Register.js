@@ -92,7 +92,7 @@ export default function Register() {
                     id="modalClose" className="xbtn flex-div" aria-label="Đóng"
                     onClick={() => { dispatch(setAuth('')) }}
                 >
-                    <Close sx={{ fontSize: "2rem" }}/>
+                    <Close sx={{ fontSize: "2rem" }} />
                 </button>
             </div>
             <div className="auth-modal-body">
@@ -142,7 +142,7 @@ export default function Register() {
                     type="submit"
                     className="cta"
                     style={{ marginTop: ".5rem" }}
-                    disabled={isLoading}
+                //disabled={isLoading}
                 >{isLoading ? < CircularProgress /> : auth}
                 </button>
             </div>

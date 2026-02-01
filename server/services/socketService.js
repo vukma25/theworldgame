@@ -1,7 +1,7 @@
 
 class SocketService {
     constructor() {
-        this.io =  null;
+        this.io = null;
     }
 
     setIO(io) {
@@ -16,7 +16,7 @@ class SocketService {
 
     emitToUser(userId, event, data) {
         if (this.io) {
-            this,this.io.to(userId).emit(event, data);
+            this.io.to(userId).emit(event, data);
         }
     }
 

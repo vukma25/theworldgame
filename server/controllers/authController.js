@@ -2,6 +2,7 @@ import User from '../models/user.js'
 import Session from '../models/session.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { isValidObjectId } from 'mongoose'
 
 const ACCESS_TOKEN_TTL = "10m"
 const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000;
@@ -114,10 +115,6 @@ const authController = {
                 sameSite: "lax",
                 maxAge: REFRESH_TOKEN_TTL,
             });
-
-            if (!session) {
-                return res.status(403).json({ message: "Logout failure!"})
-            }
             return res.status(200).json({ message: "Logout successfully" })
         } catch (error) {
             return res.status(500).json({ message: "Server error" })
@@ -139,7 +136,7 @@ const authController = {
                 return res.status(403).json({ message: "Token expired" });
             }
 
-            const user = await User.findOne({_id: session.userId})
+            const user = await User.findOne({ _id: session.userId })
             const { _id: userId, role, isBanned } = user;
             const accessToken = jwt.sign({
                 userId,
@@ -153,6 +150,26 @@ const authController = {
 
         } catch (err) {
             return res.status(500).json({ message: "Server error" });
+        }
+    },
+    verifyAction: async (req, res) => {
+        try {
+            const { id, password } = req.body;
+            if (!id || !password || !isValidObjectId(id)) return res.status(400).json({ message: "Request miss parameter or format is not correct" });
+
+            const user = await User.findOne({ _id: new Object(id) })
+            if (!user) return res.status(404).json({ message: "User does not exist" });
+
+            const verify = await bcrypt.compare(password, user.password);
+            if (!verify) {
+                return res.status(403).json({ message: "Action is denied" });
+            }
+
+            return res.status(200).json({ message: "allow to continue" });
+
+        } catch (err) {
+            console.log("Server error: ", err);
+            return res.status(500).json({ message: "Can not verify" })
         }
     }
 }

@@ -1,23 +1,23 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    Card, CardHeader, InputLabel,
+    Card, CardHeader, InputLabel, Divider,
     CircularProgress, Box, Select, MenuItem, FormControl,
-
 } from '@mui/material';
+import { Add, Flag } from '@mui/icons-material';
 import GoTopBtn from '../../Components/GoTopBtn/GoTopBtn'
 import CustomizedMenus from '../../Components/StyledMenu/StyleMenu';
 import api from '../../lib/api';
 import BadgeAvatar from '../../Components/BadgeAvatar/BadgeAvatar';
 import { sendRequestFriend } from '../../redux/features/user';
+import { sendSignalClose } from '../../redux/features/menu'
+import { useOnline } from '../../hook/useOnline';
 
 function CardHeaderActions({ userId }) {
-    const { user: {_id, friends} } = useSelector((state) => state.auth)
-    console.log(_id)
+    const { user: { _id, friends } } = useSelector((state) => state.auth)
     const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
     const relationship = [...friends, _id.toString()]
-    console.log(relationship)
     const hasRelationship = relationship.some(id => id === userId.toString())
 
     function send(id, userId) {
@@ -28,17 +28,34 @@ function CardHeaderActions({ userId }) {
         }
     }
 
+    function handleClose() {
+        dispatch(sendSignalClose())
+    }
+
     if (hasRelationship) {
         return (<></>)
     }
 
     return (
-        <CustomizedMenus send={() => {send(user._id, userId)}} />
+        <CustomizedMenus hasShadow={true}>
+            <MenuItem onClick={() => {
+                send(user._id, userId)
+                handleClose()
+            }} disableRipple>
+                <Add />
+                Add friend
+            </MenuItem>
+            <Divider sx={{ my: 0.5 }} />
+            <MenuItem onClick={handleClose} disableRipple>
+                <Flag />
+                Report for cheating
+            </MenuItem>
+        </CustomizedMenus>
     )
 }
 
 export default function LeadBoard() {
-    const { usersOnline } = useSelector((state) => state.event)
+    const isOnline = useOnline()
 
     const [users, setUsers] = useState([])
     const [game, setGame] = useState('chess')
@@ -103,8 +120,7 @@ export default function LeadBoard() {
                     </Select>
                 </FormControl>
                 {users.map((e, index) => {
-                    const { _id, username } = e
-                    const on = usersOnline.find(([id, _]) => id === _id.toString())
+                    const { _id, username, avatar } = e
 
                     return (<Card sx={{ width: "90%" }} key={index}>
                         <CardHeader
@@ -118,11 +134,11 @@ export default function LeadBoard() {
                             avatar={
                                 <BadgeAvatar
                                     username={username}
-                                    src={null}
-                                    online={on}
+                                    src={avatar}
+                                    online={isOnline(_id)}
                                 />
                             }
-                            action={<CardHeaderActions userId={_id}/>}
+                            action={<CardHeaderActions userId={_id} />}
                             title={username}
                             subheader="2805"
                         />

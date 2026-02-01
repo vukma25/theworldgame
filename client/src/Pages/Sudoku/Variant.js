@@ -1,82 +1,79 @@
 const SUDOKU_VARIANTS = {
-    // Sudoku 4x4 (2x2 regions)
     4: {
         name: "Mini Sudoku",
         regionSize: 2,
         difficulties: {
-            1: { // Dễ
-                name: "Dễ",
-                cellsToRemove: 4,  // Xóa 4/16 ô (25%)
-                description: "Dành cho người mới bắt đầu"
+            1: {
+                name: "Easy",
+                cellsToRemove: 4,
+                description: "Suitable for newbie"
             },
-            2: { // Trung bình
-                name: "Trung bình",
-                cellsToRemove: 6,  // Xóa 6/16 ô (37.5%)
-                description: "Độ khó trung bình"
+            2: {
+                name: "Medium",
+                cellsToRemove: 6,
+                description: "Fundamental difficult"
             },
-            3: { // Khó
-                name: "Khó",
-                cellsToRemove: 8,  // Xóa 8/16 ô (50%)
-                description: "Thử thách cho người chơi kinh nghiệm"
+            3: {
+                name: "Hard",
+                cellsToRemove: 8,
+                description: "Challenge for experienced player"
             }
         },
-        maxRemovable: 10, // Tối đa có thể xóa
-        minClues: 6       // Tối thiểu phải giữ
+        maxRemovable: 10,
+        minClues: 6
     },
 
-    // Sudoku 9x9 (3x3 regions) - Chuẩn
     9: {
-        name: "Sudoku Chuẩn",
+        name: "Standard Sudoku",
         regionSize: 3,
         difficulties: {
-            1: { // Dễ
-                name: "Dễ",
-                cellsToRemove: 30,  // Xóa 30/81 ô (37%)
-                description: "Mức độ cơ bản, nhiều gợi ý"
+            1: {
+                name: "Easy",
+                cellsToRemove: 30,
+                description: "Fundamental, and lots of hints"
             },
-            2: { // Trung bình
-                name: "Trung bình",
-                cellsToRemove: 45,  // Xóa 45/81 ô (55.5%)
-                description: "Độ khó phổ thông"
+            2: {
+                name: "Medium",
+                cellsToRemove: 45,
+                description: "Higher difficulty"
             },
-            3: { // Khó
-                name: "Khó",
-                cellsToRemove: 55,  // Xóa 55/81 ô (68%)
-                description: "Thách thức trí tuệ"
+            3: {
+                name: "Hard",
+                cellsToRemove: 55,
+                description: "Challenge for brain"
             },
-            4: { // Expert
-                name: "Chuyên gia",
-                cellsToRemove: 60,  // Xóa 60/81 ô (74%)
-                description: "Dành cho cao thủ"
+            4: {
+                name: "Expert",
+                cellsToRemove: 60,
+                description: "Just for master"
             }
         },
-        maxRemovable: 65, // Tối đa có thể xóa
-        minClues: 16      // Tối thiểu phải giữ
+        maxRemovable: 65,
+        minClues: 16
     },
 
-    // Sudoku 16x16 (4x4 regions)
     16: {
         name: "Super Sudoku",
         regionSize: 4,
         difficulties: {
-            1: { // Dễ
-                name: "Dễ",
-                cellsToRemove: 120,  // Xóa 120/256 ô (47%)
-                description: "Khởi động với Super Sudoku"
+            1: {
+                name: "Easy",
+                cellsToRemove: 120,
+                description: "Warm up with Super Sudoku"
             },
-            2: { // Trung bình
-                name: "Trung bình",
-                cellsToRemove: 160,  // Xóa 160/256 ô (62.5%)
-                description: "Trải nghiệm đầy đủ"
+            2: {
+                name: "Medium",
+                cellsToRemove: 160,
+                description: "The son of the god"
             },
-            3: { // Khó
-                name: "Khó",
-                cellsToRemove: 190,  // Xóa 190/256 ô (74%)
-                description: "Siêu thử thách"
+            3: {
+                name: "Hard",
+                cellsToRemove: 190,
+                description: "The path become the god"
             }
         },
-        maxRemovable: 200, // Tối đa có thể xóa
-        minClues: 56       // Tối thiểu phải giữ
+        maxRemovable: 200,
+        minClues: 56
     },
 
 };

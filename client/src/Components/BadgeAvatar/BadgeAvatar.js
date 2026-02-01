@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { styled } from '@mui/material/styles';
-import {Badge, Avatar, Box }from '@mui/material';
+import { Badge, Avatar, Box } from '@mui/material';
 import stringAvatar from '../../lib/avatar';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -32,21 +32,21 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     },
 }));
 
-export default function BadgeAvatar({ username, src, online, sx={width:40,height:40} }) {
-    const avatar = src ? 
-        <Avatar alt="" src={src} sx={sx}/> : 
-        <Avatar alt="" src={src} {...stringAvatar(username, sx)}/>
+export default function BadgeAvatar({ username, src, online, sx = { width: 40, height: 40, border: ".1rem solid black" } }) {
+    const avatar = src ?
+        <Avatar alt="" src={src} sx={sx} /> :
+        <Avatar alt="" src={src} {...stringAvatar(username, sx)} />
 
     return (
-        <Box>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
             {online ? <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 variant="dot"
             >
                 {avatar}
-            </StyledBadge> : 
-            <Fragment>{avatar}</Fragment>
+            </StyledBadge> :
+                <Fragment>{avatar}</Fragment>
             }
         </Box>
     );
