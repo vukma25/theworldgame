@@ -1,8 +1,8 @@
 {
-  "name": "gameworld",
+  "name": "theworldgame",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://vukma25.github.io/theworldgame",
+  "homepage": "https://theworldgame.vercel.app/",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

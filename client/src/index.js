@@ -122,9 +122,7 @@ const router = createBrowserRouter([
       },
     ]
   }
-], {
-  basename: "/theworldgame"
-})
+])
 
 console.log(process.env)
 
