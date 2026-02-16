@@ -17,7 +17,7 @@ const processQueue = (error, token = null) => {
 
 const api = axios.create()
 
-api.defaults.baseURL = `${process.env.NODE_ENV ? process.env.REACT_APP_SERVER_URL : process.env.REACT_APP_SERVER_URL_DEPLOY}`;
+api.defaults.baseURL = `${process.env.NODE_ENV === "development" ? process.env.REACT_APP_SERVER_URL : process.env.REACT_APP_SERVER_URL_DEPLOY}`;
 api.defaults.withCredentials = true;
 
 api.interceptors.request.use(
