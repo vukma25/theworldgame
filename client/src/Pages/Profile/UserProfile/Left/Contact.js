@@ -12,7 +12,7 @@ export default function Contact() {
         <Box sx={{ textAlign: 'left', mb: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <Mail fontSize="small" sx={{ mr: 1, color: 'text.secondary' }} />
-                <Typography variant="body2">{email}</Typography>
+                <Typography variant="body2">{`${email.slice(0, 2)}****${email.split('').reverse().slice(0, 2).reverse().join('')}`}</Typography>
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>

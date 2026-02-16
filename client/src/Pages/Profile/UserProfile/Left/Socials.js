@@ -15,6 +15,8 @@ function Social({ children, link }) {
 export default function Socials() {
     const { user_information: { socialLinks } } = useSelector((state) => state.profile)
 
+    if (!socialLinks) return <></>
+
     return (
         <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
             {Object.entries(socialLinks).map(([type, link]) => {

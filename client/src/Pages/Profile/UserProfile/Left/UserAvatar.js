@@ -92,7 +92,7 @@ export default function UserAvatar() {
                     type="file"
                     name="avatar"
                     ref={fileRef}
-                    accept="image/png"
+                    accept="image/png, image/jpeg, , .png, .jpg, .jpeg"
                     onChange={chooseImage}
                 />
                 <button type='submit' ref={btnRef}></button>

@@ -97,11 +97,15 @@ const authSlice = createSlice({
         accessToken: null,
         isLoading: false,
         error: null,
+        register: false,
         isAuthenticated: false
     },
     reducers: {
+        updateFriendRequest_auth: (state, action) => {
+            state.user.friendRequests = action.payload
+        },
         updateFriendList: (state, action) => {
-            state.user.friends = [...state.user.friends, action.payload]
+            state.user.friends = action.payload
         },
         updateAvatar: (state, action) => {
             state.user.avatar = action.payload
@@ -128,7 +132,6 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.rejected, (state, action) => {
-                console.log(action.payload)
                 state.isLoading = false;
                 state.error = action.payload;
                 state.isAuthenticated = false;
@@ -140,6 +143,7 @@ const authSlice = createSlice({
             })
             .addCase(registerUser.fulfilled, (state) => {
                 state.isLoading = false;
+                state.register = true;
                 state.error = null;
             })
             .addCase(registerUser.rejected, (state, action) => {
@@ -184,5 +188,8 @@ const authSlice = createSlice({
     }
 });
 
-export const { clearError, setAuthenticated, updateFriendList, updateAvatar } = authSlice.actions;
+export const {
+    clearError, setAuthenticated, updateFriendList, updateAvatar,
+    updateFriendRequest_auth
+} = authSlice.actions;
 export default authSlice.reducer;

@@ -1,51 +1,26 @@
 import { Fragment, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
-    Card, CardHeader, InputLabel, Divider,
+    Card, CardHeader, InputLabel,
     CircularProgress, Box, Select, MenuItem, FormControl,
 } from '@mui/material';
-import { Add, Flag } from '@mui/icons-material';
+import { Flag } from '@mui/icons-material';
 import GoTopBtn from '../../Components/GoTopBtn/GoTopBtn'
 import CustomizedMenus from '../../Components/StyledMenu/StyleMenu';
 import api from '../../lib/api';
 import BadgeAvatar from '../../Components/BadgeAvatar/BadgeAvatar';
-import { sendRequestFriend } from '../../redux/features/user';
 import { sendSignalClose } from '../../redux/features/menu'
 import { useOnline } from '../../hook/useOnline';
 
 function CardHeaderActions({ userId }) {
-    const { user: { _id, friends } } = useSelector((state) => state.auth)
-    const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
-    const relationship = [...friends, _id.toString()]
-    const hasRelationship = relationship.some(id => id === userId.toString())
-
-    function send(id, userId) {
-        try {
-            dispatch(sendRequestFriend({ id, userId }))
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     function handleClose() {
         dispatch(sendSignalClose())
     }
 
-    if (hasRelationship) {
-        return (<></>)
-    }
-
     return (
         <CustomizedMenus hasShadow={true}>
-            <MenuItem onClick={() => {
-                send(user._id, userId)
-                handleClose()
-            }} disableRipple>
-                <Add />
-                Add friend
-            </MenuItem>
-            <Divider sx={{ my: 0.5 }} />
             <MenuItem onClick={handleClose} disableRipple>
                 <Flag />
                 Report for cheating
@@ -136,6 +111,7 @@ export default function LeadBoard() {
                                     username={username}
                                     src={avatar}
                                     online={isOnline(_id)}
+                                    id={_id}
                                 />
                             }
                             action={<CardHeaderActions userId={_id} />}

@@ -4,13 +4,14 @@ import { messageController } from '../controllers/messageController.js'
 
 const router = express.Router();
 const {
-    sendMessage, readMessage, getMessagesByConversation,
+    sendMessage, readMessage, getMoreMessageInConversation, getFirstMessageInConversation,
     deleteAllMessage, editMessage, deleteMessage, pinMessage, unPinMessage
 } = messageController;
 
+router.post('/more/:conversationId', auth, getMoreMessageInConversation);
+router.get('/first/:conversationId', auth, getFirstMessageInConversation);
 router.post('/send', auth, sendMessage);
 router.post('/read', auth, readMessage);
-router.post('/all/:conversationId', auth, getMessagesByConversation);
 router.post('/edit', auth, editMessage);
 router.post('/delete', auth, deleteMessage);
 router.post('/pin', auth, pinMessage);

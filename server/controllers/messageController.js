@@ -341,9 +341,9 @@ export const messageController = {
         }
     },
 
-    getMessagesByConversation: async (req, res) => {
+    getFirstMessageInConversation: async (req, res) => {
+        const FIRST = 10
         const { conversationId } = req.params;
-        const { page = 1, limit = 50 } = req.query;
 
         try {
             if (!isValidObjectId(conversationId)) {
@@ -364,10 +364,62 @@ export const messageController = {
                 return res.status(403).json({ message: "You are not a member of this conversation" });
             }
 
+            const unreadMessages = await Message.find({
+                conversationId: conversation._id,
+                readBy: { $ne: _id }
+            });
+
             const messages = await Message.find({ conversationId: new ObjectId(conversationId) })
                 .sort({ sentAt: -1 })
-                .limit(limit * 1)
-                .skip((page - 1) * limit)
+                .limit(FIRST)
+                .populate('sender', '_id username avatar')
+                .exec();
+
+            const total = await Message.countDocuments({ conversationId: new ObjectId(conversationId) });
+
+            return res.status(200).json({
+                messages,
+                totalMessages: total,
+                unread: unreadMessages?.length > FIRST ? unreadMessages?.length - FIRST : 0,
+                hasMore: FIRST < total
+            });
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Server error" });
+        }
+    },
+
+    getMoreMessageInConversation: async (req, res) => {
+        try {
+            const { conversationId } = req.params;
+            const { skip, limit } = req.body;
+            if ((!skip && skip !== 0) || !limit) return res.status(400).json({ message: "Missing parameter" });
+            const s = parseInt(skip);
+            const l = parseInt(limit);
+
+            if (!isValidObjectId(conversationId)) {
+                return res.status(400).json({ message: "Invalid conversation ID" });
+            }
+
+            const conversation = await Conversation.findById(conversationId);
+            if (!conversation) {
+                return res.status(404).json({ message: "Conversation not found" });
+            }
+
+            const { _id } = req.user;
+            const isMember = conversation.members.some(member => {
+                return member.equals(_id)
+            });
+
+            if (!isMember) {
+                return res.status(403).json({ message: "You are not a member of this conversation" });
+            }
+
+            const messages = await Message.find({ conversationId: new ObjectId(conversationId) })
+                .sort({ sentAt: -1 })
+                .skip(s)
+                .limit(l)
                 .populate('sender', '_id username avatar')
                 .exec();
 
@@ -375,8 +427,6 @@ export const messageController = {
 
             return res.json({
                 messages,
-                totalPages: Math.ceil(total / limit),
-                currentPage: page,
                 totalMessages: total
             });
 

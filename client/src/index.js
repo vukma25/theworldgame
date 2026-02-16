@@ -126,6 +126,7 @@ const router = createBrowserRouter([
   basename: "/theworldgame"
 })
 
+console.log(process.env)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

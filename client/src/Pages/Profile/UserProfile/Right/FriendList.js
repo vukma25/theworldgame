@@ -35,7 +35,12 @@ export default function FriendList() {
 
                     return (<Grid size={{ xs: 6, md: 4 }} key={_id}>
                         <Card variant="outlined" sx={{ textAlign: 'center', p: 2 }}>
-                            <BadgeAvatar username={username} src={avatar} online={isOnline(_id)} />
+                            <BadgeAvatar
+                                username={username}
+                                src={avatar}
+                                online={isOnline(_id)}
+                                id={_id}
+                            />
                             <Typography variant="body1" fontWeight="medium" sx={{ mt: 2 }}>
                                 {username}
                             </Typography>
@@ -72,11 +77,18 @@ export default function FriendList() {
                             const { _id, username, avatar } = friend
 
                             return (
-                                <Paper sx={{
-                                    width: "100%", p: 2, display: "flex", boxShadow: "0 0 2rem var(--cl-gray)",
-                                    justifyContent: "start", alignItems: "center", gap: "1rem"
-                                }}>
-                                    <BadgeAvatar username={username} src={avatar} online={isOnline(_id)} />
+                                <Paper
+                                    key={_id}
+                                    sx={{
+                                        width: "100%", p: 2, display: "flex", boxShadow: "0 0 2rem var(--cl-gray)",
+                                        justifyContent: "start", alignItems: "center", gap: "1rem"
+                                    }}>
+                                    <BadgeAvatar
+                                        username={username}
+                                        src={avatar}
+                                        online={isOnline(_id)}
+                                        id={_id}
+                                    />
                                     <Typography variant="body1" fontSize={"1.5rem"}>
                                         {username}
                                     </Typography>

@@ -8,7 +8,7 @@ import { Close, Google, Facebook, Visibility, VisibilityOff } from '@mui/icons-m
 export default function Register() {
 
     const { auth } = useSelector((state) => state.navbar)
-    const { isLoading, error } = useSelector((state) => state.auth)
+    const { isLoading, error, register } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
     const [formData, setFormData] = useState({
@@ -16,7 +16,6 @@ export default function Register() {
         email: '',
         password: ''
     })
-    const [start, setStart] = useState(false)
     const [show, setShow] = useState(false)
 
     function handleShowPwd() {
@@ -48,10 +47,6 @@ export default function Register() {
     }
 
     useEffect(() => {
-        if (!start) {
-            setStart(true)
-            return
-        }
 
         let timer
         if (error) {
@@ -60,7 +55,7 @@ export default function Register() {
             }, 3000)
             return;
         }
-        if (!error && !isLoading) {
+        if (register) {
             dispatch(setAuth('Login'))
         }
         return () => {
@@ -68,7 +63,7 @@ export default function Register() {
                 clearTimeout(timer)
             }
         }
-    }, [error, dispatch, isLoading])
+    }, [error, dispatch, isLoading, register])
 
     useEffect(() => {
         if (auth === "Register") {

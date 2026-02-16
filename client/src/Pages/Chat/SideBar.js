@@ -1,21 +1,16 @@
-import { useSelector, useDispatch } from "react-redux"
-import { setSidebar } from "../../redux/features/chat"
+import { useContext } from "react"
 import { Drawer } from "@mui/material"
 import ListGroup from "./ListGroup"
+import { StateContext } from "./Chat"
 
 export default function Sidebar() {
-    const { sidebar } = useSelector((state) => state.chat)
-    const dispatch = useDispatch()
-
-    function handleCloseSidebar() {
-        dispatch(setSidebar(false))
-    }
+    const { sidebar, handleClose } = useContext(StateContext)
 
     return (
         <Drawer
             open={sidebar}
             variant={false ? "permanent" : "temporary"}
-            onClose={handleCloseSidebar }
+            onClose={handleClose}
             sx={{
                 width: 400,
                 flexShrink: 0,

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, createContext } from "react"
 import { useSelector } from "react-redux"
 import { Card, CardHeader, CardContent, Divider } from "@mui/material"
 import Title from "./Title"
@@ -7,12 +7,16 @@ import EditMode from "./PersonalInfo/EditMode"
 import ViewMode from "./PersonalInfo/ViewMode"
 import FriendList from "./FriendList"
 
+export const ProfileContext = createContext()
 
 export default function RightPart() {
-    const { mode, user_information } = useSelector((state) => state.profile)
-    const [tabValue, setTabValue] = useState(0);
+    const { user_information } = useSelector((state) => state.profile)
+    const [tabValue, setTabValue] = useState(0)
+    const [mode, setMode] = useState("view")
 
     const handleTabChange = (event, newValue) => {
+        if (newValue === 1) { setMode("unset") }
+        else { setMode("view") }
         setTabValue(newValue);
     };
 
@@ -22,17 +26,21 @@ export default function RightPart() {
     }, [user_information])
 
     return (
-        <Card>
-            <CardHeader title={<Title />} />
-            <Divider />
-            <Tabs tabValue={tabValue} handleTabChange={handleTabChange} />
-            <CardContent>
-                {tabValue === 0 && (
-                    mode === "view" ? <ViewMode info={info} /> : <EditMode info={info} />
-                )}
+        <ProfileContext.Provider value={{ mode, setMode }}>
+            <Card>
+                <CardHeader title={<Title />} />
+                <Divider />
+                <Tabs tabValue={tabValue} handleTabChange={handleTabChange} />
+                <CardContent>
+                    {tabValue === 0 && mode !== "unset" && (
+                        mode === "view" ?
+                            <ViewMode info={info} /> :
+                            <EditMode info={info} />
+                    )}
 
-                {tabValue === 1 && <FriendList />}
-            </CardContent>
-        </Card>
+                    {tabValue === 1 && <FriendList />}
+                </CardContent>
+            </Card>
+        </ProfileContext.Provider>
     )
 }

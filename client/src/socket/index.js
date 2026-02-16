@@ -1,8 +1,8 @@
 import { store } from '../redux/app/store'
 import { setUsersOnline, setNotifications, setConversations, selectConversation } from '../redux/features/eventSocket';
 import { setListMessage, updateListMessage, setPinnedMessage } from '../redux/features/chat'
-import { updateAvatar, updateFriendList } from '../redux/features/auth';
-import { setAvatar } from '../redux/features/profile'
+import { updateAvatar, updateFriendList, updateFriendRequest_auth } from '../redux/features/auth';
+import { setAvatar, updateFriendRequest } from '../redux/features/profile'
 
 export const initSocket = () => {
     const { socket } = store.getState().socket;
@@ -16,6 +16,7 @@ export const initSocket = () => {
     })
 
     socket.on("notification:new:friend:request", (data) => {
+        const { user: { friendRequests } } = store.getState().auth
         const currentNotifications = store.getState().event.notifications;
         const newNotification = {
             title: "New friend request",
@@ -24,11 +25,15 @@ export const initSocket = () => {
         };
         const updatedNotifications = [...currentNotifications, newNotification];
         store.dispatch(setNotifications(updatedNotifications))
+        store.dispatch(updateFriendRequest_auth(
+            [...friendRequests.map((e) => ({ ...e })), { from: data.user, status: "pending" }]
+        ))
     });
 
     socket.on("notification:new:friend:response", (data) => {
-        const { friendId } = data
+        const { user: { friends, _id } } = store.getState().auth
         const currentNotifications = store.getState().event.notifications;
+        const { user_information: { friendRequests } } = store.getState().profile
         const newNotification = {
             title: "New friend response",
             content: data.content,
@@ -36,22 +41,81 @@ export const initSocket = () => {
         };
         const updatedNotifications = [...currentNotifications, newNotification];
         store.dispatch(setNotifications(updatedNotifications));
-        if (friendId) {
-            store.dispatch(updateFriendList(friendId))
+        if (data.res.type === 'accept') {
+            store.dispatch(updateFriendList([...friends, data.res.id]))
         }
+        store.dispatch(updateFriendRequest(friendRequests.filter(({ from }) => from.toString() !== _id.toString())))
     });
 
     socket.on("notification:delete:friend:request", (data) => {
-        const { friendId } = data
+        const { user: { friends, friendRequests } } = store.getState().auth
         let notifications = store.getState().event.notifications;
         notifications = notifications.filter(({ reveal }) => {
-            return reveal.id !== data.oldId.toString()
+            return reveal.id.toString() !== data.oldId.toString()
         })
 
         store.dispatch(setNotifications(notifications))
-        if (friendId) {
-            store.dispatch(updateFriendList(friendId))
+        if (data.res.type === 'accept') {
+            store.dispatch(updateFriendList([...friends, data.res.id]))
         }
+
+        store.dispatch(updateFriendRequest_auth(
+            friendRequests.filter(({ from }) => from.toString() !== data.res.id.toString())
+        ))
+    })
+
+    socket.on("withdraw:my:request", (data) => {
+        const { user: { _id } } = store.getState().auth
+        const { user_information: { friendRequests } } = store.getState().profile
+
+        store.dispatch(updateFriendRequest(
+            friendRequests.filter((e) => (e.from.toString() !== _id.toString()))
+        ))
+    })
+
+    socket.on("withdraw:request", (data) => {
+        const { user: { friendRequests } } = store.getState().auth
+        const { notifications } = store.getState().event;
+        const newNotifications = notifications.filter(({ reveal: { id } }) => (
+            id !== data.notification
+        ))
+
+        store.dispatch(setNotifications(newNotifications))
+        store.dispatch(updateFriendRequest_auth(
+            friendRequests.filter(({ from }) => from.toString() !== data.another.toString())
+        ))
+    })
+
+    socket.on("sent:new:friend:request", (data) => {
+        const { user: { _id: me } } = store.getState().auth
+        const { user_information: { friendRequests } } = store.getState().profile
+
+        const updated = [...friendRequests.map((req) => ({ ...req })), {
+            from: me,
+            status: "pending"
+        }]
+
+        store.dispatch(updateFriendRequest(updated))
+    })
+
+    socket.on("unfriend", (data) => {
+        const { user: { friends } } = store.getState().auth
+        const { conversations, selectedConversation } = store.getState().event
+
+        const cons = conversations.filter(
+            (con) => (con._id.toString() !== data.deletedCon.toString()))
+
+
+        if (selectedConversation?.conversationId.toString() === data.deletedCon.toString()) {
+            store.dispatch(selectConversation({
+                ...selectedConversation,
+                disable: true
+            }))
+        }
+        store.dispatch(setConversations(cons))
+        store.dispatch(updateFriendList(
+            friends.filter((id) => id.toString() !== data.id.toString())
+        ))
     })
 
     socket.on("conversation:new", (data) => {
@@ -103,7 +167,7 @@ export const initSocket = () => {
         })
         store.dispatch(setConversations(newConversations))
 
-        if (_id.toString() !== data.sender._id.toString() && selectedConversation.read) {
+        if (_id.toString() !== data.sender._id.toString() && selectedConversation?.read) {
             store.dispatch(selectConversation({
                 ...selectedConversation,
                 read: false
@@ -174,7 +238,8 @@ export const initSocket = () => {
             if (_id.toString() === messageId.toString()) {
                 return {
                     ...mess,
-                    content: newContent
+                    content: newContent,
+                    edited: true
                 }
             }
             return { ...mess }
@@ -227,7 +292,7 @@ export const initSocket = () => {
         let updatePinnedMessage = []
 
         const updateListMessage = listMessages.map((mess) => {
-            const { _id, content, sentAt, sender } = mess
+            const { _id } = mess
             if (_id.toString() === messageId) {
 
                 updatePinnedMessage = listPinnedMessages.filter(({ _id }) => _id.toString() !== messageId.toString())

@@ -7,7 +7,6 @@ const initialState = {
     "current_relationship": "none",
     "friend_list_modal": false,
     "verify_modal": false,
-    "mode": "view",
     "isLoading": false,
     "error": null
 }
@@ -70,11 +69,11 @@ const profileSlice = createSlice({
         verifyModal: (state, action) => {
             state.verify_modal = action.payload
         },
-        setMode: (state, action) => {
-            state.mode = action.payload
-        },
         setAvatar: (state, action) => {
             state.user_information.avatar = action.payload
+        },
+        updateFriendRequest: (state, action) => {
+            state.user_information.friendRequests = action.payload
         }
     },
     extraReducers: (builder) =>
@@ -120,5 +119,8 @@ const profileSlice = createSlice({
 })
 
 
-export const { friendModal, verifyModal, setMode, setAvatar } = profileSlice.actions
+export const {
+    friendModal, verifyModal, setAvatar,
+    updateFriendRequest
+} = profileSlice.actions
 export default profileSlice.reducer

@@ -1,40 +1,42 @@
-import { useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setContent, raiseError } from "../../../redux/features/chat"
+import { setMyself } from "../../../redux/features/chat"
 import { Box, TextField, IconButton } from '@mui/material'
 import { AttachFile, Image, EmojiEmotions } from "@mui/icons-material"
 import { Send } from '@mui/icons-material'
 import { sendMessage } from '../../../redux/features/user'
 
-export default function Typing() {
-    const { content, error: { reason } } = useSelector((state) => state.chat)
+function Typing() {
     const { selectedConversation } = useSelector((state) => state.event)
     const { user: { _id } } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
+    const [message, setMessage] = useState('')
+    const [error, setError] = useState({ active: false, reason: '' })
     const inputRef = useRef(null)
 
     function handleInput(e) {
-        dispatch(setContent(e.target.value))
+        setMessage(e.target.value)
     }
 
     function handleSend() {
         if (!selectedConversation) {
-            dispatch(raiseError({ isError: true, reason: 'You do not choose any chat yet' }))
-            dispatch(setContent(''))
+            setError({ active: true, reason: 'You do not choose any chat yet' })
+            setMessage('')
             return
         }
-        if (content.length === 0) {
-            dispatch(raiseError({ isError: true, reason: 'If you want to chat, please do not leave input empty' }))
-            dispatch(setContent(''))
+        if (message.length === 0) {
+            setError({ active: true, reason: 'If you want to chat, please do not leave input empty' })
+            setMessage('')
             return
         }
         const { conversationId } = selectedConversation
         const sender = _id;
         const sentAt = new Date()
 
-        dispatch(sendMessage({ conversationId, content, sender, sentAt }))
-        dispatch(setContent(''))
+        dispatch(sendMessage({ conversationId, content: message, sender, sentAt }))
+        setMessage('')
+        dispatch(setMyself(true))
 
         if (inputRef.current) {
             inputRef.current.focus()
@@ -48,13 +50,13 @@ export default function Typing() {
     }
 
     useEffect(() => {
-        if (reason.length === 0) return
+        if (!error.active) return
         const timer = setTimeout(function () {
-            dispatch(raiseError({ isError: false, reason: '' }))
+            setError({ active: false, reason: '' })
         }, 2500)
 
         return () => clearTimeout(timer)
-    }, [reason])
+    }, [error])
 
     return (
         <Box sx={{
@@ -73,8 +75,8 @@ export default function Typing() {
             <TextField
                 inputRef={inputRef}
                 variant="outlined"
-                helperText={reason !== "" ? reason : `${content.length}/5000`}
-                value={content}
+                helperText={error.active ? error.reason : `${message.length}/5000`}
+                value={message}
                 onChange={handleInput}
                 onKeyDown={handleKeyDown}
                 sx={{
@@ -97,3 +99,5 @@ export default function Typing() {
         </Box>
     )
 }
+
+export default React.memo(Typing)

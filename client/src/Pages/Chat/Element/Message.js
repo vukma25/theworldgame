@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 
-export default function Message({ isMe, content }) {
+export default function Message({ refer, isMe, content, animate }) {
     return (
         <Typography
             variant="h6"
@@ -15,7 +15,9 @@ export default function Message({ isMe, content }) {
                 //overflowWrap: "break-word",
                 height: "auto",
                 padding: "1rem 1.5rem",
+                animation: animate ? "bounce 1s ease" : "none"
             }}
+            ref={refer}
         >
             {content}
         </Typography>

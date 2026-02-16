@@ -9,7 +9,7 @@ export default function TabBar({ tabValue, handleTabChange }) {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tabValue} onChange={handleTabChange}>
                 <Tab icon={<Person />} label="Detail" />
-                <Tab icon={<Group />} label={`Friends`} />
+                <Tab icon={<Group />} label="Friends" />
             </Tabs>
         </Box>
     )

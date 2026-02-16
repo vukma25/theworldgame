@@ -11,7 +11,7 @@ import moment from 'moment/moment';
 import { handleUnPinMessage } from '../../../redux/features/chat';
 import { setClose } from '../../../redux/features/menu';
 
-function PinnedMessages({ messages }) {
+function PinnedMessages({ messages, func }) {
     const { selectedConversation: { conversationId } } = useSelector((state) => state.event)
     const dispatch = useDispatch()
 
@@ -61,7 +61,9 @@ function PinnedMessages({ messages }) {
                 borderTopLeftRadius: 8,
                 borderTopRightRadius: 8,
                 zIndex: 97
-            }}>
+            }}
+                onClick={handleOpen}
+            >
                 <PushPin sx={{ mr: 1, fontSize: 20, color: "white" }} />
                 <Typography variant='h6' fontWeight="bold" color='white'>
                     Pinned messages
@@ -70,7 +72,7 @@ function PinnedMessages({ messages }) {
                     label={messages.length}
                     sx={{ ml: 1, color: "white" }}
                 />
-                <IconButton sx={{ marginLeft: "auto" }} onClick={handleOpen}>
+                <IconButton sx={{ marginLeft: "auto" }}>
                     <KeyboardArrowDown sx={{ color: "white", fontSize: "2rem", transform: open ? "rotate(180deg)" : "" }} />
                 </IconButton>
             </Box>
@@ -87,6 +89,7 @@ function PinnedMessages({ messages }) {
                                         bgcolor: 'action.hover'
                                     }
                                 }}
+                                onClick={() => { func(_id.toString()); handleOpen() }}
                             >
                                 <Stack direction="row" spacing={1.5} alignItems="flex-start">
                                     <BadgeAvatar username={username} src={avatar} online={null} />

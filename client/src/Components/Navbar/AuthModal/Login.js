@@ -15,7 +15,6 @@ export default function Login() {
         email: '',
         password: ''
     })
-    const [start, setStart] = useState(false)
     const [show, setShow] = useState(false)
 
     function handleShowPwd() {
@@ -41,10 +40,6 @@ export default function Login() {
     }
 
     useEffect(() => {
-        if (!start) {
-            setStart(true)
-            return
-        }
 
         let timer
         if (error) {

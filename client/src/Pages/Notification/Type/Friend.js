@@ -1,17 +1,16 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, Avatar, Button, Card, CardHeader } from '@mui/material'
-import { handleFriendRequest } from '../../../redux/features/user' 
+import { handleFriendRequest } from '../../../redux/features/user'
 
 export default function Friend({ title, content, reveal }) {
     const { user: { _id } } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
-    function handleRequest(user, id, response) {
+    function handleRequest(user, response) {
         try {
             dispatch(handleFriendRequest({
                 userId: _id,
                 id: user,
-                notificationId: id,
                 response
             }))
         } catch (error) {
@@ -20,13 +19,13 @@ export default function Friend({ title, content, reveal }) {
     }
 
     return (
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop:".5rem"}}>
-            <Card sx={{ width: "90%",display:"flex", justifyContent:"space-between", paddingRight:"1rem" }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: ".5rem" }}>
+            <Card sx={{ width: "90%", display: "flex", justifyContent: "space-between", paddingRight: "1rem" }}>
                 <CardHeader
                     sx={{
                         '& .MuiCardHeader-content span': { fontSize: "1.4rem" }
                     }}
-                    avatar={<Avatar src={reveal.avatar} alt={reveal.username}/>}
+                    avatar={<Avatar src={reveal.avatar} alt={reveal.username} />}
                     title={title}
                     subheader={content}
                 />
@@ -34,11 +33,11 @@ export default function Friend({ title, content, reveal }) {
                     <Button
                         variant='contained'
                         sx={{ background: "var(--cl-primary-yellow)", color: "var(--cl-white-pure)" }}
-                        onClick={() => handleRequest(reveal.user, reveal.id, 'accept')}>accept</Button>
+                        onClick={() => handleRequest(reveal.user, 'accept')}>accept</Button>
                     <Button
                         variant='outlined'
                         sx={{ borderColor: "var(--cl-primary-yellow)", color: "var(--cl-primary-yellow)" }}
-                        onClick={() => handleRequest(reveal.user, reveal.id, 'reject')}>reject</Button>
+                        onClick={() => handleRequest(reveal.user, 'reject')}>reject</Button>
                 </Box>
             </Card>
         </Box>

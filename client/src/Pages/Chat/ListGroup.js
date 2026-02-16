@@ -1,27 +1,24 @@
-import { Fragment, useEffect } from "react"
+import { Fragment, useEffect, useContext } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { setSidebar } from "../../redux/features/chat"
 import { Typography, List, ListItem, ListItemButton, Box } from "@mui/material"
 import BadgeAvatar from "../../Components/BadgeAvatar/BadgeAvatar"
 import api from "../../lib/api"
 import { setConversations, selectConversation } from "../../redux/features/eventSocket"
-import { setListMessage, setPinnedMessage } from "../../redux/features/chat"
+import { setPinnedMessage } from "../../redux/features/chat"
 import { useOnline } from "../../hook/useOnline"
+import { StateContext } from "./Chat"
 
 function Conversation({ avatar, name, count, lastMessage, conversationId, userId = null, pinnedMessage }) {
     const dispatch = useDispatch()
     const isOnline = useOnline()
-
-    function handleSidebar() {
-        dispatch(setSidebar(false))
-    }
+    const { handleClose } = useContext(StateContext)
 
     function handleSelectConversation() {
         dispatch(selectConversation({ avatar, name, conversationId, read: count > 0 ? false : true, userId }))
     }
 
     function handleSetPinnedMessage() {
-        dispatch(setPinnedMessage(pinnedMessage));
+        dispatch(setPinnedMessage(pinnedMessage.map((m) => ({ ...m })).reverse()));
     }
 
     return (
@@ -29,13 +26,15 @@ function Conversation({ avatar, name, count, lastMessage, conversationId, userId
             <ListItemButton
                 sx={{ gap: "1rem" }}
                 onClick={() => {
-                    handleSidebar(); handleSelectConversation(); handleSetPinnedMessage()
+                    handleClose(); handleSelectConversation(); handleSetPinnedMessage()
                 }}
             >
                 <BadgeAvatar username={name} src={avatar} online={isOnline(userId)} />
                 <Box>
                     <Typography variant='h6'>{name}</Typography>
-                    <Typography variant='body1' sx={{ color: "var(--ink-500)" }}>{lastMessage?.content || "No message yet"}</Typography>
+                    <Typography variant='body1' sx={{ color: "var(--ink-500)" }}>
+                        {lastMessage ? `${lastMessage?.content.slice(0, 30)}${lastMessage?.content.length > 30 ? "..." : ""}` : "No message yet"}
+                    </Typography>
                 </Box>
                 {count !== 0 &&
                     <Typography
@@ -60,7 +59,7 @@ function Conversation({ avatar, name, count, lastMessage, conversationId, userId
 
 export default function ListGroup() {
     const { user } = useSelector((state) => state.auth)
-    const { conversations, selectedConversation } = useSelector((state) => state.event)
+    const { conversations } = useSelector((state) => state.event)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -73,21 +72,6 @@ export default function ListGroup() {
 
         fetchData();
     }, [])
-
-    useEffect(() => {
-        if (selectedConversation) {
-            const { conversationId } = selectedConversation
-
-            async function getAllMessages() {
-                const response = await api.post(`/message/all/${conversationId.toString()}`, {}, { withCredentials: true })
-                if (!response?.data?.messages) return
-
-                dispatch(setListMessage(response.data.messages.reverse()))
-            }
-
-            getAllMessages()
-        }
-    }, [selectedConversation])
 
     return (
         <Fragment>

@@ -34,7 +34,7 @@ const Profile = () => {
         } else {
             dispatch(getMyProfile())
         }
-    }, [])
+    }, [params?.id])
 
 
     if (isLoading || !user_information) {

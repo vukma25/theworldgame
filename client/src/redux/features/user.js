@@ -41,6 +41,36 @@ export const handleFriendRequest = createAsyncThunk(
     }
 )
 
+export const withdrawFriendRequest = createAsyncThunk(
+    'user/withdrawRequest',
+    async ({ me, another }, { rejectWithValue }) => {
+        try {
+            const response = await api.post("/user/friendRequest/withdraw", {
+                me, another
+            }, { withCredentials: true })
+
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+export const unfriend = createAsyncThunk(
+    "user/unfriend",
+    async ({ me, another }, { rejectWithValue }) => {
+        try {
+            const response = await api.post("/user/unfriend", {
+                me, another
+            }, { withCredentials: true })
+
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data.message);
+        }
+    }
+)
+
 export const readNotification = createAsyncThunk(
     'notification/read',
     async ({ notificationId, id }, { rejectWithValue }) => {
@@ -146,6 +176,32 @@ const userSlice = createSlice({
                 state.error = null
             })
             .addCase(handleFriendRequest.rejected, (state, action) => {
+                state.isLoading = false
+                state.err = action.payload
+            })
+            .addCase(withdrawFriendRequest.pending, (state) => {
+                state.isLoading = true
+                state.error = null
+            })
+            .addCase(withdrawFriendRequest.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.response = action.payload
+                state.error = null
+            })
+            .addCase(withdrawFriendRequest.rejected, (state, action) => {
+                state.isLoading = false
+                state.err = action.payload
+            })
+            .addCase(unfriend.pending, (state) => {
+                state.isLoading = true
+                state.error = null
+            })
+            .addCase(unfriend.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.response = action.payload
+                state.error = null
+            })
+            .addCase(unfriend.rejected, (state, action) => {
                 state.isLoading = false
                 state.err = action.payload
             })

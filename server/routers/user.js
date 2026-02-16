@@ -7,7 +7,7 @@ const router = express.Router();
 const {
     fetchMe, fetchMeDetail, fetchAnotherUser, getAllUser,
     sendFriendRequest, handleFriendRequest, uploadAvatar,
-    updateProfile
+    updateProfile, withdrawFriendRequest, unfriend
 } = userController;
 
 router.get('/fetchMe', auth, fetchMe);
@@ -16,6 +16,8 @@ router.get('/fetchUser/:id', auth, fetchAnotherUser);
 router.post('/upload/avatar', auth, upload.single('avatar'), uploadAvatar);
 router.post('/update/profile', auth, updateProfile);
 router.get('/getAllUser', getAllUser);
+router.post('/unfriend', auth, unfriend);
+router.post('/friendRequest/withdraw', auth, withdrawFriendRequest);
 router.post('/friendRequest/:userId', auth, sendFriendRequest);
 router.post('/friendRequest', auth, handleFriendRequest);
 

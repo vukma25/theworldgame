@@ -2,15 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../lib/api";
 
 const initialState = {
-    sidebar: true,
     action: "",
-    content: "",
     listMessages: [],
     listPinnedMessages: [],
-    error: {
-        isError: false,
-        reason: ''
-    },
+    myself: false,
     deleteDialog: {
         conversation: null,
         message: null,
@@ -23,8 +18,38 @@ const initialState = {
         open: false
     },
     isLoading: false,
+    fetchError: null,
+    hasMore: false,
+    unreadCount: 0
 }
 
+export const handleLoadFirstMessage = createAsyncThunk(
+    'chat/loadFirstMessage',
+    async ({ id }, { rejectWithValue }) => {
+        try {
+            const response = await api.get(`/message/first/${id}`, { withCredentials: true })
+
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
+
+export const handleLoadMoreMessage = createAsyncThunk(
+    'chat/loadMoreMessage',
+    async ({ skip, limit, id }, { rejectWithValue }) => {
+        try {
+            const response = await api.post(`/message/more/${id}`, {
+                skip, limit
+            }, { withCredentials: true })
+
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data.message)
+        }
+    }
+)
 
 export const handleEditMessage = createAsyncThunk(
     'chat/edit',
@@ -91,18 +116,12 @@ const chatSlice = createSlice({
     name: "chat",
     initialState,
     reducers: {
-        setSidebar: (state, action) => {
-            state.sidebar = action.payload
-        },
-        setContent: (state, action) => {
-            state.content = action.payload
+        setMyself: (state, action) => {
+            state.myself = action.payload
         },
         updateListMessage: (state, action) => {
             state.listMessages.push(action.payload)
             state.action = "new"
-        },
-        raiseError: (state, action) => {
-            state.error = action.payload
         },
         setListMessage: (state, action) => {
             state.listMessages = action.payload
@@ -116,6 +135,9 @@ const chatSlice = createSlice({
         },
         setPinnedMessage: (state, action) => {
             state.listPinnedMessages = action.payload
+        },
+        setUnreadCount: (state, action) => {
+            state.unreadCount = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -125,9 +147,11 @@ const chatSlice = createSlice({
             })
             .addCase(handleEditMessage.fulfilled, (state) => {
                 state.isLoading = false
+                state.fetchError = null
             })
-            .addCase(handleEditMessage.rejected, (state) => {
+            .addCase(handleEditMessage.rejected, (state, action) => {
                 state.isLoading = false
+                state.fetchError = action.payload
             })
             .addCase(handleDeleteMessage.pending, (state) => {
                 state.isLoading = true
@@ -137,32 +161,68 @@ const chatSlice = createSlice({
                 state.deleteDialog.conversation = null
                 state.deleteDialog.message = null
                 state.deleteDialog.open = false
+                state.fetchError = null
             })
-            .addCase(handleDeleteMessage.rejected, (state) => {
+            .addCase(handleDeleteMessage.rejected, (state, action) => {
                 state.isLoading = false
+                state.fetchError = action.payload
             })
             .addCase(handlePinMessage.pending, (state) => {
                 state.isLoading = true
             })
             .addCase(handlePinMessage.fulfilled, (state) => {
                 state.isLoading = false
+                state.fetchError = null
             })
-            .addCase(handlePinMessage.rejected, (state) => {
+            .addCase(handlePinMessage.rejected, (state, action) => {
                 state.isLoading = false
+                state.fetchError = action.payload
             })
             .addCase(handleUnPinMessage.pending, (state) => {
                 state.isLoading = true
             })
             .addCase(handleUnPinMessage.fulfilled, (state) => {
                 state.isLoading = false
+                state.fetchError = null
             })
-            .addCase(handleUnPinMessage.rejected, (state) => {
+            .addCase(handleUnPinMessage.rejected, (state, action) => {
                 state.isLoading = false
+                state.fetchError = action.payload
+            })
+            .addCase(handleLoadMoreMessage.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(handleLoadMoreMessage.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.fetchError = null
+
+                const messes = [...action.payload.messages.reverse(), ...state.listMessages]
+                state.listMessages = messes
+                state.hasMore = action.payload.totalMessages > messes.length
+            })
+            .addCase(handleLoadMoreMessage.rejected, (state, action) => {
+                state.isLoading = false
+                state.fetchError = action.payload
+            })
+            .addCase(handleLoadFirstMessage.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(handleLoadFirstMessage.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.fetchError = null
+                state.listMessages = action.payload.messages.reverse()
+                state.hasMore = action.payload.hasMore
+                state.unreadCount = action.payload.unread
+            })
+            .addCase(handleLoadFirstMessage.rejected, (state, action) => {
+                state.isLoading = false
+                state.fetchError = action.payload
             })
     }
 })
 
-export const { setSidebar, setContent, updateListMessage, setListMessage, raiseError,
-    setDeleteDialog, setEditDialog, setPinnedMessage
+export const {
+    updateListMessage, setListMessage,
+    setDeleteDialog, setEditDialog, setPinnedMessage, setUnreadCount, setMyself
 } = chatSlice.actions
 export default chatSlice.reducer

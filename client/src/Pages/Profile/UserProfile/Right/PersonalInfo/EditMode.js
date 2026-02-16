@@ -6,11 +6,12 @@ import {
     DialogContent, DialogTitle
 } from "@mui/material"
 import { Check } from "@mui/icons-material"
-import { setMode, verifyModal, updateProfile } from "../../../../../redux/features/profile";
+import { verifyModal, updateProfile } from "../../../../../redux/features/profile";
 import { LogContext } from "../../../Profile";
 import api from "../../../../../lib/api";
 import { fetchUser } from "../../../../../redux/features/auth";
 import { socials } from "../../Left/SocialPattern";
+import { ProfileContext } from "../index";
 
 export default function EditMode({ info }) {
     const { user_information: { _id }, verify_modal, isLoading } = useSelector((state) => state.profile)
@@ -36,6 +37,7 @@ export default function EditMode({ info }) {
         "other": true
     })
     const { setLog } = useContext(LogContext)
+    const { setMode } = useContext(ProfileContext)
 
     const handleInputChange = (field, u = 1) => (event) => {
         if (u === 1) {
@@ -81,7 +83,7 @@ export default function EditMode({ info }) {
             "other": "",
             ...socialLinks
         })
-        dispatch(setMode("view"))
+        setMode("view")
     }
 
     async function handleSaveChange() {
@@ -101,7 +103,7 @@ export default function EditMode({ info }) {
             setLog({ type: "error", message: "Update failed" })
         }
         finally {
-            dispatch(setMode("view"))
+            setMode("view")
         }
     }
 

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import User from "../models/user.js"
-import Notification from '../models/notification.js'
+import Conversation from "../models/conversation.js"
+import Notification from "../models/notification.js"
+import Message from "../models/message.js"
 import { isValidObjectId } from "../utils/validateId.js"
 import Socs from '../services/socketService.js'
 //import cloudinary from '../services/cloudinary.js'
@@ -34,7 +36,7 @@ const userController = {
             if (!id || !isValidObjectId(id)) { return res.status(400).json({ message: "Id is missed or format is not correct" }) };
 
             const user = await User.findById({ _id: new ObjectId(id) })
-                .select("_id username email avatar bio role friendRequests createdAt");
+                .select("_id username email avatar bio role friendRequests createdAt socialLinks");
 
             if (!user) { return res.status(404).json({ message: "User does not exist" }) }
 
@@ -94,6 +96,8 @@ const userController = {
                 avatar: userSendRequest.avatar
             })
 
+            Socs.emitToUser(userSendRequest._id.toString(), "sent:new:friend:request", null)
+
             return res.status(200).send({
                 message: "Send request succesfully",
                 userReceiveRequest: userReceiveRequest._id
@@ -105,13 +109,13 @@ const userController = {
         }
     },
     handleFriendRequest: async (req, res) => {
-        const { userId, id, notificationId, response } = req.body;
+        const { userId, id, response } = req.body;
 
         try {
-            if (!userId || !id || !notificationId) {
+            if (!userId || !id) {
                 return res.status(400).send({ message: "User id is required" });
             }
-            if (!isValidObjectId(userId) || !isValidObjectId(id) || !isValidObjectId(notificationId)) {
+            if (!isValidObjectId(userId) || !isValidObjectId(id)) {
                 return res.status(400).send({ message: "Invalid user id" });
             }
 
@@ -123,7 +127,11 @@ const userController = {
 
             let curNotification;
             if (['accept', 'reject'].includes(response)) {
-                curNotification = await Notification.findOneAndDelete({ _id: new ObjectId(notificationId) })
+                curNotification = await Notification.findOneAndDelete({
+                    userId: userReceiveRequest._id,
+                    fromUser: userSendRequest._id,
+                    type: "friend"
+                })
                 if (!curNotification) {
                     return res.status(404).send({ message: "Notification does not exist" });
                 }
@@ -163,11 +171,11 @@ const userController = {
                     content: notification.content,
                     type: notification.type,
                     unread: notification.unread,
-                    friendId: response === 'accept' ? userReceiveRequest._id : null
+                    res: { type: response, id: userReceiveRequest._id }
                 })
                 Socs.emitToUser(userReceiveRequest._id.toString(), "notification:delete:friend:request", {
                     oldId: curNotification._id,
-                    friendId: response === 'accept' ? userSendRequest._id : null
+                    res: { type: response, id: userSendRequest._id }
                 })
 
                 return res.status(200).send({
@@ -181,6 +189,93 @@ const userController = {
         } catch (err) {
             console.error(err);
             return res.status(500).json({ message: "Server error" });
+        }
+    },
+    withdrawFriendRequest: async (req, res) => {
+        try {
+            const { me, another } = req.body
+            if (!me || !another) return res.status(400).json({ message: "Missing id" });
+            if (!isValidObjectId(me) || !isValidObjectId(another)) {
+                return res.status(400).json({ message: "ID is not correct format" });
+            }
+
+            const my_acc = await User.findOne({ _id: new ObjectId(me) });
+            const another_acc = await User.findOne({ _id: new ObjectId(another) });
+
+            if (!my_acc || !another_acc) return res.status(400).json({ message: "User does not exit" });
+
+            another_acc.friendRequests = another_acc.friendRequests.filter(({ from }) => {
+                return !from.equals(my_acc._id);
+            })
+
+            await another_acc.save();
+
+            const notification = await Notification.findOneAndDelete({ userId: another_acc._id, fromUser: my_acc._id })
+
+            if (!notification) return res.status(404).json({ message: "Can not delete notification" })
+
+            Socs.emitToUser(another_acc._id.toString(), "withdraw:request", {
+                another: my_acc._id,
+                notification: notification._id
+            })
+            Socs.emitToUser(my_acc._id.toString(), "withdraw:my:request", null);
+
+        } catch (error) {
+            console.log("Server error: ", error);
+            return res.status(500).json({ message: "Can not withdraw friend request" })
+        }
+    },
+    unfriend: async (req, res) => {
+        const session = await mongoose.startSession();
+
+        try {
+            session.startTransaction();
+            const { me, another } = req.body;
+            if (!me || !another) return res.status(400).json({ message: "Id is required" });
+            if (!isValidObjectId(me) || !isValidObjectId(another)) return res.status(400).json({ message: "Id's format must be not correct" });
+
+            // Huy ket ban
+            const my_acc = await User.findOne({ _id: new ObjectId(me) });
+            const another_acc = await User.findOne({ _id: new ObjectId(another) });
+
+            if (!my_acc || !another_acc) return res.status(404).json({ message: " Users do not exist" });
+
+            my_acc.friends = my_acc.friends.filter((id) => !id.equals(another_acc._id));
+            another_acc.friends = another_acc.friends.filter((id) => !id.equals(my_acc._id));
+
+            await my_acc.save();
+            await another_acc.save();
+
+            // Xoa cuoc hoi thoai va tin nhan
+            const deletedConversation = await Conversation.findOneAndDelete({
+                members: {
+                    $all: [my_acc._id, another_acc.id],
+                    $size: 2
+                }
+            });
+            if (!deletedConversation) return res.status(404).json({ message: "Conversation does not exist" });
+
+            await Message.deleteMany({ conversationId: deletedConversation._id });
+
+            Socs.emitToUser(my_acc._id.toString(), "unfriend", {
+                id: another_acc._id,
+                deletedCon: deletedConversation._id
+            })
+            Socs.emitToUser(another_acc._id.toString(), "unfriend", {
+                id: my_acc._id,
+                deletedCon: deletedConversation._id
+            })
+
+            session.commitTransaction();
+            return res.status(200).json({ message: "Unfriend successfully" })
+
+
+        } catch (error) {
+            console.log("Server error: ", error);
+            session.abortTransaction();
+            return res.status(500).json({ message: "Unfriend failed" })
+        } finally {
+            session.endSession();
         }
     },
     uploadAvatar: async (req, res) => {
