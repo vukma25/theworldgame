@@ -18,7 +18,7 @@ const MONGODB_URI = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSW
 
 Socs.setIO(io);
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true
 }))
 app.use(cookieParser());
