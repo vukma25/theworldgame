@@ -14,7 +14,7 @@ const socketSlice = createSlice({
             const accessToken = action.payload
 
             if (state.socket) return
-            const socket = io(`${process.env.REACT_APP_SOCKET_URL}`, {
+            const socket = io(`${process.env.NODE_ENV === "development" ? process.env.REACT_APP_SOCKET_URL : process.env.REACT_APP_SOCKET_URL_DEPLOY}`, {
                 auth: { accessToken }
             });
 
