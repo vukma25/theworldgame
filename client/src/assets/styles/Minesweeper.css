@@ -1,7 +1,7 @@
 .minesweeper {
   width: 100%;
   height: auto;
-  margin-top: 2rem;
+  padding-top: 2rem;
 }
 .minesweeper .restart-btn {
   width: 90%;
@@ -112,15 +112,12 @@
   font-size: 1.2rem;
 }
 .minesweeper .minesweeper-broad .customize-broad .confirm-customize, .minesweeper .minesweeper-broad .customize-broad .reset-customize {
-  width: 100%;
-  height: 4rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1.6rem;
-  font-weight: 600;
   background: var(--cl-primary-yellow);
   color: var(--cl-white-pure);
   margin-bottom: 1rem;
+  width: 100%;
+  border: none;
+  padding: 1rem 0;
 }
 .minesweeper .minesweeper-broad .customize-broad .reset-customize {
   background: var(--cl-primary-purple);
@@ -198,7 +195,8 @@
 .game-over .time {
   font-size: 1.4rem;
   gap: 1rem;
-  border: 0.1rem solid var(--cl-green);
+  background: var(--brand-500);
+  color: var(--cl-white-pure);
   padding: 0.5rem;
 }
 .game-over .game-over-gif {

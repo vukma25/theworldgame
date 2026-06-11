@@ -13,13 +13,10 @@ import {
     setGameOver
 } from '../../redux/features/sudoku'
 import {
-    Icon,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    CircularProgress
+    FormControl, InputLabel, Select,
+    MenuItem, CircularProgress
 } from '@mui/material'
+import { Warning } from "@mui/icons-material"
 import ClockBase from '../../Components/ClockBase/ClockBase';
 import Clock from './Clock'
 import Logger from '../../Components/Logger/Logger'
@@ -311,9 +308,9 @@ function Sudoku() {
                         <CircularProgress sx={{ color: "var(--brand-500)" }} />
                         <span className="sudoku-loading__description">Generating puzzle ...</span>
                         <div className="sudoku-loading__info flex-div">
-                            <Icon
+                            <Warning
                                 sx={{ color: "var(--cl-primary-yellow)" }}
-                            >warning</Icon>
+                            />
                             <p>16x16 puzzles can take a while to generate</p>
                         </div>
                     </div>}
@@ -425,9 +422,9 @@ function Sudoku() {
                                                     className="flex-div"
                                                     style={{ gap: ".5rem" }}
                                                 >
-                                                    <Icon
+                                                    <Warning
                                                         sx={{ color: "var(--cl-red-flag)" }}
-                                                    >warning</Icon>
+                                                    />
                                                     <p
                                                         style={{
                                                             fontSize: "1rem",

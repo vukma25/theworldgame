@@ -8,7 +8,7 @@ function ChessBot() {
     const dispatch = useDispatch()
     const sfRef = useRef(null);
 
-    function postMessageToSf(sf, fen){
+    function postMessageToSf(sf, fen) {
         if (!sf) return
 
         const elo = opposite.elo ?? 1500;
@@ -31,7 +31,7 @@ function ChessBot() {
         if (chess.turn === playerSide) return
 
         dispatch(setAiThinking(true))
-        const sf = new Worker('/theworldgame/stockfish.js')
+        const sf = new Worker('/stockfish.js')
         const chessClone = chess.getState()
         sfRef.current = sf
         sf.onmessage = (event) => {
@@ -52,8 +52,8 @@ function ChessBot() {
         return () => {
             sf.terminate()
             sfRef.current = null
-        };  
-        
+        };
+
     }, [chess.turn, chess])
 
 

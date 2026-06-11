@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { bindFlag, openCell, tooltip } from '../../redux/features/minesweeper'
-import Icon from '@mui/material/Icon'
+import { Flag, MyLocation, Close } from '@mui/icons-material'
 import {
     handleClickCell,
     handleToggleFlag,
@@ -59,19 +59,19 @@ function Tool() {
                 className="tool-cell tool-cell-open flex-div"
                 onClick={handleOpenCell}
             >
-                <Icon className="tool-btn open">my_location</Icon>
+                <MyLocation className="tool-btn open" />
             </div>
             <div
                 className="tool-cell tool-cell-close flex-div"
                 onClick={positionTooltip}
             >
-                <Icon className="tool-btn close">close</Icon>
+                <Close className="tool-btn close" />
             </div>
             <div
                 className="tool-cell tool-cell-flag flex-div"
                 onClick={tickFlag}
             >
-                <Icon className="tool-btn flag">flag</Icon>
+                <Flag className="tool-btn flag" />
             </div>
         </div>
     )

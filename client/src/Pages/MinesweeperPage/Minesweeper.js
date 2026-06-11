@@ -9,27 +9,52 @@ import Cell from './Cell';
 import Tool from './Tool';
 import Logger from '../../Components/Logger/Logger'
 import GoTopBtn from '../../Components/GoTopBtn/GoTopBtn';
-import { isWin } from './Functions';
+import { isWin, difficulties, levels } from './Functions';
 import { Button } from '@mui/material'
 import "../../assets/styles/Minesweeper.css";
 import { close, open } from '../../redux/features/modal';
 import isMobileDevice from '../../lib/mobile';
-
+import api from '../../lib/api';
 
 function Minesweeper() {
 
-    const minesweeper = useSelector((state) => state.minesweeper)
+    const {
+        level, logError, gameOver, cells, row,
+        col, message, mine, setTime,
+    } = useSelector((state) => state.minesweeper)
     const modal = useSelector((state) => state.modal)
+    const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
-    const [timeFinish, setTimeFinish] = useState({})
+    const [timeFinish, setTimeFinish] = useState(null)
     const [log, setLog] = useState({
-        "message": minesweeper.logError,
+        "message": logError,
         "type": "info"
     })
 
     function restart() {
         dispatch(close())
         dispatch(resetGame())
+        setTimeFinish(null)
+    }
+
+    async function updateLeaderboard(difficulty, status, time) {
+        try {
+            await api.post('/leaderboard/minesweeper/update', {
+                difficulty, status, time
+            }, { withCredentials: true })
+        } catch {
+            throw new Error("Update leaderboard fail")
+        }
+    }
+
+    async function saveGameHistory(difficulty, status, time) {
+        try {
+            await api.post('/game/minesweeper/save', {
+                difficulty, status, time
+            }, { withCredentials: true })
+        } catch {
+            throw new Error("Save the game fail")
+        }
     }
 
     useEffect(() => {
@@ -38,10 +63,27 @@ function Minesweeper() {
     }, [])
 
     useEffect(() => {
-        if (minesweeper.gameOver) {
-            dispatch(open())
+        try {
+            if (level === 4 || level === 0) return
+            if (gameOver && timeFinish) {
+                const time = levels[level].setTime.duration - Math.floor(timeFinish.remain / 1000)
+                dispatch(open())
+                if (user) {
+                    const w = isWin(cells, mine)
+                    const status = w ? "win" : "lose"
+                    if (w) {
+                        // cập nhạt leaderboard
+                        updateLeaderboard(difficulties[level], status, time)
+                    }
+
+                    // lưu lịch sử chơi
+                    saveGameHistory(difficulties[level], status, time)
+                }
+            }
+        } catch (error) {
+            setLog({ message: "Let sign up and sign in to save your result", type: "info" })
         }
-    }, [minesweeper])
+    }, [gameOver, cells, mine, level, timeFinish, user])
 
     return (
         <>
@@ -49,8 +91,8 @@ function Minesweeper() {
             <div className="minesweeper">
                 {/* Thanh thong tin */}
                 <OptionsBar setTimeFinish={setTimeFinish} />
-                {minesweeper.gameOver &&
-                    <Button 
+                {gameOver &&
+                    <Button
                         className="restart-btn"
                         onClick={restart}
                     >Restart</Button>
@@ -58,6 +100,7 @@ function Minesweeper() {
                 <div className="minesweeper-broad">
                     {/* Bang cau hinh game */}
                     <SettingsBroad />
+
 
                     {/* Bang game chinh */}
                     <div
@@ -67,19 +110,19 @@ function Minesweeper() {
                                 display: 'grid',
                                 gridTemplateRows:
                                     `repeat(
-                                    ${minesweeper.row},
+                                    ${row},
                                     ${isMobileDevice() ? 3 : 4}rem
                                 )`,
                                 gridTemplateColumns:
                                     `repeat(
-                                    ${minesweeper.col},
+                                    ${col},
                                     ${isMobileDevice() ? 3 : 4}rem
                                 )`,
                             }
                         }
                     >
                         {
-                            minesweeper.cells?.map((cell, index) => {
+                            cells?.map((cell, index) => {
                                 return <Cell
                                     key={index}
                                     mine={cell.mine}
@@ -96,8 +139,8 @@ function Minesweeper() {
                 <Modal>
                     <MinesweeperModal
                         timeFinish={timeFinish}
-                        message={minesweeper.message}
-                        isWin={isWin(minesweeper)}
+                        message={message}
+                        isWin={isWin(cells, mine)}
                         restart={restart}
                     />
                 </Modal>

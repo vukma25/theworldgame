@@ -38,8 +38,7 @@
 }
 .sudoku-container .sudoku-modal .modal-content .result-stats {
   padding: 1.5rem 1rem;
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 .sudoku-container .sudoku-modal .modal-content .result-stats .result-stat {
   margin: 0.8rem 0;

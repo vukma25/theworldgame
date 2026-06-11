@@ -14,7 +14,6 @@
   overflow: hidden;
   height: 91vh;
   padding: 7rem 0 1rem 0;
-  /* Animated Icons Background */
 }
 .hero .hero-content {
   display: flex;
@@ -118,6 +117,9 @@
 .hero .btn-large {
   padding: 15px 30px;
   font-size: 18px;
+}
+.hero {
+  /* Animated Icons Background */
 }
 .hero .floating-icons {
   position: absolute;

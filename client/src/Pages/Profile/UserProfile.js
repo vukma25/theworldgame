@@ -13,7 +13,6 @@ const UserProfile = () => {
 
     const navigate = useNavigate()
 
-    console.log("Ok")
     return (
         <Container maxWidth="lg" sx={{ py: 2 }}>
             <IconButton

@@ -3,12 +3,14 @@ import { useDispatch } from 'react-redux';
 import {
     Card, CardHeader, InputLabel,
     CircularProgress, Box, Select, MenuItem, FormControl,
+    Typography, Chip
 } from '@mui/material';
 import { Flag } from '@mui/icons-material';
 import GoTopBtn from '../../Components/GoTopBtn/GoTopBtn'
 import CustomizedMenus from '../../Components/StyledMenu/StyleMenu';
 import api from '../../lib/api';
 import BadgeAvatar from '../../Components/BadgeAvatar/BadgeAvatar';
+import Back from '../../Components/BackBtn/Back'
 import { sendSignalClose } from '../../redux/features/menu'
 import { useOnline } from '../../hook/useOnline';
 
@@ -39,21 +41,19 @@ export default function LeadBoard() {
         setGame(e.target.value)
     }
 
-    async function getUser() {
-        try {
-            const response = await api.get('/user/getAllUser', { withCredentials: true })
-            if (!response?.data?.users) {
-                throw new Error("Get all user failed")
-            }
-
-            setUsers(response.data.users)
-        } catch (error) {
-            console.log("Get all user failed")
-        }
-    }
-
     useEffect(() => {
-        getUser()
+        async function getTopPlayer() {
+            try {
+                const response = await api.post(`/leaderboard/${game}/top-player`, {
+                    difficulty: "easy"
+                }, { withCredentials: true })
+                setUsers(response.data.top)
+            } catch (error) {
+                console.log("Get all user failed")
+                setUsers([])
+            }
+        }
+        getTopPlayer()
     }, [game])
 
     if (!users) {
@@ -64,6 +64,14 @@ export default function LeadBoard() {
 
     return (
         <Fragment>
+            <Box sx={{
+                display: "flex", gap: 1, width: "90%",
+                margin: "1rem auto", alignItems: "center"
+            }}>
+                <Back />
+                <Typography variant='h5' sx={{ fontSize: "1.75rem" }}>Leaderboard</Typography>
+            </Box>
+
             <Box sx={{
                 width: "100%",
                 minWidth: "40rem",
@@ -94,8 +102,10 @@ export default function LeadBoard() {
                         <MenuItem sx={{ fontSize: "1.25rem" }} value={"minesweeper"}>Minesweeper</MenuItem>
                     </Select>
                 </FormControl>
-                {users.map((e, index) => {
-                    const { _id, username, avatar } = e
+                {users.length === 0 &&
+                    <Chip label="No data" sx={{ width: "90%", margin: "2rem auto" }} />}
+                {users.map(({ player, stats }, index) => {
+                    const { _id, username, avatar } = player
 
                     return (<Card sx={{ width: "90%" }} key={index}>
                         <CardHeader
@@ -116,7 +126,7 @@ export default function LeadBoard() {
                             }
                             action={<CardHeaderActions userId={_id} />}
                             title={username}
-                            subheader="2805"
+                            subheader={stats.time}
                         />
                     </Card>)
                 })}

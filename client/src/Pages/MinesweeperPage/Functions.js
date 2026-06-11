@@ -95,6 +95,9 @@ export const levels = [
     }
 ]
 
+export const difficulties = {
+    "1": "easy", "2": "medium", "3": "hard"
+}
 //Custom marks of Slider component
 export const marks = [
     {
@@ -218,13 +221,13 @@ function revealEmptyCells(row, col, rows, cols, cells) {
 
 }
 
-export function isWin(copyCells){
-    let isWin = (copyCells.cells.filter(cell => {
+export function isWin(cells, mine) {
+    let isWin = (cells.filter(cell => {
         return cell.isMine && cell.flag
-    }).length === copyCells.mine) ||
-        (copyCells.cells.filter(cell => {
+    }).length === mine) ||
+        (cells.filter(cell => {
             return cell.opened || cell.isMine
-        }).length === copyCells.cells.length)
+        }).length === cells.length)
 
     return isWin
 }
@@ -235,7 +238,7 @@ function checkWin(copyCells) {
     }).length === copyCells.mine) ||
         (copyCells.cells.filter(cell => {
             return cell.opened || cell.isMine
-        }).length === copyCells.cells.length) 
+        }).length === copyCells.cells.length)
 
     if (isWin) {
         copyCells.gameOver = true
@@ -260,7 +263,7 @@ function deepCopy(instance) {
         'setTime': {
             ...instance.setTime
         },
-        'cells': instance.cells.map(cell => ({...cell})),
+        'cells': instance.cells.map(cell => ({ ...cell })),
         'tool': {
             ...instance.tool,
             'style': {
@@ -275,7 +278,7 @@ export function handleClickCell(index, minesweeper) {
     let copy = deepCopy(minesweeper)
 
 
-    if (copy.gameOver || 
+    if (copy.gameOver ||
         copy.cells[index].flag ||
         (copy.level === 4 && !copy.isInGame)
     ) {
@@ -283,7 +286,7 @@ export function handleClickCell(index, minesweeper) {
             copy.logError = 'This cell had flag! You can not active it'
             return copy
         }
-        if (copy.level === 4){
+        if (copy.level === 4) {
             copy.logError = 'You have not confirm settings yet'
             return copy
         }

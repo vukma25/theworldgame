@@ -107,8 +107,8 @@ const initialState = {
     'tool': {
         'style': {
             display: 'none',
-            top: 40,
-            left: 40
+            top: 0,
+            left: 0
         },
         'index': null
     },

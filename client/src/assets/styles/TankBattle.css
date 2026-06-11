@@ -1,0 +1,215 @@
+.tank-battle-container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tank-battle-container .tank-battle-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+  animation: slideDown 0.6s ease-out;
+}
+
+.tank-battle-container .tank-battle-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
+}
+
+@media (max-width: 768px) {
+  .tank-battle-container .tank-battle-header h1 {
+    font-size: 2rem;
+  }
+}
+
+.tank-battle-container .tank-battle-header .tank-battle-subtitle {
+  font-size: 1.1rem;
+  margin: 0;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+.tank-battle-container .tank-battle-game {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  margin-bottom: 30px;
+  animation: scaleIn 0.6s ease-out;
+}
+
+.tank-battle-container .tank-battle-game .tank-battle-canvas {
+  display: block;
+  border-radius: 10px;
+  background: #ECF0F1;
+  max-width: 100%;
+  height: auto;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: crosshair;
+}
+
+@media (max-width: 768px) {
+  .tank-battle-container .tank-battle-game .tank-battle-canvas {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.tank-battle-container .tank-battle-instructions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 900px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .tank-battle-container .tank-battle-instructions {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+.tank-battle-container .tank-battle-instructions .instructions-col {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 25px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeInUp 0.8s ease-out backwards;
+}
+
+.tank-battle-container .tank-battle-instructions .instructions-col:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.tank-battle-container .tank-battle-instructions .instructions-col:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.tank-battle-container .tank-battle-instructions .instructions-col h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tank-battle-container .tank-battle-instructions .instructions-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tank-battle-container .tank-battle-instructions .instructions-col ul li {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.6;
+}
+
+.tank-battle-container .tank-battle-instructions .instructions-col ul li kbd {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-family: "Courier New", monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  min-width: 35px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  .tank-battle-container {
+    padding: 20px 15px;
+  }
+
+  .tank-battle-container .tank-battle-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .tank-battle-container .tank-battle-game {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tank-battle-container {
+    padding: 15px 10px;
+  }
+
+  .tank-battle-container .tank-battle-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .tank-battle-container .tank-battle-header .tank-battle-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .tank-battle-container .tank-battle-instructions .instructions-col {
+    padding: 15px;
+  }
+
+  .tank-battle-container .tank-battle-instructions .instructions-col h3 {
+    font-size: 1rem;
+  }
+
+  .tank-battle-container .tank-battle-instructions .instructions-col ul li {
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+}
+
+/*# sourceMappingURL=TankBattle.css.map */

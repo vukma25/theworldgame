@@ -29,7 +29,7 @@ export default function ClockBase({ type, duration, semaphore, children, setTime
                 return { remain, minute, second };
             });
 
-            if (remain <= 0) {
+            if (remain <= 0 && duration > 0) {
                 clearInterval(intervalRef.current);
                 setClock(prevState => ({ ...prevState, remain: 0 }));
                 setTimeFinish({
@@ -67,7 +67,9 @@ export default function ClockBase({ type, duration, semaphore, children, setTime
         // Dừng đồng hồ nếu có cờ hiệu
         if (semaphore) {
             clearInterval(intervalRef.current);
-            setTimeFinish(clock)
+            if (clock.remain !== duration) {
+                setTimeFinish(clock)
+            }
             return;
         }
 

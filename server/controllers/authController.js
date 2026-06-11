@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { isValidObjectId } from 'mongoose'
 
-const ACCESS_TOKEN_TTL = "10m"
+const ACCESS_TOKEN_TTL = "30s"
 const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000;
 
 const authController = {

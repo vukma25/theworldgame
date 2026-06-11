@@ -1,4 +1,4 @@
-// utils/axiosConfig.js
+
 import axios from 'axios';
 import { store } from '../redux/app/store';
 import { refreshToken, logoutForceUser } from '../redux/features/auth';
@@ -33,8 +33,9 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+        console.log(originalRequest.url)
 
-        if (error.response?.status === 401) {
+        if (error.response?.status === 401 && originalRequest.url !== '/auth/refresh') {
 
             originalRequest._retryCount = originalRequest._retryCount || 0;
             if (originalRequest._retryCount >= MAX_RETRY) {
@@ -59,12 +60,14 @@ api.interceptors.response.use(
 
                 try {
                     const newToken = await store.dispatch(refreshToken()).unwrap();
+                    console.log(newToken)
                     processQueue(null, newToken);
 
                     originalRequest._retryCount = 0;
                     originalRequest.headers.Authorization = `Bearer ${newToken}`;
                     return api(originalRequest);
                 } catch (refreshError) {
+                    console.log("OK")
                     processQueue(refreshError, null);
                     store.dispatch(logoutForceUser());
                     return Promise.reject(refreshError);

@@ -57,6 +57,7 @@
   --text-light: #636e72;
   --white: #ffffff;
   --shadow: rgba(0, 0, 0, 0.1);
+  --animation-highlight: highlight 1s ease;
 }
 
 @keyframes floatIn {
@@ -204,6 +205,9 @@ body .flex-div {
 body a {
   text-decoration: none;
 }
-body input, body button, body textarea, body select {
+body input,
+body button,
+body textarea,
+body select {
   font-size: inherit;
 }/*# sourceMappingURL=index.css.map */

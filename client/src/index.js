@@ -22,6 +22,7 @@ import Notification from './Pages/Notification/Notification';
 import Protected from './ProtectedRouter/Protected'
 import NotFoundPage from './Pages/NotFound/NotFound'
 import ErrorPage from './Pages/ErrorPage/ErrorPage'
+import TankBattle from './Pages/TankBattle';
 
 const router = createBrowserRouter([
   {
@@ -91,6 +92,10 @@ const router = createBrowserRouter([
       {
         path: "search",
         element: <SearchPage />
+      },
+      {
+        path: "tank-battle",
+        element: <TankBattle />
       },
       {
         path: "chat",

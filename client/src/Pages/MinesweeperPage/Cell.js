@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { bindFlag, openCell, tooltip } from '../../redux/features/minesweeper'
-import Icon from '@mui/material/Icon'
 import { Flag, DonutLarge } from '@mui/icons-material'
 import {
     handleClickCell,
@@ -18,10 +17,12 @@ function Cell({
     const dispatch = useDispatch()
 
     function leftClickForDesktop() {
+        if (minesweeper.gameOver) return
+
         const updatedCells = handleClickCell(index, minesweeper);
-        if (updatedCells?.logError){
+        if (updatedCells?.logError) {
             setLog({
-                "message": updatedCells.logError, 
+                "message": updatedCells.logError,
                 "type": "error"
             })
         }
@@ -32,6 +33,8 @@ function Cell({
     }
 
     function rightClickForDesktop() {
+        if (minesweeper.gameOver) return
+
         const updatedCells = handleToggleFlag(index, minesweeper);
         if (updatedCells?.logError) {
             setLog({
@@ -39,7 +42,7 @@ function Cell({
                 "type": "error"
             })
         }
-        
+
         if (updatedCells) {
             dispatch(bindFlag(updatedCells));
         }
@@ -54,19 +57,19 @@ function Cell({
             onClick={
 
                 isMobileDevice() ?
-                (e) => {
-                    const rect = e.target.getBoundingClientRect();
-                    dispatch(tooltip({
-                        'style': {
-                            display: 'grid',
-                            top: rect.top,
-                            left: rect.left
-                        },
-                        'index': index
-                    }))
-                }
-                :
-                () => leftClickForDesktop()
+                    (e) => {
+                        const rect = e.target.getBoundingClientRect();
+                        dispatch(tooltip({
+                            'style': {
+                                display: 'grid',
+                                top: rect.top,
+                                left: rect.left
+                            },
+                            'index': index
+                        }))
+                    }
+                    :
+                    () => leftClickForDesktop()
             }
             onContextMenu={(e) => {
                 e.preventDefault()
@@ -75,10 +78,10 @@ function Cell({
         >
             {
                 minesweeper.gameOver && minesweeper.cells[index].isMine ?
-                    <DonutLarge sx={{fontSize:'2rem',color:'var(--cl-primary-purple)'}}/>:
+                    <DonutLarge sx={{ fontSize: '2rem', color: 'var(--cl-primary-purple)' }} /> :
                     minesweeper.cells[index].flag ?
-                    <Flag sx={{fontSize:'2rem',color:'var(--cl-red-flag)',pointerEvents:"none"}}/>:
-                    (mine === 0 ? "" : mine)
+                        <Flag sx={{ fontSize: '2rem', color: 'var(--cl-red-flag)', pointerEvents: "none" }} /> :
+                        (mine === 0 ? "" : mine)
             }
         </div>
     );

@@ -27,7 +27,7 @@ function MinesweeperModal({ timeFinish, message, isWin, restart }) {
             <div className="game-over-state">{message}</div>
             <div className="flex-div time">
                 <div>Time:</div>
-                <div>{formatTime(duration - Math.floor(timeFinish.remain / 1000))}</div>
+                <div>{formatTime(duration - Math.floor(timeFinish?.remain / 1000))}</div>
             </div>
             <img
                 className="game-over-gif"

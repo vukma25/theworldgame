@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
 
-const leaderboardSchema = new mongooseSchema({
+const leaderboardSchema = new mongoose.Schema({
     game: { type: String, required: true },
     subcategory: { type: String },
-    difficulties: { type: String },
-    player: { type: mongooseSchema.Types.ObjectId, ref: 'User', required: true },
+    difficulty: { type: String },
+    player: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     stats: {
         elo: { type: Number, min: 0 },
         score: { type: Number, min: 0 },
@@ -18,7 +18,7 @@ const leaderboardSchema = new mongooseSchema({
     }
 }, { timestamps: true });
 
-leaderboardSchema.index({ game: 1});
+leaderboardSchema.index({ game: 1 });
 leaderboardSchema.index({ player: 1 });
 
 export default mongoose.model('Leaderboard', leaderboardSchema)

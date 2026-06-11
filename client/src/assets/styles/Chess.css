@@ -586,8 +586,7 @@
   overflow-x: hidden;
   overflow-y: scroll;
   font-size: 1.6rem;
-  -webkit-backdrop-filter: saturate(160%) blur(1rem);
-          backdrop-filter: saturate(160%) blur(1rem);
+  backdrop-filter: saturate(160%) blur(1rem);
   background: var(--cl-white-pure);
   box-shadow: 0 0 0.5rem var(--shadow);
   padding: 2rem;
@@ -768,8 +767,7 @@
   align-items: center;
   width: 100vw;
   height: 100vh;
-  -webkit-backdrop-filter: saturate(160%) blur(8px);
-          backdrop-filter: saturate(160%) blur(8px);
+  backdrop-filter: saturate(160%) blur(8px);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.65));
   padding: 1.5rem;
   position: fixed;

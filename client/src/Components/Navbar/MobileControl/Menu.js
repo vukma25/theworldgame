@@ -22,7 +22,7 @@ export default function Menu() {
             <div className="mobile-auth" style={{ marginTop: '.5rem' }}>
                 <Button
                     variant='outlined'
-                    className="btn btn-ghost btn-block"
+                    className="btn btn-primary btn-block"
                     onClick={() => {
                         handleSetAuth('Login')
                         dispatch(controlMenu(false))

@@ -5,11 +5,11 @@ import '../../assets/styles/Card.css'
 function Card({ title, tags, description, source }) {
 
     const arrow = '>';
-    const navigate =  useNavigate()
+    const navigate = useNavigate()
 
-    function handleRedirect(tag) {
-        navigate(`/search?q=${tag.toLowerCase()}`)
-    }
+    // function handleRedirect(tag) {
+    //     navigate(`/search?q=${tag.toLowerCase()}`)
+    // }
 
     function go(path) {
         navigate(`/${path.toLowerCase()}`)
@@ -27,11 +27,10 @@ function Card({ title, tags, description, source }) {
                 <div className="card-detail-tags flex-div">
                     {
                         tags.map(tag => (
-                            <Button 
-                                key={tag} 
+                            <Button
+                                key={tag}
                                 className={`card-detail-tag ${tag.toLowerCase()}`}
                                 size="small"
-                                onClick={() => handleRedirect(tag)}
                             >{tag}
                             </Button>
                         ))
@@ -40,7 +39,7 @@ function Card({ title, tags, description, source }) {
                 <p className="card-detail-description">{description}</p>
                 <button
                     className="card-detail-btn flex-div"
-                    onClick={() => {go(title)}}
+                    onClick={() => { go(title) }}
                 >
                     Play
                     <span className="card-detail-btn-arrow">{arrow}</span>
