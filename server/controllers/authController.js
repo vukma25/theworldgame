@@ -86,8 +86,8 @@ const authController = {
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: "lax",
+                secure: process.env.NODE_ENV === "development" ? false : true,
+                sameSite: process.env.NODE_ENV === "development" ? "lax" : "strict",
                 maxAge: REFRESH_TOKEN_TTL,
             })
 
@@ -111,8 +111,8 @@ const authController = {
             const session = await Session.findOneAndDelete({ refreshToken: token });
             res.clearCookie("refreshToken", {
                 httpOnly: true,
-                secure: false,
-                sameSite: "lax",
+                secure: process.env.NODE_ENV === "development" ? false : true,
+                sameSite: process.env.NODE_ENV === "development" ? "lax" : "strict",
                 maxAge: REFRESH_TOKEN_TTL,
             });
             return res.status(200).json({ message: "Logout successfully" })

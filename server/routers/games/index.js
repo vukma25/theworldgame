@@ -7,6 +7,6 @@ const router = express.Router();
 const { loadGame } = gameController
 
 router.use("/minesweeper", auth, minesweeperRouter);
-router.get("/info", auth, loadGame);
+router.get("/info", loadGame);
 
 export default router;
