@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { 
-    changeDirection, setPause, setSnake, 
-    setSpeed, setStatus, snakeAte, spawnFood 
+import {
+    changeDirection, setPause, setSnake,
+    setSpeed, setStatus, snakeAte, spawnFood
 } from "../../redux/features/snake"
 import { direction, maps } from './Static';
 import Board from "./Board/Board"
@@ -163,7 +163,7 @@ const Snake = () => {
 
             dispatch(setSnake(sn))
 
-        }, 370 - snake.speed)
+        }, (350 - snake.speed))
 
         return () => clearInterval(loop)
 
@@ -187,7 +187,7 @@ const Snake = () => {
     }, [snake.status, snake.score, snake.extraScore])
 
     return (
-        <SnakeContext.Provider value={{highestScore, handleSetDirection, handlePauseGame, spFood }}>
+        <SnakeContext.Provider value={{ highestScore, handleSetDirection, handlePauseGame, spFood }}>
             <div className="snake-game">
                 <div className="game-container">
                     <div className="game-layout">

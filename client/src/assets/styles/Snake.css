@@ -100,7 +100,7 @@
   overscroll-behavior-y: none;
 }
 .snake-game .game-container .game-board .board-card .board-wrapper .snake-board .cell {
-  transition: background-color 0.08s ease, transform 0.08s ease;
+  transition: transform 0.08s ease;
   display: flex;
   justify-content: center;
   align-items: center;

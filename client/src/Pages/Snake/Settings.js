@@ -110,7 +110,7 @@ export default function Settings() {
                         onChange={handleChangeSpeed}
                         disabled={status === "playing"}
                     />
-                    <div className="setting-value">Current speed: {370 - speed} ms</div>
+                    <div className="setting-value">Current speed: {350 - speed} ms</div>
                 </div>
                 <Button
                     variant='contained'

@@ -1,12 +1,13 @@
-import { Fragment, useEffect, useContext } from "react"
+import { Fragment, useState, useEffect, useContext } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Typography, List, ListItem, ListItemButton, Box } from "@mui/material"
+import { Typography, List, ListItem, ListItemButton, Box, CircularProgress } from "@mui/material"
 import BadgeAvatar from "../../Components/BadgeAvatar/BadgeAvatar"
 import api from "../../lib/api"
 import { setConversations, selectConversation } from "../../redux/features/eventSocket"
 import { setPinnedMessage } from "../../redux/features/chat"
 import { useOnline } from "../../hook/useOnline"
 import { StateContext } from "./Chat"
+import { loading } from "../../redux/features/sudoku"
 
 function Conversation({ avatar, name, count, lastMessage, conversationId, userId = null, pinnedMessage }) {
     const dispatch = useDispatch()
@@ -62,12 +63,23 @@ export default function ListGroup() {
     const { conversations } = useSelector((state) => state.event)
     const dispatch = useDispatch()
 
+    const [loading, setLoading] = useState(false)
+    const [message, setMessage] = useState("")
+
     useEffect(() => {
         async function fetchData() {
-            const cons = await api.post('/conversation/all', { id: user._id }, { withCredentials: true })
-            if (!cons.data) return;
+            try {
+                setLoading(true)
+                const cons = await api.post('/conversation/all', { id: user._id }, { withCredentials: true })
+                if (!cons?.data) return;
 
-            dispatch(setConversations(cons.data.conversations))
+                dispatch(setConversations(cons.data.conversations))
+            } catch (err) {
+                console.err(err)
+            } finally {
+                setLoading(false)
+            }
+
         }
 
         fetchData();
@@ -75,6 +87,7 @@ export default function ListGroup() {
 
     return (
         <Fragment>
+            {loading && <CircularProgress />}
             <List>
                 {conversations.map((group, index) => {
                     const { name, members, lastMessage, unread, type, _id, pinnedMessage } = group

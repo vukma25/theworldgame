@@ -46,7 +46,7 @@ export default function InteractActionBtns() {
         handleCloseRevokeDialog()
     }
 
-    function handleWithdrawRequest() {
+    function handleUnfriend() {
         dispatch(unfriend({ me: id, another: _id }))
         handleCloseUnfDialog()
     }
@@ -164,7 +164,7 @@ export default function InteractActionBtns() {
                 <DialogContent>Are you sure you want to unfriend this person?</DialogContent>
                 <DialogActions>
                     <Button variant="outlined" onClick={handleCloseUnfDialog}>Cancel</Button>
-                    <Button variant="contained" onClick={handleWithdrawRequest}>Ok</Button>
+                    <Button variant="contained" onClick={handleUnfriend}>Ok</Button>
                 </DialogActions>
             </Dialog>
         </Box>

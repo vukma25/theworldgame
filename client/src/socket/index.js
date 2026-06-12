@@ -77,7 +77,7 @@ export const initSocket = () => {
         const { user: { friendRequests } } = store.getState().auth
         const { notifications } = store.getState().event;
         const newNotifications = notifications.filter(({ reveal: { id } }) => (
-            id !== data.notification
+            id !== data.notification.toString()
         ))
 
         store.dispatch(setNotifications(newNotifications))

@@ -78,7 +78,7 @@ const router = createBrowserRouter([
         element: <FastFinger />
       },
       {
-        path: "memorygame",
+        path: "memory",
         element: <Memory />
       },
       {
@@ -86,7 +86,7 @@ const router = createBrowserRouter([
         element: <Wordle />
       },
       {
-        path: "snakegame",
+        path: "snake",
         element: <Snake />
       },
       {

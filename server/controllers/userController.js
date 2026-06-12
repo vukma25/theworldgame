@@ -220,6 +220,8 @@ const userController = {
             })
             Socs.emitToUser(my_acc._id.toString(), "withdraw:my:request", null);
 
+            return res.status(200).json({ "message": "Withdraw request successfully" })
+
         } catch (error) {
             console.log("Server error: ", error);
             return res.status(500).json({ message: "Can not withdraw friend request" })
