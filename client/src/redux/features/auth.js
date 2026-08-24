@@ -64,8 +64,10 @@ export const refreshToken = createAsyncThunk(
         try {
             const response = await api.post('/auth/refresh', {}, { withCredentials: true });
             console.log(response)
-            if (response.statusText !== 'OK') throw new Error('Error: refresh token failed');
+            if (response.status !== 200) throw new Error('Error: refresh token failed');
+            console.log("Pass")
             const data = response.data;
+            console.log(data)
 
             return data.accessToken;
         } catch (error) {
