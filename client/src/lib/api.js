@@ -39,6 +39,7 @@ api.interceptors.response.use(
 
             originalRequest._retryCount = originalRequest._retryCount || 0;
             if (originalRequest._retryCount >= MAX_RETRY) {
+                console.error(`${originalRequest?.url} exceed max: ${originalRequest._retryCount}`)
                 store.dispatch(logoutForceUser());
                 return Promise.reject(error);
             }
@@ -66,6 +67,7 @@ api.interceptors.response.use(
                     originalRequest.headers.Authorization = `Bearer ${newToken}`;
                     return api(originalRequest);
                 } catch (refreshError) {
+                    console.log("Refresh failed")
                     processQueue(refreshError, null);
                     store.dispatch(logoutForceUser());
                     return Promise.reject(refreshError);
