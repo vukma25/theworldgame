@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000
 const MONGODB_URI = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@twg.cx9tbj4.mongodb.net/?appName=TWG`;
 
 Socs.setIO(io);
-redis.connect()
+// redis.connect()
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 
 connectDB(MONGODB_URI).then(() => {
     server.listen(PORT, () => {
+        console.log(process.env.NODE_ENV)
         console.log(`Server running on ${PORT}`)
         console.log(`Link: http://localhost:${PORT}`)
     })

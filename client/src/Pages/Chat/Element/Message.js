@@ -38,7 +38,7 @@ export default function Message({ refer, isMe, content, animate, sentAt, usernam
                     {username}
                 </Typography>
 
-                {contentType === "text" ? (
+                {(contentType === "text" || !!contentType) ? (
                     <Typography
                         sx={{
                             width: "100%",
@@ -51,7 +51,7 @@ export default function Message({ refer, isMe, content, animate, sentAt, usernam
                     >
                         {content}
                     </Typography>
-                ) : (<Image src={content} src={content} />)}
+                ) : (<Image src={content} alt={content} />)}
 
                 <Typography sx={{ textAlign, color, fontSize: '0.75rem' }}>
                     {moment(sentAt).format('hh:mm')}
