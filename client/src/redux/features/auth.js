@@ -60,10 +60,10 @@ export const logoutForceUser = createAsyncThunk(
 
 export const refreshToken = createAsyncThunk(
     'auth/refresh',
-    async (_, { rejectWithValue, dispatch }) => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await api.post('/auth/refresh', {}, { withCredentials: true });
-
+            console.log(response)
             if (response.statusText !== 'OK') throw new Error('Error: refresh token failed');
             const data = response.data;
 

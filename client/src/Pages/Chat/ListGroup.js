@@ -8,7 +8,6 @@ import { setConversations, selectConversation } from "../../redux/features/event
 import { setPinnedMessage } from "../../redux/features/chat"
 import { useOnline } from "../../hook/useOnline"
 import { StateContext } from "./Chat"
-import { loading } from "../../redux/features/sudoku"
 
 function Conversation({ avatar, name, count, lastMessage, conversationId, userId = null, pinnedMessage }) {
     const dispatch = useDispatch()
