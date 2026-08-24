@@ -67,7 +67,7 @@ api.interceptors.response.use(
                     originalRequest.headers.Authorization = `Bearer ${newToken}`;
                     return api(originalRequest);
                 } catch (refreshError) {
-                    console.log("Refresh failed")
+                    console.error("Refresh failed", refreshError)
                     processQueue(refreshError, null);
                     store.dispatch(logoutForceUser());
                     return Promise.reject(refreshError);
