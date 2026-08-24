@@ -5,7 +5,7 @@ import CustomizedMenus from '../../../Components/StyledMenu/StyleMenu'
 import { sendSignalClose } from '../../../redux/features/menu'
 import { setDeleteDialog, setEditDialog, handlePinMessage, handleUnPinMessage } from '../../../redux/features/chat'
 
-export default function MessageOptions({ isMe, content, mess_id, selectedConversation, pinned }) {
+export default function MessageOptions({ isMe, content, mess_id, selectedConversation, pinned, contentType }) {
 
     const dispatch = useDispatch()
 
@@ -53,9 +53,9 @@ export default function MessageOptions({ isMe, content, mess_id, selectedConvers
     return (
         <CustomizedMenus>
             {isMe && (<div>
-                <MenuItem onClick={handleOpenEditDialog} disableRipple>
+                {contentType === "text" && <MenuItem onClick={handleOpenEditDialog} disableRipple>
                     <Edit /> Edit
-                </MenuItem>
+                </MenuItem>}
                 <Divider sx={{ my: 0.5 }} />
                 <MenuItem onClick={handleOpenDeleteDialog} disableRipple>
                     <Delete /> Delete

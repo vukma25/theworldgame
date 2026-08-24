@@ -2,13 +2,67 @@ import mongoose from 'mongoose';
 import Message from '../models/message.js'
 import Conversation from '../models/conversation.js'
 import { isValidObjectId } from '../utils/validateId.js';
+// import cloudinary from '../services/cloudinaryService.js'
+import { v2 as cloudinary } from 'cloudinary'
 import Socs from '../services/socketService.js'
+import { hashWithAlgorithm } from '../utils/hashValue.js';
+
 
 const { ObjectId } = mongoose.Types;
 
 export const messageController = {
     sendMessage: async (req, res) => {
-        let { conversationId, content, sentAt, sender } = req.body;
+        const userId = req?.user._id
+        let { conversationId, content, sentAt, sender, contentType = "text" } = req.body;
+        let publicId = ""
+
+        try {
+            if (req.file && conversationId && isValidObjectId(conversationId)) {
+                const file = req.file;
+                const imageURI = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+                const imageId = hashWithAlgorithm('sha256', imageURI)
+                //da nhan anh 
+                Socs.emitToUser(userId.toString(), "process:send:image", { id: imageId, process: 30 })
+
+                cloudinary.config({
+                    cloud_name: process.env.CLOUDINARY_NAME,
+                    api_key: process.env.CLOUDINARY_API_KEY,
+                    api_secret: process.env.CLOUDINARY_API_SECRET
+                });
+
+                const timestamp = Math.round((new Date).getTime() / 1000);
+                const upload_preset = "TWG_media";
+
+                let params_to_sign = {
+                    timestamp,
+                    upload_preset,
+                    folder: `conversation_image/${conversationId.toString()}`
+                };
+
+                const signature = cloudinary.utils.api_sign_request(params_to_sign, process.env.CLOUDINARY_API_SECRET);
+
+                const uploadOptions = {
+                    ...params_to_sign,
+                    api_key: process.env.CLOUDINARY_API_KEY,
+                    signature,
+                };
+                //thiet lap cac cau hinh va thuoc tinh can thiet de gui
+                Socs.emitToUser(userId.toString(), "process:send:image", { id: imageId, process: 70 })
+
+                const uploadResult = await cloudinary.uploader.upload(imageURI, uploadOptions);
+
+                content = uploadResult.secure_url;
+                publicId = uploadResult.public_id;
+                contentType = "image"
+
+                //gui thanh cong
+                Socs.emitToUser(userId.toString(), "process:send:image", { id: imageId, process: 100 })
+            }
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: "server error" })
+        }
+
 
         try {
             if (!conversationId || !content || !sender || !sentAt) {
@@ -38,6 +92,8 @@ export const messageController = {
             const message = new Message({
                 conversationId,
                 content,
+                contentType,
+                publicId,
                 sentAt: sentAt || new Date(),
                 sender,
                 readBy: [sender]
@@ -182,6 +238,18 @@ export const messageController = {
                         }
                     }
                 )
+
+                if (deletedMessage.contentType === "image") {
+                    cloudinary.config({
+                        cloud_name: process.env.CLOUDINARY_NAME,
+                        api_key: process.env.CLOUDINARY_API_KEY,
+                        api_secret: process.env.CLOUDINARY_API_SECRET
+                    });
+
+                    await cloudinary.uploader.destroy(deletedMessage.publicId, {
+                        invalidate: true
+                    }).then((res) => console.log(res))
+                }
 
                 Socs.emitToRoom(conversationId.toString(), 'message:delete', { deletedMessageId: deletedMessage._id, isPin })
 

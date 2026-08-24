@@ -85,11 +85,7 @@ function PinnedMessages({ messages, func }) {
                                 sx={{
                                     p: ".25rem, 1rem",
                                     borderRadius: 1,
-                                    '&:hover': {
-                                        bgcolor: 'action.hover'
-                                    }
                                 }}
-                                onClick={() => { func(_id.toString()); handleOpen() }}
                             >
                                 <Stack direction="row" spacing={1.5} alignItems="flex-start">
                                     <BadgeAvatar username={username} src={avatar} online={null} />
@@ -134,8 +130,13 @@ function PinnedMessages({ messages, func }) {
                                                 color: 'text.secondary',
                                                 whiteSpace: 'pre-wrap',
                                                 wordBreak: 'break-word',
-                                                fontSize: "1.25rem"
+                                                fontSize: "1.25rem",
+                                                '&:hover': {
+                                                    bgcolor: 'action.hover',
+                                                    cursor: "pointer"
+                                                }
                                             }}
+                                            onClick={() => { func(_id.toString()); handleOpen() }}
                                         >
                                             {false ?
                                                 truncateContent(content, 50) :

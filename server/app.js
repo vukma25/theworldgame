@@ -12,14 +12,15 @@ import gameRouter from './routers/games/index.js'
 import leaderBoardRouter from './routers/leaderboard/index.js'
 import { io, app, server } from './socket/index.js';
 import Socs from './services/socketService.js'
+import redis from './services/redisService.js';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 5000
-//const MONGODB_URI = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@twg.cx9tbj4.mongodb.net/?appName=TWG`;
-const MONGODB_URI = "mongodb+srv://hoantuanvu2005_db_user:vFmzNHLw360bdE3d@twg.cx9tbj4.mongodb.net/?appName=TWG"
+const MONGODB_URI = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@twg.cx9tbj4.mongodb.net/?appName=TWG`;
 
 Socs.setIO(io);
+redis.connect()
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true

@@ -257,7 +257,22 @@ const userController = {
             });
             if (!deletedConversation) return res.status(404).json({ message: "Conversation does not exist" });
 
+            //xoa het tin nhan
             await Message.deleteMany({ conversationId: deletedConversation._id });
+
+            //xóa hết tin nhắn kiểu ảnh lưu trên cloudinary
+            cloudinary.config({
+                cloud_name: process.env.CLOUDINARY_NAME,
+                api_key: process.env.CLOUDINARY_API_KEY,
+                api_secret: process.env.CLOUDINARY_API_SECRET
+            });
+
+            const folderPath = `conversation_image/${deletedConversation._id.toString()}`
+            await cloudinary.api.delete_resources_by_prefix(`${folderPath}/`)
+                .then((res) => console.log(res))
+
+            await cloudinary.api.delete_folder(`${folderPath}`).then((res) => console.log(res))
+
 
             Socs.emitToUser(my_acc._id.toString(), "unfriend", {
                 id: another_acc._id,

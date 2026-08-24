@@ -20,7 +20,8 @@ const initialState = {
     isLoading: false,
     fetchError: null,
     hasMore: false,
-    unreadCount: 0
+    unreadCount: 0,
+    preViewMessage: {}
 }
 
 export const handleLoadFirstMessage = createAsyncThunk(
@@ -138,6 +139,18 @@ const chatSlice = createSlice({
         },
         setUnreadCount: (state, action) => {
             state.unreadCount = action.payload
+        },
+        setPreViewMessage: (state, action) => {
+            const res = action.payload
+
+            if (res.process === 100) {
+                delete state.preViewMessage[res.id]; return
+            }
+
+            state.preViewMessage = {
+                ...state.preViewMessage,
+                [res.id]: res.process
+            }
         }
     },
     extraReducers: (builder) => {
@@ -222,7 +235,7 @@ const chatSlice = createSlice({
 })
 
 export const {
-    updateListMessage, setListMessage,
+    updateListMessage, setListMessage, setPreViewMessage,
     setDeleteDialog, setEditDialog, setPinnedMessage, setUnreadCount, setMyself
 } = chatSlice.actions
 export default chatSlice.reducer

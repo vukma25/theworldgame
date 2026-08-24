@@ -1,4 +1,4 @@
-import Minesweeper from "../models/minesweeper.js"
+import Minesweeper from "../../models/minesweeper.js"
 
 const HISTORY_LIMIT = 30;
 
@@ -22,7 +22,6 @@ const minesweeperController = {
                     }]
                 });
             } else {
-                console.log("Jump here")
                 const record = await Minesweeper.findOne({ player: req.user._id });
                 if (record.listResults.length >= HISTORY_LIMIT) {
                     const newListResults = [...record.listResults.slice(1), {
@@ -48,6 +47,20 @@ const minesweeperController = {
         } catch (error) {
             console.timeLog("Server error: ", error);
             return res.status(500).json({ message: "Failed in saving process" });
+        }
+    },
+    getStatistics: async (req, res) => {
+        try {
+            const uid = req?.user?._id
+            if (!uid) return res.status(400).json({ message: "Thiếu thông tin" });
+
+            const statistics = await Minesweeper.findOne({ player: uid }).select("listResults -_id");
+
+            return res.status(200).json(statistics);
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Server error" });
         }
     }
 }

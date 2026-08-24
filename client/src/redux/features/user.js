@@ -107,11 +107,9 @@ export const deleteNotification = createAsyncThunk(
 
 export const sendMessage = createAsyncThunk(
     'message/send',
-    async ({ conversationId, content, sentAt, sender }, { rejectWithValue }) => {
+    async (formData, { rejectWithValue }) => {
         try {
-            const response = await api.post('/message/send', {
-                conversationId, content, sentAt, sender
-            }, { withCredentials: true })
+            const response = await api.post('/message/send', formData, { withCredentials: true })
 
             if (response.status !== 200) throw new Error("Occur an error in sending process")
 

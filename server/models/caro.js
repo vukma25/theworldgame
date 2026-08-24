@@ -14,10 +14,10 @@ const caroSchema = new mongoose.Schema({
 
 caroSchema.index({ player: 1 });
 
-const caroMatchSchema = new Schema({
-    XPlayer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+const caroMatchSchema = new mongoose.Schema({
+    XPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     XScore: { type: Number, min: 0 },
-    OPlayer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    OPlayer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     OScore: { type: Number, min: 0 },
     winner: { type: String, enum: ['X', 'O', ''] },
     size: { type: Number, enum: [3, 15, 25] },

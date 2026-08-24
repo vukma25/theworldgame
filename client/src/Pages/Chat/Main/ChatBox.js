@@ -1,6 +1,6 @@
-import React, { useState, useLayoutEffect, useCallback, useEffect, useRef } from "react"
+import React, { useState, useMemo, useLayoutEffect, useCallback, useEffect, useRef, Fragment } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { Box, Typography, CircularProgress, Badge } from "@mui/material"
+import { Box, Typography, CircularProgress, Badge, Chip } from "@mui/material"
 import { Sms } from "@mui/icons-material"
 import moment from "moment/moment"
 import BadgeAvatar from "../../../Components/BadgeAvatar/BadgeAvatar"
@@ -14,6 +14,7 @@ import { readMessage } from "../../../redux/features/user"
 import { handleLoadMoreMessage, handleLoadFirstMessage, setMyself, setUnreadCount } from "../../../redux/features/chat"
 import { useOnline } from "../../../hook/useOnline"
 import useInfiniteScroll from "react-infinite-scroll-hook"
+import MessageSkeleton from "../../../Components/Skeleton/MessageSkeleton"
 
 const LIMIT = 20
 const JUMP = 100
@@ -22,16 +23,16 @@ let PROCESSING = false
 function ChatBox() {
     const {
         listMessages, listPinnedMessages, action, myself,
-        isLoading: loading, fetchError, hasMore, unreadCount
+        isLoading: loading, fetchError, hasMore, unreadCount, preViewMessage
     } = useSelector((state) => state.chat)
     const { user: { _id } } = useSelector((state) => state.auth)
     const { selectedConversation } = useSelector((state) => state.event)
     const { isLoading } = useSelector((state) => state.user)
+    const { socket } = useSelector((state) => state.socket)
     const dispatch = useDispatch()
 
     const bottomRef = useRef(null)
     const isOnline = useOnline()
-
     const scrollableRootRef = useRef(null)
     const lastScrollDistanceToBottomRef = useRef(0)
     const [highlight, setHighlight] = useState(null)
@@ -172,6 +173,17 @@ function ChatBox() {
         }
     }, [listMessages]);
 
+    const clusterMessagePerDay = useMemo(() => {
+        const cluster = {}
+        listMessages.forEach((mess) => {
+            const day = moment(mess?.sentAt).format('DD/MM/YYYY')
+            if (!cluster[day]) { cluster[day] = [] }
+            cluster[day].push(mess)
+        })
+
+        return cluster
+    }, [listMessages])
+
     return (
         <Box
             sx={{
@@ -185,10 +197,10 @@ function ChatBox() {
                 overflowY: 'auto',
                 gap: ".5rem",
                 '&::-webkit-scrollbar': {
-                    width: '.8rem'
+                    width: '.6rem'
                 },
                 '&::-webkit-scrollbar-thumb': {
-                    background: 'var(--brand-400)',
+                    background: 'var(--cl-primary-blue)',
                     borderRadius: ".4rem"
                 },
                 '&::-webkit-scrollbar-track': {
@@ -201,54 +213,62 @@ function ChatBox() {
             {hasMore && <CircularProgress
                 ref={infiniteRef} size={20} />}
             {listPinnedMessages.length !== 0 && <PinnedMessages messages={listPinnedMessages} func={scrollToPinnedMessage} />}
-            {listMessages.map(({ _id: mess_id, content, sender, sentAt, readBy, pinned, edited }, index) => {
-                const animate = mess_id.toString() === highlight
-                const isMe = sender._id.toString() === _id.toString()
-                return (<Box
-                    key={index}
-                    sx={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: isMe ? 'flex-end' : 'flex-start',
-                        mb: 1,
-                    }}
-                >
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: ".5rem" }}>
-                        <Typography sx={{ textAlign: `${isMe ? "end" : "start"}`, fontSize: ".8rem" }}>{moment(sentAt).format('DD/MM/YYYY - hh:mm')}</Typography>
-                        <Box sx={{
-                            display: "flex", gap: ".5rem", alignItems: "center",
-                            flexDirection: `${isMe ? "row-reverse" : "row"}`
-                        }}>
-                            <BadgeAvatar username={sender?.username || "Anonymous"} src={sender.avatar} sx={{ width: 24, height: 24 }} online={isOnline(sender._id)} />
-                            <Message refer={pinnedMessageRefs.current[mess_id]} isMe={isMe} content={content} animate={animate} />
-                            <MessageOptions
-                                isMe={isMe}
-                                content={content}
-                                mess_id={mess_id}
-                                selectedConversation={selectedConversation?.conversationId}
-                                pinned={pinned} />
-                        </Box>
-                        <MessageStatus
-                            listMessages={listMessages}
-                            isMe={isMe}
-                            readBy={readBy}
-                            isLoading={isLoading}
-                            edited={edited}
-                            index={index}
-                        />
+            {Object.entries(clusterMessagePerDay).map(([day, messes]) => {
+                return (
+                    <Box key={day} sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: ".5rem" }}>
+                        <Chip label={day} />
+                        {messes.map(({ _id: mess_id, content, sender, sentAt, readBy, pinned, edited, contentType }, index) => {
+                            const animate = mess_id.toString() === highlight
+                            const isMe = sender._id.toString() === _id.toString()
+                            return (<Box
+                                key={mess_id}
+                                sx={{
+                                    width: "100%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: isMe ? 'flex-end' : 'flex-start',
+                                    mb: 1,
+                                }}
+                            >
+                                <Box sx={{ display: "flex", flexDirection: "column", gap: ".5rem" }}>
+                                    {/* <Typography sx={{ textAlign: `${isMe ? "end" : "start"}`, fontSize: ".8rem" }}>{moment(sentAt).format('DD/MM/YYYY - hh:mm')}</Typography> */}
+                                    <Box sx={{
+                                        display: "flex", gap: ".5rem", alignItems: "start",
+                                        flexDirection: `${isMe ? "row-reverse" : "row"}`
+                                    }}>
+                                        <BadgeAvatar username={sender?.username || "Anonymous"} src={sender.avatar} sx={{ width: 24, height: 24 }} online={isOnline(sender._id)} />
+                                        <Message
+                                            refer={pinnedMessageRefs.current[mess_id]}
+                                            isMe={isMe} content={content} animate={animate}
+                                            sentAt={sentAt} username={sender?.username || "Anonymous"}
+                                            contentType={contentType} />
+                                        <MessageOptions
+                                            isMe={isMe} content={content} mess_id={mess_id}
+                                            selectedConversation={selectedConversation?.conversationId}
+                                            pinned={pinned} contentType={contentType} />
+                                    </Box>
+                                    <MessageStatus
+                                        listMessages={listMessages} isMe={isMe} readBy={readBy}
+                                        isLoading={isLoading} edited={edited} index={index}
+                                    />
+                                </Box>
+                            </Box>)
+                        })}
                     </Box>
-                </Box>)
+                )
+            })}
+            {Object.entries(preViewMessage).map(([id, process]) => {
+                return <MessageSkeleton key={id} process={process} />
             })}
             <div ref={bottomRef}></div>
             {unreadCount > 0 && <Badge
                 badgeContent={unreadCount}
-                color="primary"
+                color="warning"
                 max={99}
                 style={{ position: "fixed", bottom: 100, right: 25, zIndex: 50 }}
                 onClick={loadUnreadMessages}
             >
-                <Sms color="action" sx={{ fontSize: "2.5rem" }} />
+                <Sms color="action" sx={{ fontSize: "3rem", color: "var(--cl-primary-blue)" }} />
             </Badge>}
             <Delete />
             <Edit />

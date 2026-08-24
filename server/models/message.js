@@ -5,6 +5,8 @@ const messageSchema = new mongoose.Schema({
     sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     sentAt: { type: Date, default: Date.now },
     content: { type: String, required: true, maxlength: 5000 },
+    contentType: { type: String, enum: ["image", "text", "link", "image-text", "link-text"], default: "text" },
+    publicId: { type: String },
     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', _id: false }],
     edited: { type: Boolean, default: false },
     deleted: { type: Boolean, default: false },

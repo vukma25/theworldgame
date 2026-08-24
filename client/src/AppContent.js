@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Outlet } from 'react-router-dom'
+import { Outlet } from "react-router-dom"
 import SpeedDial from './Components/SpeedDial/SpeedDial'
 import { connectSocket, disconnectSocket } from './redux/features/socket';
 import { initSocket } from './socket';
@@ -21,7 +21,7 @@ export default function AppContent() {
     return (
         <Fragment>
             <Outlet />
-            <SpeedDial />
+            {/* <SpeedDial /> */}
         </Fragment>
     )
 }

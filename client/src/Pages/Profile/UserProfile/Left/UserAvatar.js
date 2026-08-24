@@ -1,8 +1,9 @@
-import { useRef, useState, useContext } from 'react'
+import { useState, useContext } from 'react'
 import { useSelector } from "react-redux";
-import { Box, IconButton, Modal } from "@mui/material"
+import { Box, Modal } from "@mui/material"
 import { CameraAlt } from "@mui/icons-material"
-import BadgeAvatar from "../../../../Components/BadgeAvatar/BadgeAvatar";
+import BadgeAvatar from "../../../../Components/BadgeAvatar/BadgeAvatar"
+import FileInput from "../../../../Components/FileInput/FileInput"
 import { LogContext } from '../../Profile';
 import api from '../../../../lib/api';
 
@@ -19,8 +20,6 @@ const style = {
 export default function UserAvatar() {
     const { user_information: { username, avatar }, isLoading } = useSelector((state) => state.profile)
     const { user } = useSelector((state) => state.auth)
-    const fileRef = useRef(null)
-    const btnRef = useRef(null)
     const { setLog } = useContext(LogContext)
     const [open, setOpen] = useState(false)
 
@@ -32,26 +31,15 @@ export default function UserAvatar() {
         setOpen(true)
     }
 
-    function fakeFileInput() {
-        if (!fileRef.current) return
-        fileRef.current.click()
-    }
-
-    function chooseImage(e) {
-        const file = e.target.files[0]
-        if (file && btnRef.current) {
-            btnRef.current.click()
-        }
-    }
-
     async function uploadImage(e) {
         try {
             e.preventDefault()
             const form = e.target
             const formData = new FormData(form)
+            console.log(formData)
             formData.append("userId", user._id)
             setLog({ type: "info", message: "Updating" })
-            const res = await api.post('user/upload/avatar', formData, { withCredentials: true })
+            const res = await api.post("user/upload/avatar", formData, { withCredentials: true })
             setLog({ type: "success", message: res.data.message })
         } catch (e) {
             setLog({ type: "error", message: "Update failed" })
@@ -64,39 +52,16 @@ export default function UserAvatar() {
             <Box sx={{ cursor: "pointer" }} onClick={handleOpen}>
                 <BadgeAvatar username={username} src={avatar} online={false} sx={{ width: "15rem", height: "15rem", fontSize: "3rem" }} />
             </Box>
-            <IconButton
-                sx={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 10,
-                    bgcolor: 'primary.main',
-                    color: 'white',
-                    '&:hover': { bgcolor: 'primary.dark' }
-                }}
-                onClick={fakeFileInput}
-                disabled={isLoading}
-            >
+            <FileInput sx={{
+                position: 'absolute',
+                bottom: 0,
+                right: 10,
+                bgcolor: 'primary.main',
+                color: 'white',
+                '&:hover': { bgcolor: 'primary.dark' },
+            }} name={"avatar"} loading={isLoading} uploadAction={uploadImage}>
                 <CameraAlt />
-            </IconButton>
-            <form
-                style={{
-                    position: "absolute",
-                    visibility: "hidden",
-                    overflow: "hidden",
-
-                }}
-                encType="multipart/form-data"
-                onSubmit={uploadImage}
-            >
-                <input
-                    type="file"
-                    name="avatar"
-                    ref={fileRef}
-                    accept="image/png, image/jpeg, , .png, .jpg, .jpeg"
-                    onChange={chooseImage}
-                />
-                <button type='submit' ref={btnRef}></button>
-            </form>
+            </FileInput>
             <Modal
                 open={open}
                 onClose={handleClose}

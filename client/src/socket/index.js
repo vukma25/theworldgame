@@ -1,8 +1,9 @@
 import { store } from '../redux/app/store'
 import { setUsersOnline, setNotifications, setConversations, selectConversation } from '../redux/features/eventSocket';
-import { setListMessage, updateListMessage, setPinnedMessage } from '../redux/features/chat'
+import { setListMessage, updateListMessage, setPinnedMessage, setPreViewMessage } from '../redux/features/chat'
 import { updateAvatar, updateFriendList, updateFriendRequest_auth } from '../redux/features/auth';
 import { setAvatar, updateFriendRequest } from '../redux/features/profile'
+import { setChessGameId } from '../redux/features/chess';
 
 export const initSocket = () => {
     const { socket } = store.getState().socket;
@@ -15,6 +16,8 @@ export const initSocket = () => {
         store.dispatch(setUsersOnline(data))
     })
 
+
+    // tính năng kết bạn và thông báo
     socket.on("notification:new:friend:request", (data) => {
         const { user: { friendRequests } } = store.getState().auth
         const currentNotifications = store.getState().event.notifications;
@@ -86,6 +89,8 @@ export const initSocket = () => {
         ))
     })
 
+
+    // tính năng chat
     socket.on("sent:new:friend:request", (data) => {
         const { user: { _id: me } } = store.getState().auth
         const { user_information: { friendRequests } } = store.getState().profile
@@ -309,8 +314,20 @@ export const initSocket = () => {
         store.dispatch(setPinnedMessage(updatePinnedMessage))
     })
 
+    socket.on("process:send:image", (data) => {
+        store.dispatch(setPreViewMessage(data))
+    })
+
+
+    // tính năng cập nhật avatar
     socket.on("upload:avatar", (data) => {
         store.dispatch(updateAvatar(data.url))
         store.dispatch(setAvatar(data.url))
+    })
+
+
+    //dành cho cờ vua
+    socket.on("create:chess:match", (data) => {
+        store.dispatch(setChessGameId(data.matchId))
     })
 }

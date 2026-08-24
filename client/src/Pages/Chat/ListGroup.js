@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect, useContext } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Typography, List, ListItem, ListItemButton, Box, CircularProgress } from "@mui/material"
+import { Typography, List, ListItem, ListItemButton, Box, CircularProgress, IconButton } from "@mui/material"
+import { Close } from "@mui/icons-material"
 import BadgeAvatar from "../../Components/BadgeAvatar/BadgeAvatar"
 import api from "../../lib/api"
 import { setConversations, selectConversation } from "../../redux/features/eventSocket"
@@ -63,8 +64,8 @@ export default function ListGroup() {
     const { conversations } = useSelector((state) => state.event)
     const dispatch = useDispatch()
 
+    const { handleClose } = useContext(StateContext)
     const [loading, setLoading] = useState(false)
-    const [message, setMessage] = useState("")
 
     useEffect(() => {
         async function fetchData() {
@@ -75,7 +76,7 @@ export default function ListGroup() {
 
                 dispatch(setConversations(cons.data.conversations))
             } catch (err) {
-                console.err(err)
+                console.error(err)
             } finally {
                 setLoading(false)
             }
@@ -87,8 +88,18 @@ export default function ListGroup() {
 
     return (
         <Fragment>
-            {loading && <CircularProgress />}
-            <List>
+            <Box sx={{ backgroundColor: "var(--brand-500)", p: "1rem 1.5rem", }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Typography variant="h5" color="white">Danh sách hội thoại</Typography>
+                    <IconButton
+                        children={<Close sx={{ color: "white" }} />}
+                        onClick={handleClose}
+                    />
+                </Box>
+                <Typography sx={{ fontSize: "1.25rem" }} color="white">Chọn đoạn hội thoại để trò chuyện</Typography>
+            </Box>
+            {loading && <CircularProgress size={"3rem"} sx={{ margin: "1rem auto" }} />}
+            {!loading && <List>
                 {conversations.map((group, index) => {
                     const { name, members, lastMessage, unread, type, _id, pinnedMessage } = group
                     const count = unread.find(({ user: id }) => id.toString() === user._id.toString())?.count
@@ -122,7 +133,7 @@ export default function ListGroup() {
                         )
                     }
                 })}
-            </List>
+            </List>}
         </Fragment>
     )
 }

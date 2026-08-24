@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     chess: null,
+    chessGameId: null,
     settings: {
         showHints: true,
         autoRotate: false,
@@ -27,6 +28,9 @@ const chessSlice = createSlice({
     reducers: {
         setChess: (state, action) => {
             state.chess = action.payload
+        },
+        setChessGameId: (state, action) => {
+            state.chessGameId = action.payload
         },
         setSettings: (state, action) => {
             state.settings = action.payload
@@ -56,7 +60,7 @@ export const {
     setMode,
     setAiThinking,
     setPlayerSide,
-    setStatus,
+    setStatus, setChessGameId,
 } = chessSlice.actions
 
 export default chessSlice.reducer

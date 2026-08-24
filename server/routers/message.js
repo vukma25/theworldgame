@@ -1,5 +1,6 @@
 import express from 'express';
 import auth from '../middleware/auth.js';
+import { upload } from '../middleware/multer.js'
 import { messageController } from '../controllers/messageController.js'
 
 const router = express.Router();
@@ -10,7 +11,7 @@ const {
 
 router.post('/more/:conversationId', auth, getMoreMessageInConversation);
 router.get('/first/:conversationId', auth, getFirstMessageInConversation);
-router.post('/send', auth, sendMessage);
+router.post('/send', auth, upload.single('image'), sendMessage);
 router.post('/read', auth, readMessage);
 router.post('/edit', auth, editMessage);
 router.post('/delete', auth, deleteMessage);

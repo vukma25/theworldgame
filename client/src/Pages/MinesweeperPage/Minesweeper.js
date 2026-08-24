@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { resetGame, unmounted } from '../../redux/features/minesweeper';
 import OptionsBar from './OptionBar';
@@ -11,10 +11,21 @@ import Logger from '../../Components/Logger/Logger'
 import GoTopBtn from '../../Components/GoTopBtn/GoTopBtn';
 import { isWin, difficulties, levels } from './Functions';
 import { Button } from '@mui/material'
+import { BarChart } from '@mui/x-charts/BarChart'
 import "../../assets/styles/Minesweeper.css";
 import { close, open } from '../../redux/features/modal';
 import isMobileDevice from '../../lib/mobile';
 import api from '../../lib/api';
+
+const chartSetting = {
+    yAxis: [
+        {
+            label: 'Tồng số trận',
+            width: 60,
+        },
+    ],
+    height: 300,
+};
 
 function Minesweeper() {
 
@@ -30,11 +41,26 @@ function Minesweeper() {
         "message": logError,
         "type": "info"
     })
+    const [dataset, setDataset] = useState([])
 
     function restart() {
         dispatch(close())
         dispatch(resetGame())
         setTimeFinish(null)
+    }
+
+    function convertFormatDataset(dataset) {
+        const obj = {}
+        for (const data of dataset) {
+            const { difficulty, status } = data
+            if (!obj[difficulty]) { obj[difficulty] = {} }
+
+            obj[difficulty][status] = (obj[difficulty][status] ?? 0) + 1
+        }
+
+        return Object.entries(obj).map(([key, value]) => {
+            return { "difficulty": key, ...value }
+        })
     }
 
     async function updateLeaderboard(difficulty, status, time) {
@@ -57,7 +83,21 @@ function Minesweeper() {
         }
     }
 
+    function valueFormatter(value) {
+        return `${(value ?? 0)} trận`;
+    }
+
     useEffect(() => {
+        async function getStatistics() {
+            try {
+                const res = await api.get("/game/minesweeper/statistic", { withCredentials: true })
+                const data = res.data
+                setDataset((data?.listResults || []))
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        getStatistics()
         dispatch(close())
         dispatch(unmounted())
     }, [])
@@ -145,6 +185,15 @@ function Minesweeper() {
                     />
                 </Modal>
             }
+            <BarChart
+                dataset={convertFormatDataset(dataset)}
+                xAxis={[{ dataKey: "difficulty" }]}
+                series={[
+                    { dataKey: 'win', label: 'Win', valueFormatter },
+                    { dataKey: 'lose', label: 'Lose', valueFormatter },
+                ]}
+                {...chartSetting}
+            />
             <Logger log={log} setLog={setLog} />
             <GoTopBtn />
         </>
